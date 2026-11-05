@@ -18,6 +18,8 @@ jobs:
           # Пока нет своего домена: адрес вида https://ИМЯ.github.io/taxicheck/
           SITE_URL: https://${{ github.repository_owner }}.github.io
           BASE_PATH: /${{ github.event.repository.name }}
+          # Пока нет Impressum с настоящими данными — сайт скрыт от Google. Убрать после запуска.
+          PUBLIC_NOINDEX: "1"
       - uses: actions/upload-pages-artifact@v3
         with: { path: dist }
   deploy:

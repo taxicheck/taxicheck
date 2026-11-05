@@ -24,6 +24,7 @@ const FOOT = {
   <link rel="alternate" hreflang="x-default" href={`${site}${href("de")}`}>
   <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml">
   <meta name="theme-color" content="#f2b705">
+  {import.meta.env.PUBLIC_NOINDEX === "1" && <meta name="robots" content="noindex">}
 </head>
 <body>
   <div class="wrap">
