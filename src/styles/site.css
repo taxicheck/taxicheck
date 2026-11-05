@@ -149,3 +149,7 @@ footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);paddin
 .draft{background:var(--surface);border:2px dashed var(--warn);border-radius:12px;padding:12px 14px;font-size:14px}
 .ph{background:var(--taxi);color:var(--taxi-ink);padding:0 4px;border-radius:3px}
 .back{color:var(--fg);font-weight:600}
+.when{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;margin-top:2px}
+.chip{display:inline-block;font:700 11px var(--f-body);letter-spacing:.04em;padding:2px 7px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.chip.now{color:var(--good)}.chip.pre{color:var(--warn)}
+.when-t td{color:var(--fg);vertical-align:top}

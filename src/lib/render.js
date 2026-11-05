@@ -1,7 +1,7 @@
 // Общие функции: считают цену и собирают HTML.
 // Работают и при сборке страницы (для Google и без JavaScript), и в браузере.
 import { TARIFF, PLACES, ROUTES, PHONES, COMPANIES, LINKS } from "./data.js";
-import { L, OP } from "./texts.js";
+import { L, OP, W, NOW } from "./texts.js";
 
 export const esc = (s) => String(s).replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
 const loc = (lang) => (lang === "ru" ? "ru-RU" : lang === "de" ? "de-DE" : "en-GB");
@@ -82,7 +82,7 @@ const scoreLine = (st, c) => { const t = L[st.lang], x = ratings(st.reviews)[c];
 
 export function tiersHTML(st) {
   const t = L[st.lang], lang = st.lang, l = appLinks(st), c = current(st), route = c.route, air = route.from === "air";
-  const prov = (name, meta, price, link, label, ad, ghost) => `<div class="prov"><div class="prov-main"><div class="prov-name">${esc(name)}${ad ? `<span class="tag ad">${t.ad}</span>` : ""}</div><div class="prov-meta">${meta}</div><div class="prov-meta">${esc(scoreLine(st, name))}</div></div><div class="prov-side"><span class="price">${price}</span>${link ? `<a class="go${ghost ? " ghost" : ""}" href="${esc(link)}" rel="noopener${ad ? " sponsored" : ""}">${label}</a>` : ""}</div></div>`;
+  const prov = (name, meta, price, link, label, ad, ghost) => `<div class="prov"><div class="prov-main"><div class="prov-name">${esc(name)}${ad ? `<span class="tag ad">${t.ad}</span>` : ""}</div><div class="prov-meta">${meta}</div>${whenLine(st, name)}<div class="prov-meta">${esc(scoreLine(st, name))}</div></div><div class="prov-side"><span class="price">${price}</span>${link ? `<a class="go${ghost ? " ghost" : ""}" href="${esc(link)}" rel="noopener${ad ? " sponsored" : ""}">${label}</a>` : ""}</div></div>`;
   const taxiPrice = route.fix ? `${eur(lang, route.fix)} <span class="tag src">${t.fixTag}</span>` : `${eur(lang, c.m.lo)}–${eur(lang, c.m.hi)}`;
   const uberPrice = route.uber ? `${route.uber.x} / ${route.uber.comfort} / ${route.uber.taxi} €` : t.inApp;
   const tier = (title, sub, body) => `<div class="tier"><div class="tier-head"><h3>${title}</h3><span>${sub}</span></div>${body}</div>`;
@@ -94,6 +94,7 @@ export function tiersHTML(st) {
     tier(t.t3, t.t3s,
       (air ? prov("Welcome Pickups", esc(t.welcomeMeta), route.welcome ? `${route.welcome.day} € ${t.day} · ${route.welcome.night} € ${t.night}` : t.onReq, LINKS.welcome, t.book, true) : "") +
       (route.wt ? prov("World Transfer", esc(t.wtMeta), route.wt, LINKS.wt, t.book, false, true) : "") +
+      prov("Kiwitaxi", esc(t.kiwiMeta), t.onReq, LINKS.kiwitaxi, t.book, true, true) +
       prov("Daytrip", esc(t.daytripMeta), t.onReq, LINKS.daytrip, t.book, true, true)) +
     tier(t.t4, t.t4s, prov("Blacklane", esc(t.blackMeta), t.onReq, LINKS.blacklane, t.book, true, true));
 }
@@ -125,4 +126,15 @@ export function verdict(st, asked) {
   if (asked <= m.hi * 1.05) return ["ok", t.vOk(range)];
   if (asked <= m.hi * 1.2) return ["meh", t.vMeh(eur(lang, asked - m.hi), range)];
   return ["bad", t.vBad(eur(lang, asked - m.hi), range)];
+}
+
+function whenLine(st, name) {
+  const w = W[st.lang], pre = w.pre[name]; if (!pre) return "";
+  const now = NOW.includes(name);
+  return `<div class="when"><span class="chip ${now ? "now" : "pre"}">${now ? w.now : w.only}</span>${esc(pre)}</div>`;
+}
+
+export function whenHTML(st) {
+  const w = W[st.lang];
+  return `<table class="journal when-t"><thead><tr>${w.cols.map((c) => `<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${Object.entries(w.pre).map(([c, pre]) => `<tr><td><strong>${esc(c)}</strong></td><td>${NOW.includes(c) ? `<span class="chip now">${w.yes}</span>` : `<span class="chip pre">${w.no}</span>`}</td><td>${esc(pre)}</td></tr>`).join("")}</tbody></table>`;
 }

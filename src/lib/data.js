@@ -39,13 +39,14 @@ export const ROUTES = [
 // Номера диспетчерских — проверить перед публикацией
 export const PHONES = [["Taxi-München eG", "089 21610"], ["IsarFunk", "089 450540"]];
 
-export const COMPANIES = ["Taxi München", "Uber", "Bolt", "FREE NOW", "Welcome Pickups", "World Transfer", "Daytrip", "Blacklane"];
+export const COMPANIES = ["Taxi München", "Uber", "Bolt", "FREE NOW", "Welcome Pickups", "World Transfer", "Kiwitaxi", "Daytrip", "Blacklane"];
 
 // Ссылки. Партнёрские ссылки вставляются сюда после одобрения в сетях.
 export const LINKS = {
   freenow: "https://www.free-now.com/de/",
   welcome: "https://www.welcomepickups.com/munich/airport-taxi/",
   wt: "https://world-transfer.com/en/airporttransfer-munich.html",
+  kiwitaxi: "https://kiwitaxi.com/",
   daytrip: "https://daytrip.com/",
   blacklane: "https://www.blacklane.com/en/airport-transfer-munich",
 };
@@ -55,6 +56,12 @@ export const SOURCES = [
   ["Welcome Pickups: Munich Airport taxi", "https://www.welcomepickups.com/?p=19740", "11.2026"],
   ["World Transfer: Airport Transfer Munich", "https://world-transfer.com/en/airporttransfer-munich.html", "11.2026"],
   ["Blacklane: Munich airport transfer", "https://www.blacklane.com/en/airport-transfer-munich", "11.2026"],
+  ["Uber Reserve in Deutschland (bis 90 Tage in München)", "https://www.uber.com/de/newsroom/uber-reserve-deutschland/", "04.2023"],
+  ["Bolt: Fahrten bis 90 Tage im Voraus", "https://bolt.eu/en-de/rides/", "11.2026"],
+  ["Bento: FREE NOW Vorbestellung", "https://www.bento.travel/compare/germany/freenow-de-vs-bolt-de", "08.2026"],
+  ["Kiwitaxi: Mindestvorlauf", "https://kiwitaxi.com/en/help", "11.2026"],
+  ["Daytrip: Buchung unter 36 Stunden", "https://daytrip.ladesk.com/279269-Can-I-book-a-trip-24-hours-or-less-prior", "11.2026"],
+  ["Blacklane: Vorlauf ab 60 Minuten", "https://help.blacklane.com/en/articles/2687015-how-far-in-advance-can-i-book-a-ride", "11.2026"],
   ["Nomada: Uber, Bolt, FREE NOW in Deutschland", "https://nomada.tools/directory/ride-hailing/germany", "10.2026"],
   ["Taxitarif München (Landeshauptstadt München) — amtlichen Link ergänzen", "", "01.07.2026"],
 ];

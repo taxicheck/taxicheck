@@ -2,7 +2,8 @@
 import Base from "../../layouts/Base.astro";
 import { LANGS, SOURCES, COMPANIES } from "../../lib/data.js";
 import { L } from "../../lib/texts.js";
-import { routesHTML, meterHTML, actionsHTML, tiersHTML, opsHTML, reviewsHTML, esc } from "../../lib/render.js";
+import { routesHTML, meterHTML, actionsHTML, tiersHTML, opsHTML, reviewsHTML, whenHTML, esc } from "../../lib/render.js";
+import { W } from "../../lib/texts.js";
 
 export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
 const { lang } = Astro.params;
@@ -49,6 +50,12 @@ const META = {
     <h2>{t.hTiers}</h2>
     <p class="sub">{t.sTiers}</p>
     <div class="tiers" id="tiers" set:html={tiersHTML(st)} />
+  </section>
+
+  <section>
+    <h2>{W[lang].head}</h2>
+    <p class="sub">{W[lang].sub}</p>
+    <div class="tw" set:html={whenHTML(st)} />
   </section>
 
   <section class="cheat" id="cheat-sheet">
