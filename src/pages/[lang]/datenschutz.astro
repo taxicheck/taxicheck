@@ -1,0 +1,42 @@
+---
+import Base from "../../layouts/Base.astro";
+import { LANGS } from "../../lib/data.js";
+export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
+const { lang } = Astro.params;
+const NOTE = {
+  ru: "Коротко: сайт не ставит cookies, не следит за вами и не подключает чужие шрифты и счётчики. Юридически действует немецкий текст ниже.",
+  de: "",
+  en: "In short: the site sets no cookies, does no tracking and loads no third-party fonts or counters. The German text below is the legally binding version.",
+};
+// ЧЕРНОВИК. Перед публикацией проверить у юриста.
+---
+<Base lang={lang} title="Datenschutz | TaxiCheck" description="Datenschutzerklärung TaxiCheck" path="datenschutz/">
+  <section class="legal">
+    <h1>Datenschutzerklärung</h1>
+    {NOTE[lang] && <p class="sub">{NOTE[lang]}</p>}
+    <p class="draft">ENTWURF — vor Veröffentlichung rechtlich prüfen lassen.</p>
+
+    <h2>1. Verantwortlicher</h2>
+    <p>Verantwortlich ist die im <a href="../impressum/">Impressum</a> genannte Person.</p>
+
+    <h2>2. Hosting und Server-Logs</h2>
+    <p>Die Seite wird als statische Website bei <span class="ph">[GitHub Pages (GitHub Inc., USA) oder Cloudflare Pages]</span> gehostet. Beim Aufruf verarbeitet der Hoster technisch notwendige Daten wie IP-Adresse, Datum, Uhrzeit und angefragte Seite, um die Seite auszuliefern und vor Missbrauch zu schützen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Die Übermittlung in die USA erfolgt auf Grundlage des EU-US Data Privacy Framework bzw. von Standardvertragsklauseln <span class="ph">[prüfen]</span>.</p>
+
+    <h2>3. Keine Cookies, kein Tracking</h2>
+    <p>Wir setzen keine Cookies, keine Analyse- oder Werbe-Tracker und binden keine externen Schriftarten ein.</p>
+
+    <h2>4. Speicherung im eigenen Browser</h2>
+    <p>Wenn Sie eine Bewertung abgeben, wird sie nur im lokalen Speicher (localStorage) Ihres Browsers abgelegt und nicht an uns übertragen. Sie können sie jederzeit über die Browsereinstellungen löschen. Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG, da die Speicherung für die von Ihnen gewünschte Funktion erforderlich ist.</p>
+
+    <h2>5. Links zu Anbietern und Partnerlinks</h2>
+    <p>Die Seite verlinkt auf Anbieter wie Uber, Bolt, FREE NOW, Welcome Pickups, World Transfer, Daytrip und Blacklane. Erst wenn Sie einen Link anklicken, werden Daten an den jeweiligen Anbieter übertragen; dort gelten dessen Datenschutzbestimmungen. Mit „Werbung“ gekennzeichnete Links sind Partnerlinks: Das Partnernetzwerk kann auf seiner eigenen Seite Cookies setzen, um eine Buchung zuzuordnen.</p>
+
+    <h2>6. Kontakt per E-Mail</h2>
+    <p>Wenn Sie uns schreiben, verarbeiten wir Ihre Angaben nur zur Beantwortung (Art. 6 Abs. 1 lit. b bzw. f DSGVO) und löschen sie, wenn sie nicht mehr benötigt werden.</p>
+
+    <h2>7. Ihre Rechte</h2>
+    <p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch (Art. 15–21 DSGVO). Sie können sich bei einer Aufsichtsbehörde beschweren, zum Beispiel beim Bayerischen Landesamt für Datenschutzaufsicht (BayLDA), Ansbach.</p>
+
+    <p class="sub">Stand: <span class="ph">[Datum der Veröffentlichung]</span></p>
+  </section>
+</Base>

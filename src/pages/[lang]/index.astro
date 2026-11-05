@@ -1,0 +1,159 @@
+---
+import Base from "../../layouts/Base.astro";
+import { LANGS, SOURCES, COMPANIES } from "../../lib/data.js";
+import { L } from "../../lib/texts.js";
+import { routesHTML, meterHTML, actionsHTML, tiersHTML, opsHTML, reviewsHTML, esc } from "../../lib/render.js";
+
+export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
+const { lang } = Astro.params;
+const t = L[lang];
+const st = { lang, routeId: "air-hbf", km: 8, min: 10, to: "Marienplatz", reviews: [] };
+const META = {
+  ru: ["Такси из аэропорта Мюнхена: цена, Uber, Bolt, трансфер | TaxiCheck", "Сколько стоит такси из аэропорта Мюнхена в центр: фиксированная цена 96 €, Uber, Bolt, трансферы и премиум. Проверка цены водителя и советы таксиста."],
+  de: ["Taxi Flughafen München: Preis, Uber, Bolt, Transfer im Vergleich | TaxiCheck", "Was kostet das Taxi vom Flughafen München ins Zentrum: Festpreis 96 €, Uber, Bolt, Transfers und Premium. Preis-Check und Tipps vom Taxifahrer."],
+  en: ["Munich Airport taxi price vs Uber, Bolt & transfers | TaxiCheck", "What a taxi from Munich Airport to the centre costs: fixed 96 €, Uber, Bolt, transfers and premium. Check a quoted fare and get tips from a cab driver."],
+};
+---
+<Base lang={lang} title={META[lang][0]} description={META[lang][1]}>
+  <Fragment slot="header">
+    <p class="city" set:html={t.city} />
+    <h1>{t.h1}</h1>
+  </Fragment>
+
+  <section class="stack" aria-label={t.h1}>
+    <div class="routes" id="routes" set:html={routesHTML(st)} />
+    <div class="own stack" id="own" hidden>
+      <div><label for="to">{t.to}</label><input id="to" autocomplete="off" value="Marienplatz"></div>
+      <div class="grid2">
+        <div><label for="km">{t.km}</label><input id="km" type="number" inputmode="decimal" min="0.5" step="0.5" value="8"></div>
+        <div><label for="wait">{t.wait}</label><input id="wait" type="number" inputmode="numeric" min="0" step="1" value="10"></div>
+      </div>
+      <p class="hint">{t.ownHint}</p>
+    </div>
+  </section>
+
+  <section class="meter" id="meter" aria-live="polite" set:html={meterHTML(st)} />
+  <section class="actions" id="actions" set:html={actionsHTML(st)} />
+
+  <section class="check">
+    <h2 id="h-check">{t.hCheck}</h2>
+    <p class="sub" style="margin:0">{t.sCheck}</p>
+    <div class="check-row">
+      <input id="asked" type="number" inputmode="decimal" min="1" step="1" placeholder="€" aria-labelledby="h-check">
+      <button class="btn taxi" type="button" id="b-check">{t.bCheck}</button>
+    </div>
+    <p class="verdict" id="verdict"></p>
+  </section>
+
+  <section>
+    <h2>{t.hTiers}</h2>
+    <p class="sub">{t.sTiers}</p>
+    <div class="tiers" id="tiers" set:html={tiersHTML(st)} />
+  </section>
+
+  <section class="cheat" id="cheat-sheet">
+    <h2>{t.hCheat}</h2>
+    <p class="sub" style="margin:0">{t.sCheat}</p>
+    <ol>{t.cheat.map((x) => <li>{x}</li>)}</ol>
+    <button class="btn" type="button" id="b-share">{t.bShare}</button>
+    <p class="toast" id="share-toast" style="color:var(--meter-fg)"></p>
+  </section>
+
+  <section>
+    <h2>{t.hOp}</h2>
+    <div class="author"><div class="badge">{t.badge}</div><p>{t.authorTxt}</p></div>
+    <div class="ops" id="ops" set:html={opsHTML(st)} />
+    <p class="disclaim">{t.disclaim}</p>
+  </section>
+
+  <section>
+    <h2>{t.hJr}</h2>
+    <p class="sub">{t.sJr}</p>
+    <div class="tw"><table class="journal">
+      <thead><tr>{t.jr.map((h) => <th>{h}</th>)}</tr></thead>
+      <tbody><tr>{t.jr.map((_, i) => <td>{i === 0 ? t.jrEmpty : "—"}</td>)}</tr></tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>{t.hHow}</h2>
+    <div class="stack">
+      <details><summary>{t.sumCalc}</summary><ul>{t.calc.map((x) => <li>{x}</li>)}</ul></details>
+      <details><summary>{t.sumSrc}</summary><ul>{SOURCES.map(([n, u, d]) => <li>{u ? <a href={u} rel="noopener">{n}</a> : n} · {d}</li>)}</ul></details>
+      <details><summary>{t.sumAds}</summary><ul>{t.ads.map((x) => <li>{x}</li>)}</ul></details>
+    </div>
+  </section>
+
+  <section>
+    <h2>{t.hRev}</h2>
+    <p class="sub">{t.sRev}</p>
+    <div id="reviews" set:html={reviewsHTML(st)} />
+    <form id="form" class="stack" novalidate style="margin-top:16px">
+      <div><label for="company">{t.company}</label><select id="company">{COMPANIES.map((c) => <option>{c}</option>)}</select></div>
+      <div><label>{t.service}</label><div class="stars" data-for="service"></div></div>
+      <div><label>{t.value}</label><div class="stars" data-for="value"></div></div>
+      <div><label for="text">{t.text}</label><textarea id="text" rows="3" placeholder={t.ph}></textarea></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn taxi" type="submit" style="min-width:200px">{t.send}</button><p class="toast" id="toast"></p></div>
+    </form>
+  </section>
+
+  <p slot="footer">{t.foot}</p>
+</Base>
+
+<script>
+  import { L } from "../../lib/texts.js";
+  import { PHONES } from "../../lib/data.js";
+  import { routesHTML, meterHTML, actionsHTML, tiersHTML, opsHTML, reviewsHTML, verdict } from "../../lib/render.js";
+
+  const $ = (id) => document.getElementById(id);
+  const lang = document.documentElement.lang;
+  const t = L[lang];
+  const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  let reviews = []; try { reviews = JSON.parse(store.get("taxicheck-reviews") || "[]"); } catch (e) {}
+  const st = { lang, routeId: "air-hbf", km: 8, min: 10, to: "Marienplatz", reviews };
+
+  function readInputs() { st.km = parseFloat($("km").value) || 0; st.min = parseFloat($("wait").value) || 0; st.to = $("to").value; }
+  function render() {
+    readInputs();
+    $("routes").innerHTML = routesHTML(st);
+    $("own").hidden = st.routeId !== "own";
+    $("meter").innerHTML = meterHTML(st);
+    $("actions").innerHTML = actionsHTML(st);
+    $("tiers").innerHTML = tiersHTML(st);
+  }
+  function renderRatings() { $("ops").innerHTML = opsHTML(st); $("reviews").innerHTML = reviewsHTML(st); $("tiers").innerHTML = tiersHTML(st); }
+
+  $("routes").addEventListener("click", (e) => { const b = e.target.closest("[data-r]"); if (!b) return; st.routeId = b.dataset.r; $("verdict").textContent = ""; render(); });
+  ["km", "wait", "to"].forEach((id) => $(id).addEventListener("input", render));
+  function check() { const [cls, msg] = verdict(st, parseFloat($("asked").value)); const v = $("verdict"); v.className = "verdict " + cls; v.textContent = msg; }
+  $("b-check").addEventListener("click", check);
+  $("asked").addEventListener("keydown", (e) => { if (e.key === "Enter") check(); });
+
+  function copyText(text, ok, fail) { try { navigator.clipboard.writeText(text).then(ok, fail); } catch (e) { fail(); } }
+  $("actions").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-copy]"); if (!b) return;
+    copyText(PHONES[+b.dataset.copy][1], () => { b.textContent = t.copied; setTimeout(() => (b.textContent = t.copy), 1500); }, () => {});
+  });
+  $("b-share").addEventListener("click", async () => {
+    const txt = `TaxiCheck · ${t.hCheat}\n` + t.cheat.map((x, i) => `${i + 1}. ${x}`).join("\n") + `\n${location.href}`;
+    if (navigator.share) { try { await navigator.share({ title: "TaxiCheck", text: txt }); return; } catch (e) {} }
+    copyText(txt, () => ($("share-toast").textContent = t.shareOk), () => ($("share-toast").textContent = t.shareFail));
+  });
+
+  const score = { service: 0, value: 0 };
+  document.querySelectorAll(".stars").forEach((box) => {
+    const k = box.dataset.for;
+    box.innerHTML = [1, 2, 3, 4, 5].map((n) => `<button type="button" class="star" data-n="${n}" aria-label="${n}/5">★</button>`).join("");
+    box.addEventListener("click", (e) => { const b = e.target.closest(".star"); if (!b) return; score[k] = +b.dataset.n; [...box.children].forEach((s) => s.classList.toggle("on", +s.dataset.n <= score[k])); });
+  });
+  $("form").addEventListener("submit", (e) => {
+    e.preventDefault(); const txt = $("text").value.trim(), m = $("toast");
+    if (!score.service || !score.value) { m.style.color = "var(--warn)"; m.textContent = t.errStars; return; }
+    if (txt.length < 5) { m.style.color = "var(--warn)"; m.textContent = t.errText; return; }
+    reviews.push({ c: $("company").value, s: score.service, v: score.value, t: txt, d: new Date().toISOString().slice(0, 10) });
+    store.set("taxicheck-reviews", JSON.stringify(reviews));
+    score.service = score.value = 0; $("text").value = ""; document.querySelectorAll(".star").forEach((s) => s.classList.remove("on"));
+    renderRatings(); m.style.color = "var(--good)"; m.textContent = t.ok;
+  });
+  renderRatings();
+</script>

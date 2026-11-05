@@ -1,0 +1,21 @@
+---
+// Корень сайта: отправляет на язык телефона (ru/de/en), по умолчанию немецкий.
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaxiCheck</title>
+  <meta name="robots" content="noindex">
+  <meta http-equiv="refresh" content={`2;url=${base}/de/`}>
+  <script is:inline define:vars={{ base }}>
+    var l = (navigator.language || "de").slice(0, 2);
+    location.replace(base + "/" + (["ru", "de", "en"].indexOf(l) >= 0 ? l : "de") + "/");
+  </script>
+</head>
+<body style="font-family:system-ui,sans-serif;padding:24px">
+  <p><a href={`${base}/de/`}>Deutsch</a> · <a href={`${base}/ru/`}>Русский</a> · <a href={`${base}/en/`}>English</a></p>
+</body>
+</html>

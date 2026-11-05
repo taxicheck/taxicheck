@@ -1,0 +1,43 @@
+---
+import Base from "../../layouts/Base.astro";
+import { LANGS } from "../../lib/data.js";
+export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
+const { lang } = Astro.params;
+const NOTE = {
+  ru: "Юридически действует немецкий текст ниже.",
+  de: "",
+  en: "The German text below is the legally binding version.",
+};
+// ЧЕРНОВИК. Жёлтые поля заполнить. Перед публикацией проверить у юриста.
+---
+<Base lang={lang} title="Impressum | TaxiCheck" description="Impressum TaxiCheck" path="impressum/">
+  <section class="legal">
+    <h1>Impressum</h1>
+    {NOTE[lang] && <p class="sub">{NOTE[lang]}</p>}
+    <p class="draft">ENTWURF — vor Veröffentlichung ausfüllen und rechtlich prüfen lassen. Gelb markierte Felder sind Platzhalter.</p>
+
+    <h2>Angaben gemäß § 5 DDG</h2>
+    <p><span class="ph">[Vor- und Nachname oder Firmenname]</span><br>
+       <span class="ph">[Straße und Hausnummer bzw. ladungsfähige c/o-Anschrift]</span><br>
+       <span class="ph">[PLZ Ort]</span><br>Deutschland</p>
+
+    <h2>Kontakt</h2>
+    <p>E-Mail: <span class="ph">[kontakt@domain.de]</span><br>
+       Telefon: <span class="ph">[optional]</span></p>
+
+    <h2>Umsatzsteuer</h2>
+    <p><span class="ph">[Umsatzsteuer-ID, falls vorhanden — sonst: Kleinunternehmer gemäß § 19 UStG]</span></p>
+
+    <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+    <p><span class="ph">[Name, Anschrift wie oben]</span></p>
+
+    <h2>Hinweis zu Werbung und Interessen</h2>
+    <p>Diese Seite enthält Partnerlinks, die als „Werbung“ gekennzeichnet sind. Bei einer Buchung über einen solchen Link kann eine Provision gezahlt werden; der Preis für Nutzer ändert sich dadurch nicht. Der Autor ist als Fahrer im Taxi- und Transfergewerbe tätig, auch für Anbieter, die auf dieser Seite verglichen werden.</p>
+
+    <h2>Haftung für Inhalte und Links</h2>
+    <p>Preise und Tarife werden mit Datum und Quelle angegeben und sorgfältig geprüft, sind aber unverbindliche Orientierungswerte. Maßgeblich ist der Preis des jeweiligen Anbieters bzw. das Taxameter. Für Inhalte externer Seiten sind deren Betreiber verantwortlich.</p>
+
+    <h2>Verbraucherstreitbeilegung</h2>
+    <p>Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+  </section>
+</Base>
