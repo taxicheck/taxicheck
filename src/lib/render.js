@@ -1,7 +1,7 @@
 // Общие функции: считают цену и собирают HTML.
 // Работают и при сборке страницы (для Google и без JavaScript), и в браузере.
 import { TARIFF, PLACES, ROUTES, PHONES, COMPANIES, LINKS } from "./data.js";
-import { L, OP, W, NOW } from "./texts.js";
+import { L, OP, W, NOW, EX } from "./texts.js";
 
 export const esc = (s) => String(s).replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
 const loc = (lang) => (lang === "ru" ? "ru-RU" : lang === "de" ? "de-DE" : "en-GB");
@@ -78,7 +78,7 @@ export function ratings(reviews) {
   Object.values(o).forEach((x) => { if (x.n) { x.s /= x.n; x.v /= x.n; } });
   return o;
 }
-const scoreLine = (st, c) => { const t = L[st.lang], x = ratings(st.reviews)[c]; return x.n ? t.opScore(x.s.toFixed(1), x.v.toFixed(1), x.n) : t.opNo; };
+const scoreLine = (st, c) => { const t = L[st.lang], x = ratings(st.reviews)[c]; if (!x) return t.opNo; return x.n ? t.opScore(x.s.toFixed(1), x.v.toFixed(1), x.n) : t.opNo; };
 
 export function tiersHTML(st) {
   const t = L[st.lang], lang = st.lang, l = appLinks(st), c = current(st), route = c.route, air = route.from === "air";
@@ -86,7 +86,10 @@ export function tiersHTML(st) {
   const taxiPrice = route.fix ? `${eur(lang, route.fix)} <span class="tag src">${t.fixTag}</span>` : `${eur(lang, c.m.lo)}–${eur(lang, c.m.hi)}`;
   const uberPrice = route.uber ? `${route.uber.x} / ${route.uber.comfort} / ${route.uber.taxi} €` : t.inApp;
   const tier = (title, sub, body) => `<div class="tier"><div class="tier-head"><h3>${title}</h3><span>${sub}</span></div>${body}</div>`;
-  return tier(t.t1, t.t1s, prov("Taxi München", esc(t.taxiMeta), taxiPrice, "", "", false)) +
+  const x = EX[lang];
+  const appPrice = route.fix ? `${eur(lang, route.fix)}` : `${eur(lang, c.m.lo * 0.95)}–${eur(lang, c.m.lo * 1.2)}`;
+  const appMeta = esc(x.taxiAppMeta) + (route.fix ? ` <strong>${esc(x.taxiAppZone)}</strong>` : "");
+  return tier(t.t1, t.t1s, prov("Taxi München", esc(t.taxiMeta), taxiPrice, "", "", false) + prov(x.taxiApp, appMeta, appPrice, "https://isarfunk.de/isarfunk-festpreis/", t.open, false, true)) +
     tier(t.t2, t.t2s,
       prov("Uber", `${esc(t.uberRow)}${route.uber ? " · " + esc(t.uberHint) : ""}`, uberPrice, l.uber, t.open, true) +
       prov("Bolt", esc(t.boltMeta), t.inApp, l.bolt, t.open, false) +

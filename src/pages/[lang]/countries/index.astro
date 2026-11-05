@@ -1,0 +1,18 @@
+---
+import Base from "../../../layouts/Base.astro";
+import { LANGS } from "../../../lib/data.js";
+import { COUNTRIES, CL } from "../../../lib/countries.js";
+export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
+const { lang } = Astro.params;
+const c = CL[lang];
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<Base lang={lang} title={`${c.title} | TaxiCheck`} description={c.sub} path="countries/">
+  <h1 slot="header">{c.title}</h1>
+  <section>
+    <p class="sub">{c.sub}</p>
+    <div class="clist">
+      {COUNTRIES.map((x) => <a class="ccard" href={`${base}/${lang}/countries/${x.slug}/`}><strong>{x.flag} {x.name[lang]}</strong><span>{x.hub}</span></a>)}
+    </div>
+  </section>
+</Base>

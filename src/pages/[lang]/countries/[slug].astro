@@ -1,0 +1,42 @@
+---
+import Base from "../../../layouts/Base.astro";
+import Tips from "../../../components/Tips.astro";
+import { LANGS } from "../../../lib/data.js";
+import { COUNTRIES, CL } from "../../../lib/countries.js";
+export function getStaticPaths() {
+  return LANGS.flatMap((lang) => COUNTRIES.map((x) => ({ params: { lang, slug: x.slug }, props: { x } })));
+}
+const { lang } = Astro.params;
+const { x } = Astro.props;
+const c = CL[lang];
+const tr = (v) => (typeof v === "string" ? v : v[lang]);
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const TITLE = { ru: `Такси и Bolt/Uber: ${x.name.ru} — советы туристам`, de: `Taxi, Uber & Bolt: ${x.name.de} — Tipps für Reisende`, en: `Taxi, Uber & Bolt in ${x.name.en} — travel tips` };
+---
+<Base lang={lang} title={`${TITLE[lang]} | TaxiCheck`} description={tr(x.apps)} path={`countries/${x.slug}/`}>
+  <Fragment slot="header">
+    <a class="back" href={`${base}/${lang}/countries/`}>{c.back}</a>
+    <h1>{x.flag} {x.name[lang]}</h1>
+    <p class="city">{x.hub}</p>
+  </Fragment>
+  <p class="draft">{c.note}</p>
+  <section class="box">
+    <h2>{c.apps}</h2>
+    <p style="margin:0">{tr(x.apps)}</p>
+  </section>
+  <section class="box">
+    <h2>{c.options}</h2>
+    <p class="sub">{tr(x.route)}</p>
+    <div class="opts">
+      {x.options.map(([k, name, price]) => <div class="opt"><div><span class="k">{c.kinds[k]}</span>{tr(name)}</div><b>{tr(price)}</b></div>)}
+    </div>
+  </section>
+  <section>
+    <h2>{c.tips}</h2>
+    <ol class="tipslist">{x.tips[lang].map((t) => <li>{t}</li>)}</ol>
+  </section>
+  <Tips lang={lang} scope={`c-${x.slug}`} where={x.name[lang]} />
+  <section>
+    <details><summary>{c.src}</summary><ul>{x.src.map(([n, u, d]) => <li><a href={u} rel="noopener">{n}</a> · {d}</li>)}</ul></details>
+  </section>
+</Base>

@@ -1,0 +1,23 @@
+---
+import { EX } from "../lib/texts.js";
+const { lang, scope, where } = Astro.props;
+const x = EX[lang];
+---
+<section class="tips-block" data-scope={scope} data-where={where}>
+  <h2>{x.tipsHead}</h2>
+  <p class="sub">{x.tipsSub}</p>
+  <div data-tips-list><p class="empty">{x.tipsEmpty}</p></div>
+  <form class="stack" novalidate style="margin-top:14px">
+    <div class="grid2">
+      <div><label for={`w-${scope}`}>{x.tipsWhere}</label><input id={`w-${scope}`} name="where" value={where}></div>
+      <div><label for={`a-${scope}`}>{x.tipsApp}</label><input id={`a-${scope}`} name="app" placeholder="Bolt, Uber, Taxi…"></div>
+    </div>
+    <div><label for={`t-${scope}`}>{x.tipsText}</label><textarea id={`t-${scope}`} name="text" rows="3" placeholder={x.tipsPh}></textarea></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn taxi" type="submit" style="min-width:200px">{x.tipsSend}</button><p class="toast" data-tips-msg></p></div>
+    <p class="hint">{x.tipsNote}</p>
+  </form>
+</section>
+<script>
+  import { initTips } from "../lib/tips-client.js";
+  document.querySelectorAll(".tips-block").forEach((el) => initTips(el, el.dataset.scope));
+</script>

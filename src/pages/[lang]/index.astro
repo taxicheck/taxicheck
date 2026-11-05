@@ -4,6 +4,8 @@ import { LANGS, SOURCES, COMPANIES } from "../../lib/data.js";
 import { L } from "../../lib/texts.js";
 import { routesHTML, meterHTML, actionsHTML, tiersHTML, opsHTML, reviewsHTML, whenHTML, esc } from "../../lib/render.js";
 import { W } from "../../lib/texts.js";
+import { CITIES, GL } from "../../lib/germany.js";
+import Tips from "../../components/Tips.astro";
 
 export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
 const { lang } = Astro.params;
@@ -91,6 +93,23 @@ const META = {
     </div>
   </section>
 
+  <section id="germany">
+    <h2>{GL[lang].title}</h2>
+    <p class="sub">{GL[lang].sub(CITIES.length)}</p>
+    <input id="city-q" type="search" placeholder={GL[lang].search} aria-label={GL[lang].search} style="margin-bottom:10px">
+    <div class="tw"><table class="journal cities">
+      <thead><tr>{GL[lang].cols.map((c) => <th>{c}</th>)}</tr></thead>
+      <tbody>{CITIES.map((c) => <tr data-city={c.n.toLowerCase()}>
+        <td>{c.n}{c.full && <span class="full">{GL[lang].full}</span>}</td>
+        {[c.taxi, c.taxifix, c.uber, c.bolt, c.freenow].map((v) => <td class={v ? "yes" : "unk"}>{v ? GL[lang].yes : GL[lang].unk}</td>)}
+      </tr>)}</tbody>
+    </table></div>
+    <p class="hint" id="city-empty" hidden>{GL[lang].empty}</p>
+    <p class="hint">{GL[lang].unkNote}</p>
+  </section>
+
+  <Tips lang={lang} scope="de-muenchen" where="München" />
+
   <section>
     <h2>{t.hRev}</h2>
     <p class="sub">{t.sRev}</p>
@@ -163,4 +182,10 @@ const META = {
     renderRatings(); m.style.color = "var(--good)"; m.textContent = t.ok;
   });
   renderRatings();
+  const q = $("city-q");
+  q.addEventListener("input", () => {
+    const v = q.value.trim().toLowerCase(); let n = 0;
+    document.querySelectorAll("tr[data-city]").forEach((tr) => { const on = !v || tr.dataset.city.includes(v); tr.hidden = !on; if (on) n++; });
+    $("city-empty").hidden = n > 0;
+  });
 </script>

@@ -116,6 +116,7 @@ export const W = {
     cols: ["Компания", "Прямо сейчас", "Заранее"], yes: "да", no: "нет", now: "сейчас", only: "только заранее",
     pre: {
       "Taxi München": "на время, по телефону диспетчерской",
+      "Такси через приложение": "сразу или на время, цена фиксируется при заказе",
       "Uber": "от 30 мин до 90 дней вперёд, отмена бесплатно за 60+ мин",
       "Bolt": "до 90 дней вперёд в приложении",
       "FREE NOW": "до 90 дней, в аэропорт — до 4 дней (сверять в приложении)",
@@ -132,6 +133,7 @@ export const W = {
     cols: ["Anbieter", "Sofort", "Im Voraus"], yes: "ja", no: "nein", now: "sofort", only: "nur im Voraus",
     pre: {
       "Taxi München": "auf Uhrzeit, telefonisch über die Zentrale",
+      "Taxi per App": "sofort oder auf Uhrzeit, Preis wird bei der Bestellung fixiert",
       "Uber": "30 Min. bis 90 Tage vorab, kostenlos stornieren bis 60 Min. vorher",
       "Bolt": "bis 90 Tage vorab in der App",
       "FREE NOW": "bis 90 Tage, Flughafen bis 4 Tage (in der App prüfen)",
@@ -148,6 +150,7 @@ export const W = {
     cols: ["Company", "Right now", "In advance"], yes: "yes", no: "no", now: "now", only: "advance only",
     pre: {
       "Taxi München": "for a set time, by phone via the dispatcher",
+      "Taxi via app": "now or for a set time, price fixed at booking",
       "Uber": "30 min to 90 days ahead, free cancellation 60+ min before",
       "Bolt": "up to 90 days ahead in the app",
       "FREE NOW": "up to 90 days, airport up to 4 days (check the app)",
@@ -159,4 +162,41 @@ export const W = {
     },
   },
 };
-export const NOW = ["Taxi München", "Uber", "Bolt", "FREE NOW"];
+export const NOW = ["Taxi München", "Такси через приложение", "Taxi per App", "Taxi via app", "Uber", "Bolt", "FREE NOW"];
+
+// Навигация, такси через приложение и советы от пассажиров
+export const EX = {
+  ru: {
+    navDe: "Германия", navCountries: "Советы по странам",
+    taxiApp: "Такси через приложение",
+    taxiAppMeta: "taxi.eu (IsarFunk) или Taxi.de: фиксированная цена при заказе, в пределах −5%…+20% от тарифа. У IsarFunk −10% с 20:00 до 6:00 и в выходные. Не на стоянке.",
+    taxiAppZone: "на этом маршруте действует цена зоны",
+    taxiAppPre: "заранее, цена фиксируется при заказе",
+    tipsHead: "Советы от пассажиров", tipsSub: "Ездили здесь? Расскажите другим: на чём ехали, сколько заплатили, что посоветуете. Можно назвать приложение или компанию.",
+    tipsWhere: "Где", tipsApp: "Приложение или компания (необязательно)", tipsText: "Ваш совет", tipsPh: "Например: из аэропорта взял Bolt за 12 €, ждал 4 минуты у парковки P1",
+    tipsSend: "Отправить совет", tipsOk: "Спасибо, совет добавлен.", tipsErr: "Напишите хотя бы пару слов.", tipsEmpty: "Пока советов нет. Будьте первым.",
+    tipsNote: "В прототипе совет виден только на вашем телефоне. На сайте советы будут проверяться перед публикацией.",
+  },
+  de: {
+    navDe: "Deutschland", navCountries: "Tipps nach Ländern",
+    taxiApp: "Taxi per App",
+    taxiAppMeta: "taxi.eu (IsarFunk) oder Taxi.de: Festpreis bei der Bestellung, im Rahmen von −5 % bis +20 % zum Tarif. IsarFunk: −10 % von 20:00 bis 6:00 und am Wochenende. Nicht am Taxistand.",
+    taxiAppZone: "auf dieser Strecke gilt der Zonenpreis",
+    taxiAppPre: "vorab, Preis wird bei der Bestellung fixiert",
+    tipsHead: "Tipps von Fahrgästen", tipsSub: "Hier gefahren? Erzählen Sie es anderen: womit, wie viel, was Sie empfehlen. Gern mit App oder Firma.",
+    tipsWhere: "Wo", tipsApp: "App oder Firma (optional)", tipsText: "Ihr Tipp", tipsPh: "Zum Beispiel: vom Flughafen mit Bolt für 12 €, 4 Minuten an P1 gewartet",
+    tipsSend: "Tipp senden", tipsOk: "Danke, Tipp hinzugefügt.", tipsErr: "Bitte ein paar Worte schreiben.", tipsEmpty: "Noch keine Tipps. Seien Sie der Erste.",
+    tipsNote: "Im Prototyp ist der Tipp nur auf Ihrem Handy sichtbar. Auf der fertigen Seite werden Tipps vor der Veröffentlichung geprüft.",
+  },
+  en: {
+    navDe: "Germany", navCountries: "Tips by country",
+    taxiApp: "Taxi via app",
+    taxiAppMeta: "taxi.eu (IsarFunk) or Taxi.de: fixed price when you book, within −5% to +20% of the tariff. IsarFunk: −10% from 20:00 to 6:00 and at weekends. Not at the taxi rank.",
+    taxiAppZone: "this route uses the zone price",
+    taxiAppPre: "in advance, price fixed at booking",
+    tipsHead: "Tips from passengers", tipsSub: "Ridden here? Tell others: what you took, what you paid, what you'd recommend. Feel free to name the app or company.",
+    tipsWhere: "Where", tipsApp: "App or company (optional)", tipsText: "Your tip", tipsPh: "For example: Bolt from the airport for 12 €, waited 4 minutes at car park P1",
+    tipsSend: "Send tip", tipsOk: "Thanks, tip added.", tipsErr: "Please write a few words.", tipsEmpty: "No tips yet. Be the first.",
+    tipsNote: "In the prototype your tip shows only on your phone. On the live site tips will be checked before publishing.",
+  },
+};
