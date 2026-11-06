@@ -5,10 +5,11 @@
 export const COUNTRIES = [
   {
     slug: "latvia", flag: "🇱🇻", name: { ru: "Латвия", de: "Lettland", en: "Latvia" }, hub: "Rīga · RIX",
-    apps: { ru: "Bolt — главный сервис. Также Forus и с июня 2026 Smile Taxi. Uber в Латвии нет.", de: "Bolt ist der wichtigste Dienst. Außerdem Forus und seit Juni 2026 Smile Taxi. Uber gibt es in Lettland nicht.", en: "Bolt is the main service. Also Forus and, since June 2026, Smile Taxi. Uber does not operate in Latvia." },
+    apps: { ru: "Bolt — главный сервис. Также Smile Taxi (с июня 2026). Uber в Латвии нет.", de: "Bolt ist der wichtigste Dienst. Außerdem Smile Taxi (seit Juni 2026). Uber gibt es in Lettland nicht.", en: "Bolt is the main service. Also Smile Taxi (since June 2026). Uber does not operate in Latvia." },
     route: { ru: "Аэропорт → Старый город, 11 км", de: "Flughafen → Altstadt, 11 km", en: "Airport → Old Town, 11 km" },
     options: [
       ["app", "Bolt", "10–15 €"],
+      ["app", "Smile Taxi", { ru: "цена в приложении", de: "Preis in der App", en: "price in the app" }],
       ["taxi", "XTaxi, TaksiLV, Red Cab", "15–25 €"],
       ["voucher", { ru: "Ваучер аэропорта в центр", de: "Flughafen-Gutschein ins Zentrum", en: "Airport voucher to the centre" }, "33,50 €"],
       ["transit", { ru: "Автобус 22", de: "Bus 22", en: "Bus 22" }, "1,50–1,81 €"],

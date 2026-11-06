@@ -1,0 +1,31 @@
+name: Photos
+
+on:
+  workflow_dispatch:
+  push:
+    paths: [".github/workflows/photos.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download photos from Unsplash (Unsplash License)
+        run: |
+          mkdir -p public/img
+          get() { curl -sSfL -A "TaxiCheck site build" "https://unsplash.com/photos/$1/download?force=true&w=1600" -o "/tmp/$2.jpg"
+                  convert "/tmp/$2.jpg" -resize 1600x1600\> -strip -quality 72 "public/img/$2.jpg"
+                  curl -sSfL -A "TaxiCheck site build" "https://unsplash.com/photos/$1" | grep -o '<title>[^<]*' | head -1 > "public/img/$2.txt" || true; }
+          get iTfYIUEv82M munich-night
+          get kYbYIWdJRh0 taxi-sign
+          get YeSWIHxPyYc airport
+          ls -la public/img; cat public/img/*.txt
+      - name: Commit
+        run: |
+          git config user.name taxicheck; git config user.email glad2trans@gmail.com
+          git add public/img
+          git commit -m "Фото с Unsplash" || exit 0
+          git push
