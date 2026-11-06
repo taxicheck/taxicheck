@@ -16,9 +16,12 @@ jobs:
       - name: Download photos from Unsplash (Unsplash License)
         run: |
           mkdir -p public/img
-          get() { curl -sSfL -A "TaxiCheck site build" "https://unsplash.com/photos/$1/download?force=true&w=1600" -o "/tmp/$2.jpg"
-                  convert "/tmp/$2.jpg" -resize 1600x1600\> -strip -quality 72 "public/img/$2.jpg"
-                  curl -sSfL -A "TaxiCheck site build" "https://unsplash.com/photos/$1" | grep -o '<title>[^<]*' | head -1 > "public/img/$2.txt" || true; }
+          UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
+          get() { curl -sSfL -A "$UA" "https://unsplash.com/photos/$1" -o /tmp/page.html || { echo "page $1 failed"; return 0; }
+                  grep -o '<title>[^<]*' /tmp/page.html | head -1 > "public/img/$2.txt"
+                  url=$(grep -o 'https://images.unsplash.com/photo-[A-Za-z0-9_-]*' /tmp/page.html | sort | uniq -c | sort -rn | head -1 | awk '{print $2}')
+                  echo "$2 -> $url"; [ -n "$url" ] || return 0
+                  curl -sSfL "$url?w=1600&q=80&fm=jpg" -o "/tmp/$2.jpg" && convert "/tmp/$2.jpg" -resize 1600x1600\> -strip -quality 72 "public/img/$2.jpg"; }
           get iTfYIUEv82M munich-night
           get kYbYIWdJRh0 taxi-sign
           get YeSWIHxPyYc airport
