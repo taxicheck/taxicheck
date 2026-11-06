@@ -27,7 +27,7 @@ jobs:
             jq -r '.query.pages[]? | [.title, .imageinfo[0].thumburl, (.imageinfo[0].extmetadata.LicenseShortName.value // ""), (.imageinfo[0].extmetadata.Artist.value // "" | gsub("<[^>]*>";""))] | @tsv' /tmp/r.json | while IFS=$'\t' read -r title url lic artist; do
               n=$(ls photo-candidates/*.jpg 2>/dev/null | wc -l); f=$(printf "c%02d" $((n+1)))
               curl -sSfL -A "$UA" "$url" -o "/tmp/$f" || { echo "IMGFAIL $url"; continue; }
-              convert "/tmp/$f" -resize 1200x1200\> -strip -quality 70 "photo-candidates/$f.jpg" || continue
+              cp "/tmp/$f" "photo-candidates/$f.jpg"
               printf "%s\t%s\t%s\t%s\t%s\n" "$f" "$q" "$title" "$lic" "$artist" >> photo-candidates/list.tsv
             done
           done
