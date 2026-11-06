@@ -13,7 +13,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <section>
     <p class="sub">{c.sub}</p>
     <div class="clist">
-      {COUNTRIES.map((x) => <a class="ccard" href={`${base}/${lang}/countries/${x.slug}/`}><img src={`${base}/${CPHOTOS[x.slug].hero.src}`} alt="" width="1400" height="933" loading="lazy"><strong>{x.flag} {x.name[lang]}</strong><span>{x.hub}</span></a>)}
+      {COUNTRIES.map((x) => <a class="ccard" href={`${base}/${lang}/countries/${x.slug}/`}><img src={`${base}/${CPHOTOS[x.slug].hero.src}`} alt="" width="1400" height="933" loading="lazy"><span class="ccap"><strong>{x.flag} {x.name[lang]}</strong><span>{x.hub}</span></span></a>)}
     </div>
     <p class="bg-credit">{({ru:"Фото",de:"Fotos",en:"Photos"})[lang]}: {COUNTRIES.map((x, i) => <>{i ? " · " : ""}<a href={CPHOTOS[x.slug].hero.url} rel="noopener">{CPHOTOS[x.slug].hero.by}</a> ({CPHOTOS[x.slug].hero.lic})</>)} · Wikimedia Commons</p>
   </section>

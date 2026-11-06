@@ -32,12 +32,12 @@ const FOOT = {
   <div class="wrap">
     <header>
       <div class="top">
-        <a href={href(lang).replace(path, "")} class="logo" style="color:inherit;text-decoration:none"><span class="sign">TAXI</span>Check</a>
+        <a href={href(lang).replace(path, "")} class="logo" aria-label="TaxiCheck"><span class="sign">TAXI</span>Check</a>
         <nav class="langs" aria-label="Language">
           {LANGS.map((l) => <a href={href(l)} hreflang={l} aria-current={l === lang ? "page" : undefined}>{l.toUpperCase()}</a>)}
         </nav>
       </div>
-      <nav class="main-nav"><a href={`${base}/${lang}/`} aria-current={path === "" ? "page" : undefined}>{EX[lang].navDe}</a><a href={`${base}/${lang}/countries/`} aria-current={path.startsWith("countries") ? "page" : undefined}>{EX[lang].navCountries}</a></nav>
+      <nav class="main-nav" aria-label="Menu"><a href={`${base}/${lang}/`} aria-current={path === "" ? "page" : undefined}>{EX[lang].navDe}</a><a href={`${base}/${lang}/countries/`} aria-current={path.startsWith("countries") ? "page" : undefined}>{EX[lang].navCountries}</a></nav>
       <slot name="header" />
     </header>
     <slot />

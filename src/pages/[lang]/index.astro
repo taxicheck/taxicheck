@@ -22,11 +22,10 @@ const META = {
 ---
 <Base lang={lang} title={META[lang][0]} description={META[lang][1]}>
   <Fragment slot="header">
-    <p class="city" set:html={t.city} />
-    <h1>{t.h1}</h1>
-    <Fragment set:html={img("hero", "photo hero", true)} />
+    <figure class="photo hero"><img src={`${base}/${PHOTOS.hero.src}`} alt={PHOTOS.hero.alt[lang]} width="1280" height="853" fetchpriority="high" decoding="async"><div class="hero-text"><p class="city" set:html={t.city} /><h1>{t.h1}</h1></div><figcaption>{PHOTO[lang].credit}: <a href={PHOTOS.hero.url} rel="noopener">{PHOTOS.hero.by}</a>, {PHOTOS.hero.lic}</figcaption></figure>
   </Fragment>
 
+  <div class="calc">
   <section class="stack" aria-label={t.h1}>
     <div class="routes" id="routes" set:html={routesHTML(st)} />
     <div class="own stack" id="own" hidden>
@@ -41,6 +40,7 @@ const META = {
 
   <section class="meter" id="meter" aria-live="polite" set:html={meterHTML(st)} />
   <section class="actions" id="actions" set:html={actionsHTML(st)} />
+  </div>
 
   <section class="check">
     <h2 id="h-check">{t.hCheck}</h2>
