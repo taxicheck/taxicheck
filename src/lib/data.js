@@ -39,7 +39,17 @@ export const ROUTES = [
 // Номера диспетчерских — проверить перед публикацией
 export const PHONES = [["Taxi-München eG", "089 21610"], ["IsarFunk", "089 450540"]];
 
-export const COMPANIES = ["Taxi München", "Uber", "Bolt", "FREE NOW", "Welcome Pickups", "World Transfer", "Kiwitaxi", "Daytrip", "Blacklane"];
+export const COMPANIES = ["Taxi München", "IsarFunk", "Uber", "Bolt", "FREE NOW", "Smile Taxi", "Welcome Pickups", "World Transfer", "Kiwitaxi", "Daytrip", "Blacklane"];
+
+// Фото: Wikimedia Commons, свободные лицензии. Автор и лицензия обязательны к указанию (кроме CC0).
+export const PHOTOS = {
+  hero: { src: "img/marienplatz-night.jpg", alt: { ru: "Мариенплац ночью, Мюнхен", de: "Marienplatz bei Nacht, München", en: "Marienplatz at night, Munich" }, by: "Syced", lic: "CC0", url: "https://commons.wikimedia.org/wiki/File:November_2007,_Marienplatz_9.jpg" },
+  taxis: { src: "img/taxis-hauptbahnhof.jpg", alt: { ru: "Такси у Главного вокзала Мюнхена", de: "Taxis am Hauptbahnhof München", en: "Taxis at Munich Central Station" }, by: "High Contrast", lic: "CC BY 3.0 DE", url: "https://commons.wikimedia.org/wiki/File:Taxis_beim_Hauptbahnhof_M%C3%BCnchen.JPG" },
+  rank: { src: "img/taxistand.jpg", alt: { ru: "Очередь такси на стоянке", de: "Taxis am Taxistand", en: "Taxis waiting at a rank" }, by: "Bene16", lic: "CC BY-SA 3.0", url: "https://commons.wikimedia.org/wiki/File:Almost_Mercedes-Taxis_at_Raetia-Secunda12.jpg" },
+  siegestor: { src: "img/siegestor-night.jpg", alt: { ru: "Зигестор ночью, Мюнхен", de: "Siegestor bei Nacht, München", en: "Siegestor at night, Munich" }, by: "Martin Falbisoner", lic: "CC BY-SA 3.0", url: "https://commons.wikimedia.org/wiki/File:Siegestor_bei_Nacht.JPG" },
+};
+
+export const REVIEW_COUNTRIES = [["de", { ru: "Германия", de: "Deutschland", en: "Germany" }], ["lv", { ru: "Латвия", de: "Lettland", en: "Latvia" }], ["lt", { ru: "Литва", de: "Litauen", en: "Lithuania" }], ["ee", { ru: "Эстония", de: "Estland", en: "Estonia" }], ["tr", { ru: "Турция", de: "Türkei", en: "Turkey" }], ["es", { ru: "Испания", de: "Spanien", en: "Spain" }], ["fr", { ru: "Франция", de: "Frankreich", en: "France" }], ["it", { ru: "Италия", de: "Italien", en: "Italy" }], ["pt", { ru: "Португалия", de: "Portugal", en: "Portugal" }], ["gb", { ru: "Англия", de: "England", en: "England" }], ["xx", null]];
 
 // Ссылки. Партнёрские ссылки вставляются сюда после одобрения в сетях.
 export const LINKS = {

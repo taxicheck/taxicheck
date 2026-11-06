@@ -170,3 +170,23 @@ footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);paddin
 .opt b{font:700 16px var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
 .box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 .tipslist{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+
+/* Фото */
+.photo{margin:0;border-radius:16px;overflow:hidden;background:var(--sunk);position:relative}
+.photo img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
+.photo.hero img{aspect-ratio:16/9;max-height:360px}
+.photo figcaption{position:absolute;right:8px;bottom:6px;font-size:11px;color:#fff;background:rgba(0,0,0,.45);padding:2px 6px;border-radius:6px}
+.photo figcaption a{color:#fff}
+section > .photo{margin-bottom:14px}
+
+/* Отзывы по странам */
+.rank{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.rank h3{margin:0 0 8px;font-size:16px}
+.rank-c + .rank-c{margin-top:10px}
+.rank ol{margin:4px 0 0;padding-left:20px}
+.rank li{display:flex;justify-content:space-between;gap:10px}
+.rev-meta{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:2px 0 4px}
+fieldset.kind{border:0;padding:0;margin:0;display:flex;gap:16px;flex-wrap:wrap}
+fieldset.kind legend{font-weight:600;margin-bottom:6px;padding:0}
+fieldset.kind label{display:flex;gap:8px;align-items:center;font:400 15px/1.3 var(--f-body);text-transform:none;letter-spacing:0;color:var(--fg);margin:0}
+fieldset.kind input{width:auto;min-height:0;margin:0}

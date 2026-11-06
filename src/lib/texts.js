@@ -200,3 +200,42 @@ export const EX = {
     tipsNote: "In the prototype your tip shows only on your phone. On the live site tips will be checked before publishing.",
   },
 };
+
+// Отзывы: страна, город, вид опыта. Пока хранятся только в браузере посетителя;
+// общий рейтинг для всех появится после подключения хранилища (модерация, § 5b UWG — проверить у юриста).
+export const RV = {
+  ru: {
+    head: "Отзывы и рейтинг компаний",
+    sub: "Расскажите, с кем вам понравилось ездить, а с кем нет. Можно оценить свежую поездку или ваш опыт в целом — например, как вы годами ездите на такси в своём городе. Вы пишете для себя и для тех, кто поедет следующим.",
+    note: "Пока сайт в тестовом режиме, ваш отзыв виден только на этом устройстве. После запуска отзывы будут проверяться и попадут в общий рейтинг. Не пишите имена водителей, номера машин и оскорбления.",
+    country: "Страна", city: "Город", cityPh: "Например: Мюнхен, Рига",
+    company: "Компания или приложение", companyPh: "Например: Bolt, Smile Taxi, IsarFunk",
+    kind: "Что вы оцениваете", fresh: "Свежую поездку", long: "Мой опыт в целом",
+    byCountry: "Рейтинг по странам", count: (n) => `${n} отз.`, errCompany: "Напишите, какая компания или приложение.",
+    other: "Другая страна",
+  },
+  de: {
+    head: "Bewertungen und Ranking der Anbieter",
+    sub: "Erzählen Sie, mit wem Sie gern gefahren sind und mit wem nicht. Bewerten Sie eine aktuelle Fahrt oder Ihre Erfahrung insgesamt — etwa wie Sie seit Jahren in Ihrer Stadt Taxi fahren. Sie schreiben für sich und für alle, die als Nächstes fahren.",
+    note: "Solange die Seite im Testbetrieb ist, sehen nur Sie Ihre Bewertung auf diesem Gerät. Nach dem Start werden Bewertungen geprüft und fließen ins gemeinsame Ranking ein. Bitte keine Fahrernamen, Kennzeichen oder Beleidigungen.",
+    country: "Land", city: "Stadt", cityPh: "Zum Beispiel: München, Riga",
+    company: "Anbieter oder App", companyPh: "Zum Beispiel: Bolt, Smile Taxi, IsarFunk",
+    kind: "Was bewerten Sie?", fresh: "Eine aktuelle Fahrt", long: "Meine Erfahrung insgesamt",
+    byCountry: "Ranking nach Ländern", count: (n) => `${n} Bew.`, errCompany: "Bitte Anbieter oder App angeben.",
+    other: "Anderes Land",
+  },
+  en: {
+    head: "Reviews and company ranking",
+    sub: "Tell us who you liked riding with and who you didn't. Rate a recent ride or your experience overall — say, years of taking taxis in your own city. You write for yourself and for whoever rides next.",
+    note: "While the site is in test mode, your review is visible only on this device. After launch, reviews will be checked and added to the shared ranking. No driver names, plate numbers or insults, please.",
+    country: "Country", city: "City", cityPh: "For example: Munich, Riga",
+    company: "Company or app", companyPh: "For example: Bolt, Smile Taxi, IsarFunk",
+    kind: "What are you rating?", fresh: "A recent ride", long: "My experience overall",
+    byCountry: "Ranking by country", count: (n) => `${n} rev.`, errCompany: "Please name the company or app.",
+    other: "Other country",
+  },
+};
+
+export const PHOTO = {
+  ru: { credit: "Фото", lic: "лицензия" }, de: { credit: "Foto", lic: "Lizenz" }, en: { credit: "Photo", lic: "licence" },
+};

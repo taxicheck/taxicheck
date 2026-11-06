@@ -1,7 +1,7 @@
 // Общие функции: считают цену и собирают HTML.
 // Работают и при сборке страницы (для Google и без JavaScript), и в браузере.
-import { TARIFF, PLACES, ROUTES, PHONES, COMPANIES, LINKS } from "./data.js";
-import { L, OP, W, NOW, EX } from "./texts.js";
+import { TARIFF, PLACES, ROUTES, PHONES, COMPANIES, LINKS, REVIEW_COUNTRIES } from "./data.js";
+import { L, OP, W, NOW, EX, RV } from "./texts.js";
 
 export const esc = (s) => String(s).replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
 const loc = (lang) => (lang === "ru" ? "ru-RU" : lang === "de" ? "de-DE" : "en-GB");
@@ -110,10 +110,18 @@ export function opsHTML(st) {
   }).join("");
 }
 
+export const countryName = (lang, code) => { const c = REVIEW_COUNTRIES.find(([k]) => k === code); return c && c[1] ? c[1][lang] : RV[lang].other; };
+
 export function reviewsHTML(st) {
-  const t = L[st.lang], s = (n) => "★".repeat(n) + "☆".repeat(5 - n);
+  const t = L[st.lang], r = RV[st.lang], s = (n) => "★".repeat(n) + "☆".repeat(5 - n);
   const rv = st.reviews || [];
-  return rv.length ? rv.slice().sort((a, b) => b.d.localeCompare(a.d)).map((r) => `<div class="rev"><div class="rev-head"><strong>${esc(r.c)}</strong><span>${new Date(r.d).toLocaleDateString(loc(st.lang))}</span></div><span class="score">${t.service} ${s(r.s)} · ${t.value} ${s(r.v)}</span><p>${esc(r.t)}</p></div>`).join("") : `<p class="empty">${t.revEmpty}</p>`;
+  if (!rv.length) return `<p class="empty">${t.revEmpty}</p>`;
+  // Рейтинг по странам: средняя из двух оценок по каждой компании
+  const by = {};
+  rv.forEach((x) => { const k = x.co || "de"; (by[k] ||= {}); const c = (by[k][x.c] ||= { sum: 0, n: 0 }); c.sum += (x.s + x.v) / 2; c.n++; });
+  const rank = `<div class="rank"><h3>${r.byCountry}</h3>${Object.entries(by).map(([k, cs]) => `<div class="rank-c"><strong>${esc(countryName(st.lang, k))}</strong><ol>${Object.entries(cs).sort((a, b) => b[1].sum / b[1].n - a[1].sum / a[1].n).map(([c, v]) => `<li><span>${esc(c)}</span><span class="score">★ ${(v.sum / v.n).toFixed(1)} · ${r.count(v.n)}</span></li>`).join("")}</ol></div>`).join("")}</div>`;
+  const list = rv.slice().sort((a, b) => b.d.localeCompare(a.d)).map((x) => `<div class="rev"><div class="rev-head"><strong>${esc(x.c)}</strong><span>${new Date(x.d).toLocaleDateString(loc(st.lang))}</span></div><div class="rev-meta"><span class="tag">${x.k === "long" ? r.long : r.fresh}</span>${esc(countryName(st.lang, x.co || "de"))}${x.ci ? ", " + esc(x.ci) : ""}</div><span class="score">${t.service} ${s(x.s)} · ${t.value} ${s(x.v)}</span><p>${esc(x.t)}</p></div>`).join("");
+  return rank + list;
 }
 
 export function verdict(st, asked) {

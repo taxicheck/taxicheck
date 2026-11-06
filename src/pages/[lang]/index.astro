@@ -1,15 +1,18 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { LANGS, SOURCES, COMPANIES } from "../../lib/data.js";
+import { LANGS, SOURCES, COMPANIES, PHOTOS, REVIEW_COUNTRIES } from "../../lib/data.js";
 import { L } from "../../lib/texts.js";
 import { routesHTML, meterHTML, actionsHTML, tiersHTML, opsHTML, reviewsHTML, whenHTML, esc } from "../../lib/render.js";
-import { W } from "../../lib/texts.js";
+import { W, RV, PHOTO } from "../../lib/texts.js";
 import { CITIES, GL } from "../../lib/germany.js";
 import Tips from "../../components/Tips.astro";
 
 export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
 const { lang } = Astro.params;
 const t = L[lang];
+const r = RV[lang];
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const img = (k, cls = "photo", eager = false) => { const p = PHOTOS[k]; return `<figure class="${cls}"><img src="${base}/${p.src}" alt="${p.alt[lang]}" width="1280" height="853" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"><figcaption>${PHOTO[lang].credit}: <a href="${p.url}" rel="noopener">${p.by}</a>, ${p.lic}</figcaption></figure>`; };
 const st = { lang, routeId: "air-hbf", km: 8, min: 10, to: "Marienplatz", reviews: [] };
 const META = {
   ru: ["Такси из аэропорта Мюнхена: цена, Uber, Bolt, трансфер | TaxiCheck", "Сколько стоит такси из аэропорта Мюнхена в центр: фиксированная цена 96 €, Uber, Bolt, трансферы и премиум. Проверка цены водителя и советы таксиста."],
@@ -21,6 +24,7 @@ const META = {
   <Fragment slot="header">
     <p class="city" set:html={t.city} />
     <h1>{t.h1}</h1>
+    <Fragment set:html={img("hero", "photo hero", true)} />
   </Fragment>
 
   <section class="stack" aria-label={t.h1}>
@@ -48,6 +52,8 @@ const META = {
     <p class="verdict" id="verdict"></p>
   </section>
 
+  <Fragment set:html={img("rank")} />
+
   <section>
     <h2>{t.hTiers}</h2>
     <p class="sub">{t.sTiers}</p>
@@ -70,6 +76,7 @@ const META = {
 
   <section>
     <h2>{t.hOp}</h2>
+    <Fragment set:html={img("taxis")} />
     <div class="author"><div class="badge">{t.badge}</div><p>{t.authorTxt}</p></div>
     <div class="ops" id="ops" set:html={opsHTML(st)} />
     <p class="disclaim">{t.disclaim}</p>
@@ -88,13 +95,14 @@ const META = {
     <h2>{t.hHow}</h2>
     <div class="stack">
       <details><summary>{t.sumCalc}</summary><ul>{t.calc.map((x) => <li>{x}</li>)}</ul></details>
-      <details><summary>{t.sumSrc}</summary><ul>{SOURCES.map(([n, u, d]) => <li>{u ? <a href={u} rel="noopener">{n}</a> : n} · {d}</li>)}</ul></details>
+      <details><summary>{t.sumSrc}</summary><ul>{SOURCES.map(([n, u, d]) => <li>{u ? <a href={u} rel="noopener">{n}</a> : n} · {d}</li>)}{Object.values(PHOTOS).map((p) => <li>{PHOTO[lang].credit}: <a href={p.url} rel="noopener">{p.alt[lang]}</a> · {p.by} · {p.lic} (Wikimedia Commons)</li>)}</ul></details>
       <details><summary>{t.sumAds}</summary><ul>{t.ads.map((x) => <li>{x}</li>)}</ul></details>
     </div>
   </section>
 
   <section id="germany">
     <h2>{GL[lang].title}</h2>
+    <Fragment set:html={img("siegestor")} />
     <p class="sub">{GL[lang].sub(CITIES.length)}</p>
     <input id="city-q" type="search" placeholder={GL[lang].search} aria-label={GL[lang].search} style="margin-bottom:10px">
     <div class="tw"><table class="journal cities">
@@ -110,12 +118,21 @@ const META = {
 
   <Tips lang={lang} scope="de-muenchen" where="München" />
 
-  <section>
-    <h2>{t.hRev}</h2>
-    <p class="sub">{t.sRev}</p>
+  <section id="reviews-sec">
+    <h2>{r.head}</h2>
+    <p class="sub">{r.sub}</p>
+    <p class="hint">{r.note}</p>
     <div id="reviews" set:html={reviewsHTML(st)} />
     <form id="form" class="stack" novalidate style="margin-top:16px">
-      <div><label for="company">{t.company}</label><select id="company">{COMPANIES.map((c) => <option>{c}</option>)}</select></div>
+      <div class="grid2">
+        <div><label for="country">{r.country}</label><select id="country">{REVIEW_COUNTRIES.map(([k, n]) => <option value={k}>{n ? n[lang] : r.other}</option>)}</select></div>
+        <div><label for="city">{r.city}</label><input id="city" autocomplete="off" placeholder={r.cityPh}></div>
+      </div>
+      <div><label for="company">{r.company}</label><input id="company" list="companies" autocomplete="off" placeholder={r.companyPh}><datalist id="companies">{COMPANIES.map((c) => <option value={c} />)}</datalist></div>
+      <fieldset class="kind"><legend>{r.kind}</legend>
+        <label><input type="radio" name="kind" value="fresh" checked> {r.fresh}</label>
+        <label><input type="radio" name="kind" value="long"> {r.long}</label>
+      </fieldset>
       <div><label>{t.service}</label><div class="stars" data-for="service"></div></div>
       <div><label>{t.value}</label><div class="stars" data-for="value"></div></div>
       <div><label for="text">{t.text}</label><textarea id="text" rows="3" placeholder={t.ph}></textarea></div>
@@ -127,7 +144,7 @@ const META = {
 </Base>
 
 <script>
-  import { L } from "../../lib/texts.js";
+  import { L, RV } from "../../lib/texts.js";
   import { PHONES } from "../../lib/data.js";
   import { routesHTML, meterHTML, actionsHTML, tiersHTML, opsHTML, reviewsHTML, verdict } from "../../lib/render.js";
 
@@ -175,10 +192,13 @@ const META = {
   $("form").addEventListener("submit", (e) => {
     e.preventDefault(); const txt = $("text").value.trim(), m = $("toast");
     if (!score.service || !score.value) { m.style.color = "var(--warn)"; m.textContent = t.errStars; return; }
+    const comp = $("company").value.trim();
+    if (comp.length < 2) { m.style.color = "var(--warn)"; m.textContent = RV[lang].errCompany; return; }
     if (txt.length < 5) { m.style.color = "var(--warn)"; m.textContent = t.errText; return; }
-    reviews.push({ c: $("company").value, s: score.service, v: score.value, t: txt, d: new Date().toISOString().slice(0, 10) });
+    const kind = (document.querySelector('input[name="kind"]:checked') || {}).value || "fresh";
+    reviews.push({ c: comp, co: $("country").value, ci: $("city").value.trim().slice(0, 60), k: kind, s: score.service, v: score.value, t: txt.slice(0, 1000), d: new Date().toISOString().slice(0, 10) });
     store.set("taxicheck-reviews", JSON.stringify(reviews));
-    score.service = score.value = 0; $("text").value = ""; document.querySelectorAll(".star").forEach((s) => s.classList.remove("on"));
+    score.service = score.value = 0; $("text").value = ""; $("company").value = ""; document.querySelectorAll(".star").forEach((s) => s.classList.remove("on"));
     renderRatings(); m.style.color = "var(--good)"; m.textContent = t.ok;
   });
   renderRatings();
