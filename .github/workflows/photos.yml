@@ -22,15 +22,16 @@ jobs:
             curl -sSfG -A "$UA" "https://commons.wikimedia.org/w/api.php" \
               --data-urlencode "action=query" --data-urlencode "format=json" --data-urlencode "generator=search" \
               --data-urlencode "gsrnamespace=6" --data-urlencode "gsrlimit=4" --data-urlencode "gsrsearch=$q filetype:bitmap" \
-              --data-urlencode "prop=imageinfo" --data-urlencode "iiprop=url|extmetadata" --data-urlencode "iiurlwidth=1200" > /tmp/r.json || continue
+              --data-urlencode "prop=imageinfo" --data-urlencode "iiprop=url|extmetadata" --data-urlencode "iiurlwidth=1200" -o /tmp/r.json -w "%{http_code} $q\n" || { echo "FAIL $q"; head -c 300 /tmp/r.json; continue; }
+            head -c 200 /tmp/r.json; echo
             jq -r '.query.pages[]? | [.title, .imageinfo[0].thumburl, (.imageinfo[0].extmetadata.LicenseShortName.value // ""), (.imageinfo[0].extmetadata.Artist.value // "" | gsub("<[^>]*>";""))] | @tsv' /tmp/r.json | while IFS=$'\t' read -r title url lic artist; do
               n=$(ls photo-candidates/*.jpg 2>/dev/null | wc -l); f=$(printf "c%02d" $((n+1)))
-              curl -sSfL -A "$UA" "$url" -o "/tmp/$f" || continue
+              curl -sSfL -A "$UA" "$url" -o "/tmp/$f" || { echo "IMGFAIL $url"; continue; }
               convert "/tmp/$f" -resize 1200x1200\> -strip -quality 70 "photo-candidates/$f.jpg" || continue
               printf "%s\t%s\t%s\t%s\t%s\n" "$f" "$q" "$title" "$lic" "$artist" >> photo-candidates/list.tsv
             done
           done
-          cat photo-candidates/list.tsv
+          cat photo-candidates/list.tsv || true
       - name: Commit
         run: |
           git config user.name taxicheck; git config user.email glad2trans@gmail.com
