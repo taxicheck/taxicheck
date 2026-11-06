@@ -3,6 +3,7 @@ import "../styles/site.css";
 import { LANGS } from "../lib/data.js";
 import { EX } from "../lib/texts.js";
 import { BG_MAIN } from "../lib/photos.js";
+import { SLOGAN } from "../lib/city.js";
 const { lang, title, description, path = "", bg = BG_MAIN } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const site = (Astro.site?.toString() || "").replace(/\/$/, "");
@@ -53,7 +54,7 @@ const FOOT = {
           {LANGS.map((l) => <a href={href(l)} hreflang={l} aria-current={l === lang ? "page" : undefined}>{l.toUpperCase()}</a>)}
         </nav>
       </div>
-      <nav class="main-nav" aria-label="Menu"><a href={`${base}/${lang}/`} aria-current={path === "" ? "page" : undefined}>{EX[lang].navDe}</a><a href={`${base}/${lang}/countries/`} aria-current={path.startsWith("countries") ? "page" : undefined}>{EX[lang].navCountries}</a></nav>
+      <nav class="main-nav" aria-label="Menu"><a href={`${base}/${lang}/`} aria-current={path === "" ? "page" : undefined}>{EX[lang].navDe}</a><a href={`${base}/${lang}/munich/`} aria-current={path.startsWith("munich") ? "page" : undefined}>{EX[lang].navCity}</a><a href={`${base}/${lang}/countries/`} aria-current={path.startsWith("countries") ? "page" : undefined}>{EX[lang].navCountries}</a></nav>
       <slot name="header" />
     </header>
     <slot />
@@ -64,6 +65,7 @@ const FOOT = {
         <a href={`${base}/${lang}/impressum/`}>{FOOT[lang].imp}</a>
         <a href={`${base}/${lang}/datenschutz/`}>{FOOT[lang].dat}</a>
       </nav>
+      <p class="foot-slogan"><span class="sign">TAXI</span> {SLOGAN[lang]}</p>
       <p class="bg-credit">{FOOT[lang].bg}: <a href={bg.url} rel="noopener">{bg.by}</a>, {bg.lic} · Wikimedia Commons</p>
     </footer>
   </div>

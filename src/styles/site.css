@@ -304,3 +304,204 @@ footer > p{margin:0}
   .calc > .actions{grid-column:2;grid-row:3}
 }
 @media (prefers-reduced-motion:reduce){.ccard img,.rt,.btn{transition:none}.ccard:hover img{transform:none}}
+
+/* ═══ Страница города ═══ */
+.kicker{display:inline-block;margin:0 0 8px;padding:4px 10px;border-radius:999px;background:var(--taxi);color:var(--taxi-ink);font:800 12px/1.2 var(--f-body);letter-spacing:.04em;text-transform:uppercase}
+.hero-lead{margin:8px 0 0;color:rgba(255,255,255,.9);font-size:15px;max-width:52ch}
+.anchor{scroll-margin-top:64px}
+/* липкая полоса разделов */
+.secnav{position:sticky;top:0;z-index:20;margin:0 -16px;padding:8px 16px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.secnav-in{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.secnav-in::-webkit-scrollbar{display:none}
+.secnav a{flex:none;display:inline-flex;align-items:center;min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:600 14px var(--f-body);text-decoration:none;white-space:nowrap}
+.secnav a:hover{border-color:var(--line-strong)}
+.secnav a.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+/* фиксированные цены */
+.fixgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fix{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:var(--r-sm);background:var(--meter);color:var(--meter-txt);text-decoration:none;border:1px solid rgba(255,255,255,.06)}
+.fix-r{font:600 14px/1.3 var(--f-body)}
+.fix b{font:700 28px/1.1 var(--f-mono);color:var(--meter-fg);font-variant-numeric:tabular-nums}
+.fix small{font-size:12px;color:var(--meter-dim)}
+/* вилка цен */
+.band{display:grid;gap:12px}
+.band-col{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.band-col h3{padding:10px 16px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.band-col h3::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--line-strong)}
+.band-mid h3::before{background:var(--taxi)}
+.band-prem h3::before{background:var(--fg)}
+.band-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:baseline;padding:10px 16px;border-top:1px solid var(--line)}
+.band-row:first-of-type{border-top:0}
+.band-main{display:flex;flex-direction:column;min-width:0}
+.band-main small{font-size:12px;color:var(--muted)}
+.band-main small a{color:var(--muted)}
+.band-row b,.band-city b{font:700 16px var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.band-city{margin:12px 0 0;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;padding:12px 16px;background:var(--sunk);border-radius:var(--r-sm)}
+.band-city small{grid-column:1/-1;font-size:12px;color:var(--muted)}
+/* события */
+.events{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ev{display:grid;grid-template-columns:64px 1fr;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.ev-m{align-self:start;height:56px;display:flex;align-items:center;justify-content:center;text-align:center;min-height:56px;border-radius:10px;background:var(--meter);color:var(--meter-fg);font:700 13px/1.15 var(--f-mono);text-transform:uppercase;letter-spacing:.04em;padding:4px}
+.ev-main h3{font-size:16px}
+.ev-d{margin:2px 0 0;font:700 14px var(--f-mono);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ev-n{margin:4px 0 0;font-size:14px;color:var(--muted)}
+.ev small{font-size:12px;color:var(--muted)}
+.ev small a{color:var(--muted)}
+.callout{margin:12px 0 0;padding:12px 14px;border-radius:var(--r-sm);background:var(--taxi-soft);border:1px solid var(--taxi-edge);font-size:15px;font-weight:600}
+/* достопримечательности */
+.sights{display:grid;gap:10px}
+.sight{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.sight-h{display:flex;align-items:center;gap:10px}
+.sight-h h3{font-size:16px}
+.sight > p{margin:0;font-size:14px;color:var(--muted)}
+.num{flex:none;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--fg);color:var(--bg);font:800 12px/1 var(--f-body)}
+.num-o{background:var(--sunk);color:var(--muted)}
+.num-x{background:var(--surface);color:var(--fg);box-shadow:inset 0 0 0 2px var(--fg)}
+.sight dl{margin:2px 0 0;display:grid;gap:4px;font-size:14px}
+.sight dl div{display:grid;grid-template-columns:118px 1fr;gap:8px}
+.sight dt{color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding-top:2px}
+.sight dd{margin:0}
+.links{margin:2px 0 0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px}
+.links a{color:var(--fg);display:inline-flex;align-items:center;min-height:32px}
+/* еда */
+.food{display:grid;gap:12px}
+.food-cat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px}
+.food-cat h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.food-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.food-cat h3 + .food-row{border-top:0}
+.food-main{display:flex;flex-direction:column;gap:1px;min-width:0}
+.food-main span{font-size:14px;color:var(--muted)}
+.food-main a{font-size:13px;color:var(--fg);min-height:28px;display:inline-flex;align-items:center}
+.lvl{font:700 14px var(--f-mono);color:var(--warn);letter-spacing:.04em}
+.mk{flex:none;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--fg);color:var(--bg);font:800 12px/1 var(--f-body)}
+.mk-food{border-radius:7px;background:var(--taxi);color:var(--taxi-ink)}
+.mk-o{background:var(--sunk);color:var(--muted)}
+.soonbox{margin-top:12px;display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:var(--r);border:1px dashed var(--line-strong);background:var(--sunk)}
+.soonbox p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.soon-tag{flex:none;display:inline-block;padding:3px 9px;border-radius:999px;background:var(--fg);color:var(--bg);font:800 11px/1.3 var(--f-body);letter-spacing:.08em;text-transform:uppercase}
+.soonbox .tag{margin-left:0}
+/* карта */
+.mapcard{border-radius:var(--r);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);background:var(--surface)}
+.citymap{display:block;width:100%;height:auto;font-family:var(--f-body)}
+#mapscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+#mapscroll .citymap{min-width:640px}
+.map-swipe{text-align:center;margin-top:6px}
+@media (min-width:700px){#mapscroll .citymap{min-width:0}.map-swipe{display:none}}
+.m-bg{fill:#efece4}.m-old{fill:#e3ddcd}.m-park{fill:#cfe3c1}.m-road{fill:none;stroke:#fff;stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+.m-ring{fill:none;stroke:#fff;stroke-width:14;stroke-linejoin:round}
+.m-rail{fill:none;stroke:#b9b4a8;stroke-width:16;stroke-dasharray:3 5}
+.m-water{fill:none;stroke:#a9cbe3;stroke-width:26;stroke-linecap:round;stroke-linejoin:round}
+.m-brook{fill:none;stroke:#a9cbe3;stroke-width:6;stroke-linecap:round}
+.m-lbl{font-size:17px;font-weight:700;fill:#6c6a63;letter-spacing:.02em}
+.m-sm{font-size:13px}
+.m-lbl-water{fill:#4f7fa3;font-style:italic}.m-lbl-park{fill:#4f7a43}.m-lbl-old{fill:#8a826e;font-size:20px;letter-spacing:.2em;text-transform:uppercase}
+.m-street{font-size:12px;fill:#8a877f;font-weight:600}
+.m-route-case{fill:none;stroke:#f5b800;stroke-width:11;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+.m-route{fill:none;stroke:#16181b;stroke-width:3.5;stroke-dasharray:9 7;stroke-linecap:round;stroke-linejoin:round}
+.m-pt circle{fill:#16181b;stroke:#fff;stroke-width:3}
+.m-pt text{fill:#fff;font-size:14px;font-weight:800}
+.m-pt .m-ptl{fill:#16181b;font-size:14px;font-weight:700;paint-order:stroke;stroke:#efece4;stroke-width:5px;stroke-linejoin:round}
+.m-end circle{fill:#f5b800;stroke:#16181b}
+.m-end text:not(.m-ptl){fill:#16181b}
+.m-extra circle{fill:#fff;stroke:#16181b}
+.m-extra text:not(.m-ptl){fill:#16181b}
+.m-food rect{fill:#f5b800;stroke:#16181b;stroke-width:2}
+.m-food text{fill:#16181b;font-size:13px;font-weight:800}
+.m-north circle{fill:#fff;stroke:#cfcbbf}.m-north path{fill:#16181b}.m-north text{font-size:10px;font-weight:800;fill:#16181b}
+.m-scale rect{fill:#16181b}.m-scale text{font-size:12px;font-weight:700;fill:#16181b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .citymap{filter:brightness(.82) contrast(1.05)}}
+:root[data-theme="dark"] .citymap{filter:brightness(.82) contrast(1.05)}
+.maplegend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:13px;color:var(--muted)}
+.maplegend span{display:inline-flex;align-items:center;gap:6px}
+.maplegend i{font-style:normal;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--fg);color:var(--bg);font:800 10px var(--f-body)}
+.maplegend .lg-route{width:28px;height:8px;border-radius:4px;background:repeating-linear-gradient(90deg,#16181b 0 6px,#f5b800 6px 10px)}
+.maplegend .lg-food{border-radius:5px;background:var(--taxi);color:var(--taxi-ink)}
+.maplegend .lg-extra{background:var(--surface);color:var(--fg);box-shadow:inset 0 0 0 2px var(--fg);font-size:9px}
+.stops{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.stops li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 14px;border-top:1px solid var(--line);font-size:14px}
+.stops li:first-child{border-top:0}
+.stop-l{font-size:13px;color:var(--muted);white-space:nowrap}
+.stop-l a{color:var(--fg);display:inline-flex;min-height:32px;align-items:center}
+/* трансфер — скоро */
+.transfer{position:relative;background:var(--meter);color:var(--meter-txt);border-radius:var(--r);padding:20px 18px;border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.transfer h2{color:#fff;margin-top:10px}
+.transfer > p{margin:6px 0 0;color:var(--meter-txt);font-size:15px}
+.transfer ul{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.transfer li{position:relative;padding-left:28px;font-weight:600}
+.transfer li::before{content:"✓";position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;background:var(--meter-fg);color:var(--taxi-ink);font:900 12px/20px var(--f-body);text-align:center}
+.planned{margin:12px 0 0;font-size:12px;color:var(--meter-dim)}
+.soon-dark{background:var(--meter-fg);color:var(--taxi-ink)}
+/* тизер города на главной */
+.teaser{display:grid;grid-template-columns:1fr;gap:0;border-radius:var(--r);overflow:hidden;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);text-decoration:none;color:var(--fg)}
+.teaser img{display:block;width:100%;height:auto;aspect-ratio:16/7;object-fit:cover}
+.teaser-b{padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.teaser-b strong{font:800 20px/1.2 var(--f-display);letter-spacing:-.015em}
+.teaser-b span{font-size:14px;color:var(--muted)}
+.teaser-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.teaser-chips em{font-style:normal;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--sunk);border:1px solid var(--line)}
+.teaser-go{align-self:flex-start;margin-top:6px;font-weight:700;font-size:14px}
+/* заглушки разделов на страницах стран */
+.stubs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stub{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:var(--r-sm);border:1px dashed var(--line-strong);background:var(--sunk)}
+.stub strong{font-size:15px}
+.stub .soon-tag{align-self:flex-start;background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+@media (min-width:700px){
+  .band{grid-template-columns:repeat(3,1fr)}
+  .band-row{grid-template-columns:1fr;gap:2px}
+  .band-row b{order:-1;font-size:20px}
+  .band-main{gap:1px}
+  .fixgrid{grid-template-columns:repeat(4,1fr)}
+  .sights{grid-template-columns:1fr 1fr}
+  .food{grid-template-columns:1fr 1fr}
+  .stubs{grid-template-columns:repeat(4,1fr)}
+  .stops{grid-template-columns:1fr 1fr}
+  .stops li:nth-child(2){border-top:0}
+  .teaser{grid-template-columns:1.1fr 1fr}
+  .teaser img{aspect-ratio:auto;height:100%;min-height:220px}
+}
+@media (min-width:960px){.secnav{margin:0 -56px;padding:10px 56px}}
+
+/* ═══ Печатная карта ═══ */
+.sheet-body{padding:0 16px 32px;background:var(--sunk)}
+.sheet-bar{max-width:794px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0}
+.sheet-bar .btn{min-height:44px}
+.sheet{max-width:794px;margin:0 auto;background:#fff;color:#16181b;border-radius:12px;padding:28px 32px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px}
+.sheet-head{display:flex;gap:16px;align-items:center;border-bottom:3px solid #16181b;padding-bottom:12px}
+.sheet-head h1{font-size:24px;margin:0;color:#16181b}
+.sheet-head p{margin:2px 0 0;font-size:13px;color:#565a61}
+.sheet-map{border:1px solid #cfcbbf;border-radius:8px;overflow:hidden}
+.sheet-map .citymap{filter:none!important}
+.sheet-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.sheet-cols h2{font-size:15px;margin:0 0 6px;text-transform:uppercase;letter-spacing:.08em}
+.sheet-cols h2::before{display:none!important}
+.sheet-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:13px}
+.sheet-list li{display:flex;align-items:center;gap:8px}
+.sheet-list .num,.sheet-list .mk{width:22px;height:22px;font-size:11px;background:#16181b;color:#fff}
+.sheet-list .mk-food{background:#f5b800;color:#16181b}
+.sheet-list .num-x{background:#fff;color:#16181b;box-shadow:inset 0 0 0 2px #16181b}
+.sheet-list small{color:#9a5b00;font-weight:700}
+.sheet-note{margin:12px 0 0;font-size:12px;padding:8px 10px;background:#fff6d6;border:1px solid #ecd58a;border-radius:6px}
+.sheet-foot{font-size:11px;color:#565a61;border-top:1px solid #e1ded4;padding-top:8px}
+@media (max-width:600px){.sheet{padding:18px 16px}.sheet-cols{grid-template-columns:1fr}.sheet-head{flex-direction:column;align-items:flex-start}}
+@page{size:A4;margin:12mm}
+@media print{
+  .sheet-body{background:#fff;padding:0}
+  .sheet-bar{display:none}
+  .sheet{box-shadow:none;border-radius:0;padding:0;max-width:none;gap:10px}
+  .sheet-cols{grid-template-columns:1fr 1fr}
+  .sheet-head{flex-direction:row}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+.foot-slogan{margin:4px 0 0;display:flex;align-items:center;gap:8px;font-weight:700;color:var(--fg)}
+.foot-slogan .sign{font-size:10px;padding:3px 6px 7px}
+.foot-slogan .sign::after{height:2px;bottom:2px}
+.stubs .stub:last-child:nth-child(odd){grid-column:1/-1}
+@media (min-width:700px){.stubs .stub:last-child:nth-child(odd){grid-column:auto}}
+/* Уровни сравнения на телефоне: цена и кнопка строкой под описанием — текст не сжимается в узкую колонку */
+@media (max-width:559px){
+  .prov{grid-template-columns:1fr;gap:8px}
+  .prov-side{flex-direction:row;align-items:center;justify-content:space-between;gap:10px;padding-top:8px;border-top:1px dashed var(--line)}
+  .prov-side .price{text-align:left;white-space:normal}
+  .prov-side:not(:has(.go)){justify-content:flex-start}
+}
+.sheet-btns{display:flex;gap:8px}
+.sheet-btns .btn{min-height:44px;padding:8px 14px}

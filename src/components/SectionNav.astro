@@ -1,0 +1,18 @@
+---
+// Липкая полоса разделов страницы города (одинаковая для Мюнхена и стран)
+import { SECTIONS, SEC } from "../lib/city.js";
+const { lang, only } = Astro.props;
+const list = only || SECTIONS;
+---
+<nav class="secnav" aria-label="Sections"><div class="secnav-in">{list.map((k) => <a href={`#${k}`}>{SEC[lang].nav[k]}</a>)}</div></nav>
+<script>
+  // Подсветка текущего раздела в полосе
+  const links = [...document.querySelectorAll(".secnav a")];
+  const map = new Map(links.map((a) => [a.getAttribute("href").slice(1), a]));
+  if ("IntersectionObserver" in window && links.length) {
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => { if (e.isIntersecting) { links.forEach((l) => l.classList.remove("on")); const a = map.get(e.target.id); if (a) { a.classList.add("on"); const box = a.parentElement; box.scrollTo({ left: a.offsetLeft - box.clientWidth / 2 + a.offsetWidth / 2, behavior: "smooth" }); } } });
+    }, { rootMargin: "-30% 0px -60% 0px" });
+    map.forEach((_, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+  }
+</script>

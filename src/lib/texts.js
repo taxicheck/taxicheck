@@ -167,7 +167,7 @@ export const NOW = ["Taxi München", "Такси через приложение
 // Навигация, такси через приложение и советы от пассажиров
 export const EX = {
   ru: {
-    navDe: "Германия", navCountries: "Советы по странам",
+    navDe: "Цены такси", navCity: "Мюнхен", navCountries: "Страны",
     taxiApp: "Такси через приложение",
     taxiAppMeta: "taxi.eu (IsarFunk) или Taxi.de: фиксированная цена при заказе, в пределах −5%…+20% от тарифа. У IsarFunk −10% с 20:00 до 6:00 и в выходные. Не на стоянке.",
     taxiAppZone: "на этом маршруте действует цена зоны",
@@ -178,7 +178,7 @@ export const EX = {
     tipsNote: "В прототипе совет виден только на вашем телефоне. На сайте советы будут проверяться перед публикацией.",
   },
   de: {
-    navDe: "Deutschland", navCountries: "Tipps nach Ländern",
+    navDe: "Taxipreise", navCity: "München", navCountries: "Länder",
     taxiApp: "Taxi per App",
     taxiAppMeta: "taxi.eu (IsarFunk) oder Taxi.de: Festpreis bei der Bestellung, im Rahmen von −5 % bis +20 % zum Tarif. IsarFunk: −10 % von 20:00 bis 6:00 und am Wochenende. Nicht am Taxistand.",
     taxiAppZone: "auf dieser Strecke gilt der Zonenpreis",
@@ -189,7 +189,7 @@ export const EX = {
     tipsNote: "Im Prototyp ist der Tipp nur auf Ihrem Handy sichtbar. Auf der fertigen Seite werden Tipps vor der Veröffentlichung geprüft.",
   },
   en: {
-    navDe: "Germany", navCountries: "Tips by country",
+    navDe: "Taxi fares", navCity: "Munich", navCountries: "Countries",
     taxiApp: "Taxi via app",
     taxiAppMeta: "taxi.eu (IsarFunk) or Taxi.de: fixed price when you book, within −5% to +20% of the tariff. IsarFunk: −10% from 20:00 to 6:00 and at weekends. Not at the taxi rank.",
     taxiAppZone: "this route uses the zone price",

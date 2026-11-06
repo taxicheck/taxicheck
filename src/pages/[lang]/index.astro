@@ -6,6 +6,7 @@ import { routesHTML, meterHTML, actionsHTML, tiersHTML, opsHTML, reviewsHTML, wh
 import { W, RV, PHOTO } from "../../lib/texts.js";
 import { CITIES, GL } from "../../lib/germany.js";
 import Tips from "../../components/Tips.astro";
+import { SLOGAN, SEC, SECTIONS } from "../../lib/city.js";
 
 export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
 const { lang } = Astro.params;
@@ -22,7 +23,7 @@ const META = {
 ---
 <Base lang={lang} title={META[lang][0]} description={META[lang][1]}>
   <Fragment slot="header">
-    <figure class="photo hero"><img src={`${base}/${PHOTOS.hero.src}`} alt={PHOTOS.hero.alt[lang]} width="1600" height="1200" style="object-position:50% 4%" fetchpriority="high" decoding="async"><div class="hero-text"><p class="city" set:html={t.city} /><h1>{t.h1}</h1></div><figcaption>{PHOTO[lang].credit}: <a href={PHOTOS.hero.url} rel="noopener">{PHOTOS.hero.by}</a>, {PHOTOS.hero.lic}</figcaption></figure>
+    <figure class="photo hero"><img src={`${base}/${PHOTOS.hero.src}`} alt={PHOTOS.hero.alt[lang]} width="1600" height="1200" style="object-position:50% 4%" fetchpriority="high" decoding="async"><div class="hero-text"><p class="kicker">{SLOGAN[lang]}</p><p class="city" set:html={t.city} /><h1>{t.h1}</h1></div><figcaption>{PHOTO[lang].credit}: <a href={PHOTOS.hero.url} rel="noopener">{PHOTOS.hero.by}</a>, {PHOTOS.hero.lic}</figcaption></figure>
   </Fragment>
 
   <div class="calc">
@@ -59,6 +60,11 @@ const META = {
     <p class="sub">{t.sTiers}</p>
     <div class="tiers" id="tiers" set:html={tiersHTML(st)} />
   </section>
+
+  <a class="teaser" href={`${base}/${lang}/munich/`}>
+    <img src={`${base}/${PHOTOS.marienplatz.src}`} alt={PHOTOS.marienplatz.alt[lang]} width="1280" height="853" loading="lazy" decoding="async">
+    <span class="teaser-b"><strong>{SEC[lang].cityTeaser}</strong><span>{SEC[lang].cityTeaserTxt}</span><span class="teaser-chips">{SECTIONS.slice(1).map((k) => <em>{SEC[lang].nav[k]}</em>)}</span><span class="teaser-go">{SEC[lang].open} →</span></span>
+  </a>
 
   <section id="when">
     <details class="fold">
