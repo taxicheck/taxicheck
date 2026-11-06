@@ -2,14 +2,15 @@
 import "../styles/site.css";
 import { LANGS } from "../lib/data.js";
 import { EX } from "../lib/texts.js";
-const { lang, title, description, path = "" } = Astro.props;
+import { BG_MAIN } from "../lib/photos.js";
+const { lang, title, description, path = "", bg = BG_MAIN } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const site = (Astro.site?.toString() || "").replace(/\/$/, "");
 const href = (l) => `${base}/${l}/${path}`;
 const FOOT = {
-  ru: { imp: "Impressum", dat: "Конфиденциальность (Datenschutz)", home: "Главная" },
-  de: { imp: "Impressum", dat: "Datenschutz", home: "Startseite" },
-  en: { imp: "Impressum", dat: "Privacy (Datenschutz)", home: "Home" },
+  ru: { imp: "Impressum", dat: "Конфиденциальность (Datenschutz)", home: "Главная", bg: "Фото фона" },
+  de: { imp: "Impressum", dat: "Datenschutz", home: "Startseite", bg: "Hintergrundfoto" },
+  en: { imp: "Impressum", dat: "Privacy (Datenschutz)", home: "Home", bg: "Background photo" },
 };
 ---
 <!doctype html>
@@ -27,6 +28,7 @@ const FOOT = {
   {import.meta.env.PUBLIC_NOINDEX === "1" && <meta name="robots" content="noindex">}
 </head>
 <body>
+  <div class="backdrop" aria-hidden="true" style={`background-image:url(${base}/${bg.src})`}></div>
   <div class="wrap">
     <header>
       <div class="top">
@@ -46,6 +48,7 @@ const FOOT = {
         <a href={`${base}/${lang}/impressum/`}>{FOOT[lang].imp}</a>
         <a href={`${base}/${lang}/datenschutz/`}>{FOOT[lang].dat}</a>
       </nav>
+      <p class="bg-credit">{FOOT[lang].bg}: <a href={bg.url} rel="noopener">{bg.by}</a>, {bg.lic} · Wikimedia Commons</p>
     </footer>
   </div>
 </body>

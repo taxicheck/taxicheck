@@ -3,6 +3,7 @@ import Base from "../../../layouts/Base.astro";
 import Tips from "../../../components/Tips.astro";
 import { LANGS } from "../../../lib/data.js";
 import { COUNTRIES, CL } from "../../../lib/countries.js";
+import { CPHOTOS } from "../../../lib/photos.js";
 export function getStaticPaths() {
   return LANGS.flatMap((lang) => COUNTRIES.map((x) => ({ params: { lang, slug: x.slug }, props: { x } })));
 }
@@ -11,19 +12,23 @@ const { x } = Astro.props;
 const c = CL[lang];
 const tr = (v) => (typeof v === "string" ? v : v[lang]);
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const ph = CPHOTOS[x.slug];
+const CR = { ru: "Фото", de: "Foto", en: "Photo" };
 const TITLE = { ru: `Такси и Bolt/Uber: ${x.name.ru} — советы туристам`, de: `Taxi, Uber & Bolt: ${x.name.de} — Tipps für Reisende`, en: `Taxi, Uber & Bolt in ${x.name.en} — travel tips` };
 ---
-<Base lang={lang} title={`${TITLE[lang]} | TaxiCheck`} description={tr(x.apps)} path={`countries/${x.slug}/`}>
+<Base lang={lang} title={`${TITLE[lang]} | TaxiCheck`} description={tr(x.apps)} path={`countries/${x.slug}/`} bg={ph.hero}>
   <Fragment slot="header">
     <a class="back" href={`${base}/${lang}/countries/`}>{c.back}</a>
     <h1>{x.flag} {x.name[lang]}</h1>
     <p class="city">{x.hub}</p>
   </Fragment>
+  <figure class="photo hero"><img src={`${base}/${ph.hero.src}`} alt={ph.hero.alt[lang]} width="1400" height="933" fetchpriority="high"><figcaption>{ph.hero.alt[lang]}</figcaption></figure>
   <p class="draft">{c.note}</p>
   <section class="box">
     <h2>{c.apps}</h2>
     <p style="margin:0">{tr(x.apps)}</p>
   </section>
+  <figure class="photo"><img src={`${base}/${ph.taxi.src}`} alt={ph.taxi.alt[lang]} width="1400" height="933" loading="lazy"><figcaption>{ph.taxi.alt[lang]}</figcaption></figure>
   <section class="box">
     <h2>{c.options}</h2>
     <p class="sub">{tr(x.route)}</p>
@@ -37,6 +42,6 @@ const TITLE = { ru: `Такси и Bolt/Uber: ${x.name.ru} — советы ту
   </section>
   <Tips lang={lang} scope={`c-${x.slug}`} where={x.name[lang]} />
   <section>
-    <details><summary>{c.src}</summary><ul>{x.src.map(([n, u, d]) => <li><a href={u} rel="noopener">{n}</a> · {d}</li>)}</ul></details>
+    <details><summary>{c.src}</summary><ul>{x.src.map(([n, u, d]) => <li><a href={u} rel="noopener">{n}</a> · {d}</li>)}{[ph.hero, ph.taxi].map((p) => <li>{CR[lang]}: <a href={p.url} rel="noopener">{p.by}</a>, {p.lic} · Wikimedia Commons</li>)}</ul></details>
   </section>
 </Base>
