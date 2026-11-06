@@ -19,10 +19,8 @@ const TITLE = { ru: `Такси и Bolt/Uber: ${x.name.ru} — советы ту
 <Base lang={lang} title={`${TITLE[lang]} | TaxiCheck`} description={tr(x.apps)} path={`countries/${x.slug}/`} bg={ph.hero}>
   <Fragment slot="header">
     <a class="back" href={`${base}/${lang}/countries/`}>{c.back}</a>
-    <h1>{x.flag} {x.name[lang]}</h1>
-    <p class="city">{x.hub}</p>
+    <figure class="photo hero"><img src={`${base}/${ph.hero.src}`} alt={ph.hero.alt[lang]} width="1400" height="933" fetchpriority="high"><div class="hero-text"><p class="city">{x.hub}</p><h1>{x.flag} {x.name[lang]}</h1></div><figcaption>{ph.hero.alt[lang]}</figcaption></figure>
   </Fragment>
-  <figure class="photo hero"><img src={`${base}/${ph.hero.src}`} alt={ph.hero.alt[lang]} width="1400" height="933" fetchpriority="high"><figcaption>{ph.hero.alt[lang]}</figcaption></figure>
   <p class="draft">{c.note}</p>
   <section class="box">
     <h2>{c.apps}</h2>

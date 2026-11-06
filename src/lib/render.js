@@ -46,9 +46,10 @@ export function meterHTML(st) {
     rows.push([`${t.waitRow} 0–${c.min} ${t.min} × ${eur(lang, TARIFF.perMin, 2)}`, `0 – ${eur(lang, m.w, 2)}`]);
   }
   rows.push([t.tipRow, ""]);
-  return `<div class="meter-top"><span>${esc(t.taxi)} · ${esc(t.tariffFrom)} ${TARIFF.date}</span><span>${esc(mode)}</span></div>
+  return `<div class="meter-top"><span>${esc(t.taxi)}<span class="mt-tariff"> · ${esc(t.tariffFrom)} ${TARIFF.date}</span></span><span>${esc(mode)}</span></div>
 <div class="meter-total">${total}</div><div class="meter-note">${esc(note)}</div>
-<div class="rows">${rows.map((r) => `<div class="row"><span>${esc(r[0])}</span><span class="${r[2] || ""}">${r[1]}</span></div>`).join("")}</div>`;
+<div class="rows">${rows.map((r) => `<div class="row"><span>${esc(r[0])}</span><span class="${r[2] || ""}">${r[1]}</span></div>`).join("")}</div>
+<div class="meter-foot">${esc(t.tariffFrom)} ${TARIFF.date}</div>`;
 }
 
 export function appLinks(st) {

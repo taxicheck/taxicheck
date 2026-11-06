@@ -7,6 +7,7 @@ const { lang, title, description, path = "", bg = BG_MAIN } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const site = (Astro.site?.toString() || "").replace(/\/$/, "");
 const href = (l) => `${base}/${l}/${path}`;
+const OG_LOCALE = { ru: "ru_RU", de: "de_DE", en: "en_GB" };
 const FOOT = {
   ru: { imp: "Impressum", dat: "Конфиденциальность (Datenschutz)", home: "Главная", bg: "Фото фона" },
   de: { imp: "Impressum", dat: "Datenschutz", home: "Startseite", bg: "Hintergrundfoto" },
@@ -24,6 +25,21 @@ const FOOT = {
   {LANGS.map((l) => <link rel="alternate" hreflang={l} href={`${site}${href(l)}`}>)}
   <link rel="alternate" hreflang="x-default" href={`${site}${href("de")}`}>
   <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml">
+  <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`}>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="TaxiCheck">
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:url" content={`${site}${href(lang)}`}>
+  <meta property="og:locale" content={OG_LOCALE[lang]}>
+  <meta property="og:image" content={`${site}${base}/og-image.jpg`}>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="TaxiCheck: Taxi, Uber, Bolt, FREE NOW, Transfer">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  <meta name="twitter:image" content={`${site}${base}/og-image.jpg`}>
   <meta name="theme-color" content="#f2b705">
   {import.meta.env.PUBLIC_NOINDEX === "1" && <meta name="robots" content="noindex">}
 </head>
@@ -32,12 +48,12 @@ const FOOT = {
   <div class="wrap">
     <header>
       <div class="top">
-        <a href={href(lang).replace(path, "")} class="logo" style="color:inherit;text-decoration:none"><span class="sign">TAXI</span>Check</a>
+        <a href={href(lang).replace(path, "")} class="logo" aria-label="TaxiCheck"><span class="sign">TAXI</span>Check</a>
         <nav class="langs" aria-label="Language">
           {LANGS.map((l) => <a href={href(l)} hreflang={l} aria-current={l === lang ? "page" : undefined}>{l.toUpperCase()}</a>)}
         </nav>
       </div>
-      <nav class="main-nav"><a href={`${base}/${lang}/`} aria-current={path === "" ? "page" : undefined}>{EX[lang].navDe}</a><a href={`${base}/${lang}/countries/`} aria-current={path.startsWith("countries") ? "page" : undefined}>{EX[lang].navCountries}</a></nav>
+      <nav class="main-nav" aria-label="Menu"><a href={`${base}/${lang}/`} aria-current={path === "" ? "page" : undefined}>{EX[lang].navDe}</a><a href={`${base}/${lang}/countries/`} aria-current={path.startsWith("countries") ? "page" : undefined}>{EX[lang].navCountries}</a></nav>
       <slot name="header" />
     </header>
     <slot />
