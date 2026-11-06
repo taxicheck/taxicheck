@@ -1,0 +1,52 @@
+---
+// Печатная карта A4. Тот же SVG, светлая тема, без внешних ресурсов. Из неё собирается PDF (scripts/pdf.sh).
+import "../../../../styles/site.css";
+import CityMap from "../../../../components/CityMap.astro";
+import { LANGS, TARIFF } from "../../../../lib/data.js";
+import { SLOGAN, SEC, MUNICH as M, tr } from "../../../../lib/city.js";
+export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
+const { lang } = Astro.params;
+const s = SEC[lang];
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const site = (Astro.site?.toString() || "").replace(/\/$/, "");
+const food = Object.values(M.food).flat();
+const BACK = { ru: "← Мюнхен", de: "← München", en: "← Munich" };
+const NOTE = { ru: "Такси: аэропорт → Hauptbahnhof 96 € (фиксированная цена, тариф " + TARIFF.date + "). Проверьте цену до поездки: taxicheck.eu", de: "Taxi: Flughafen → Hauptbahnhof 96 € (Festpreis, Tarif " + TARIFF.date + "). Preis vor der Fahrt prüfen: taxicheck.eu", en: "Taxi: airport → Hauptbahnhof 96 € (fixed price, tariff " + TARIFF.date + "). Check the fare before you ride: taxicheck.eu" };
+---
+<!doctype html>
+<html lang={lang} data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{s.printTitle} | TaxiCheck</title>
+  <meta name="description" content={`${SLOGAN[lang]}. ${s.mapSub}`}>
+  <link rel="canonical" href={`${site}${base}/${lang}/munich/map/`}>
+  <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml">
+  {import.meta.env.PUBLIC_NOINDEX === "1" && <meta name="robots" content="noindex">}
+</head>
+<body class="sheet-body">
+  <div class="sheet-bar"><a class="back" href={`${base}/${lang}/munich/#map`}>{BACK[lang]}</a><span class="sheet-btns"><a class="btn ghost" href={`${base}/pdf/taxicheck-munich-map-${lang}.pdf`} download>{s.pdf}</a><button class="btn taxi" type="button" id="b-print">{s.print}</button></span></div>
+  <main class="sheet">
+    <header class="sheet-head">
+      <span class="logo"><span class="sign">TAXI</span>Check</span>
+      <div><h1>{s.printTitle}</h1><p>{SLOGAN[lang]} · {s.mapSub}</p></div>
+    </header>
+    <div class="sheet-map"><CityMap lang={lang} id="pmap" /></div>
+    <div class="sheet-cols">
+      <section><h2>{s.legendRoute}</h2>
+        <ol class="sheet-list">{[...M.route, ...M.extra].map((p) => <li><span class={p.p === 11 ? "num num-x" : "num"}>{p.p}</span>{p.name}</li>)}</ol>
+      </section>
+      <section><h2>{s.legendFood}</h2>
+        <ol class="sheet-list">{food.filter((f) => f.k || f.p).map((f) => <li><span class={f.k ? "mk mk-food" : "mk"}>{f.k || f.p}</span>{tr(f.name, lang)} <small>{f.lvl}</small></li>)}</ol>
+        <p class="sheet-note">{NOTE[lang]}</p>
+      </section>
+    </div>
+    <footer class="sheet-foot">{s.printFoot} · {s.mapNote}</footer>
+  </main>
+  <script>
+    const b = document.getElementById("b-print");
+    b && b.addEventListener("click", () => window.print());
+    if (location.hash === "#print") setTimeout(() => window.print(), 300);
+  </script>
+</body>
+</html>
