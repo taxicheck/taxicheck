@@ -22,7 +22,7 @@ const META = {
 ---
 <Base lang={lang} title={META[lang][0]} description={META[lang][1]}>
   <Fragment slot="header">
-    <figure class="photo hero"><img src={`${base}/${PHOTOS.hero.src}`} alt={PHOTOS.hero.alt[lang]} width="1280" height="853" fetchpriority="high" decoding="async"><div class="hero-text"><p class="city" set:html={t.city} /><h1>{t.h1}</h1></div><figcaption>{PHOTO[lang].credit}: <a href={PHOTOS.hero.url} rel="noopener">{PHOTOS.hero.by}</a>, {PHOTOS.hero.lic}</figcaption></figure>
+    <figure class="photo hero"><img src={`${base}/${PHOTOS.hero.src}`} alt={PHOTOS.hero.alt[lang]} width="1600" height="1200" style="object-position:50% 4%" fetchpriority="high" decoding="async"><div class="hero-text"><p class="city" set:html={t.city} /><h1>{t.h1}</h1></div><figcaption>{PHOTO[lang].credit}: <a href={PHOTOS.hero.url} rel="noopener">{PHOTOS.hero.by}</a>, {PHOTOS.hero.lic}</figcaption></figure>
   </Fragment>
 
   <div class="calc">
@@ -40,17 +40,17 @@ const META = {
 
   <section class="meter" id="meter" aria-live="polite" set:html={meterHTML(st)} />
   <section class="actions" id="actions" set:html={actionsHTML(st)} />
+  <section class="check">
+      <h2 id="h-check">{t.hCheck}</h2>
+      <p class="sub" style="margin:0">{t.sCheck}</p>
+      <div class="check-row">
+        <input id="asked" type="number" inputmode="decimal" min="1" step="1" placeholder="€" aria-labelledby="h-check">
+        <button class="btn taxi" type="button" id="b-check">{t.bCheck}</button>
+      </div>
+      <p class="verdict" id="verdict"></p>
+    </section>
   </div>
 
-  <section class="check">
-    <h2 id="h-check">{t.hCheck}</h2>
-    <p class="sub" style="margin:0">{t.sCheck}</p>
-    <div class="check-row">
-      <input id="asked" type="number" inputmode="decimal" min="1" step="1" placeholder="€" aria-labelledby="h-check">
-      <button class="btn taxi" type="button" id="b-check">{t.bCheck}</button>
-    </div>
-    <p class="verdict" id="verdict"></p>
-  </section>
 
   <Fragment set:html={img("rank")} />
 
@@ -60,10 +60,11 @@ const META = {
     <div class="tiers" id="tiers" set:html={tiersHTML(st)} />
   </section>
 
-  <section>
-    <h2>{W[lang].head}</h2>
-    <p class="sub">{W[lang].sub}</p>
-    <div class="tw" set:html={whenHTML(st)} />
+  <section id="when">
+    <details class="fold">
+      <summary><h2>{W[lang].head}</h2><span class="fold-sub">{W[lang].sub}</span></summary>
+      <div class="tw" set:html={whenHTML(st)} />
+    </details>
   </section>
 
   <section class="cheat" id="cheat-sheet">
@@ -82,28 +83,32 @@ const META = {
     <p class="disclaim">{t.disclaim}</p>
   </section>
 
-  <section>
-    <h2>{t.hJr}</h2>
-    <p class="sub">{t.sJr}</p>
+  <section id="journal">
+    <details class="fold">
+    <summary><h2>{t.hJr}</h2><span class="fold-sub">{t.sJr}</span></summary>
     <div class="tw"><table class="journal">
       <thead><tr>{t.jr.map((h) => <th>{h}</th>)}</tr></thead>
       <tbody><tr>{t.jr.map((_, i) => <td>{i === 0 ? t.jrEmpty : "—"}</td>)}</tr></tbody>
     </table></div>
+    </details>
   </section>
 
-  <section>
-    <h2>{t.hHow}</h2>
-    <div class="stack">
-      <details><summary>{t.sumCalc}</summary><ul>{t.calc.map((x) => <li>{x}</li>)}</ul></details>
-      <details><summary>{t.sumSrc}</summary><ul>{SOURCES.map(([n, u, d]) => <li>{u ? <a href={u} rel="noopener">{n}</a> : n} · {d}</li>)}{Object.values(PHOTOS).map((p) => <li>{PHOTO[lang].credit}: <a href={p.url} rel="noopener">{p.alt[lang]}</a> · {p.by} · {p.lic} (Wikimedia Commons)</li>)}</ul></details>
-      <details><summary>{t.sumAds}</summary><ul>{t.ads.map((x) => <li>{x}</li>)}</ul></details>
+  <section id="how">
+    <details class="fold">
+    <summary><h2>{t.hHow}</h2><span class="fold-sub">{t.sumCalc} · {t.sumSrc} · {t.sumAds}</span></summary>
+    <div class="fold-body">
+      <h3>{t.sumCalc}</h3><ul>{t.calc.map((x) => <li>{x}</li>)}</ul>
+      <h3>{t.sumSrc}</h3><ul>{SOURCES.map(([n, u, d]) => <li>{u ? <a href={u} rel="noopener">{n}</a> : n} · {d}</li>)}{Object.values(PHOTOS).map((p) => <li>{PHOTO[lang].credit}: <a href={p.url} rel="noopener">{p.alt[lang]}</a> · {p.by} · {p.lic} (Wikimedia Commons)</li>)}</ul>
+      <h3>{t.sumAds}</h3><ul>{t.ads.map((x) => <li>{x}</li>)}</ul>
     </div>
+    </details>
   </section>
 
   <section id="germany">
-    <h2>{GL[lang].title}</h2>
+    <details class="fold">
+    <summary><h2>{GL[lang].title}</h2><span class="fold-sub">{GL[lang].sub(CITIES.length)}</span></summary>
+    <div class="fold-body">
     <Fragment set:html={img("siegestor")} />
-    <p class="sub">{GL[lang].sub(CITIES.length)}</p>
     <input id="city-q" type="search" placeholder={GL[lang].search} aria-label={GL[lang].search} style="margin-bottom:10px">
     <div class="tw"><table class="journal cities">
       <thead><tr>{GL[lang].cols.map((c) => <th>{c}</th>)}</tr></thead>
@@ -114,6 +119,8 @@ const META = {
     </table></div>
     <p class="hint" id="city-empty" hidden>{GL[lang].empty}</p>
     <p class="hint">{GL[lang].unkNote}</p>
+    </div>
+    </details>
   </section>
 
   <Tips lang={lang} scope="de-muenchen" where="München" />
@@ -202,6 +209,8 @@ const META = {
     renderRatings(); m.style.color = "var(--good)"; m.textContent = t.ok;
   });
   renderRatings();
+  const openHash = () => { const el = location.hash && document.querySelector(location.hash); const d = el && (el.matches("details") ? el : el.querySelector("details.fold")); if (d) d.open = true; };
+  openHash(); window.addEventListener("hashchange", openHash);
   const q = $("city-q");
   q.addEventListener("input", () => {
     const v = q.value.trim().toLowerCase(); let n = 0;

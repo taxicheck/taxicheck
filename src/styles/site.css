@@ -96,7 +96,10 @@ section > .photo{margin-bottom:16px}
 /* табло-таксометр */
 .meter{background:var(--meter);border:1px solid rgba(255,255,255,.06);color:var(--meter-dim);border-radius:var(--r);padding:18px;font-family:var(--f-mono);box-shadow:0 10px 30px rgba(0,0,0,.18);position:relative;overflow:hidden}
 .meter::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:repeating-linear-gradient(90deg,var(--meter-fg) 0 10px,var(--meter) 10px 20px);opacity:.9}
-.meter-top{display:flex;justify-content:space-between;gap:10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
+.meter-top{display:flex;justify-content:space-between;gap:10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-top:2px;white-space:nowrap}
+.meter-top > span{overflow:hidden;text-overflow:ellipsis}
+.meter-foot{margin-top:10px;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.mt-tariff{display:none}
 .meter-total{color:var(--meter-fg);font-size:44px;font-weight:700;line-height:1.1;margin:10px 0 4px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(255,207,58,.25)}
 .meter-note{font-size:12px}
 .rows{margin-top:14px;border-top:1px dashed #3a3d43;padding-top:12px;display:flex;flex-direction:column;gap:6px;font-size:13px}
@@ -162,7 +165,7 @@ section > .photo{margin-bottom:16px}
 
 /* ── Мнение автора ── */
 .author{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin-bottom:14px}
-.badge{width:56px;height:56px;border-radius:50%;background:var(--taxi);color:var(--taxi-ink);display:flex;align-items:center;justify-content:center;font:800 12px/1 var(--f-display);text-align:center;letter-spacing:.04em}
+.badge{width:56px;height:56px;border-radius:50%;background:var(--taxi);color:var(--taxi-ink);display:flex;align-items:center;justify-content:center;font:800 9.5px/1.1 var(--f-display);text-align:center;letter-spacing:.02em;padding:4px;overflow:hidden}
 .author p{margin:0;font-size:14px;color:var(--muted)}
 .ops{display:flex;flex-direction:column;gap:10px}
 .op{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
@@ -198,6 +201,20 @@ summary::after{content:"+";font:400 22px/1 var(--f-body);color:var(--muted);flex
 details[open] summary::after{content:"–"}
 details ul{margin:10px 0 0;padding-left:20px;font-size:14px;display:flex;flex-direction:column;gap:6px}
 details a{color:var(--fg);overflow-wrap:anywhere}
+/* Свёрнутые редкие разделы главной */
+details.fold{padding:0;border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.fold > summary{display:grid;grid-template-columns:1fr auto;gap:2px 14px;align-items:center;padding:16px 18px;min-height:64px}
+.fold > summary:hover{background:var(--sunk)}
+.fold > summary h2{font-size:19px;margin:0;grid-column:1}
+.fold > summary .fold-sub{grid-column:1;font-weight:400;font-size:14px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fold > summary::after{grid-column:2;grid-row:1/3;width:32px;height:32px;border-radius:50%;background:var(--sunk);display:flex;align-items:center;justify-content:center;color:var(--fg)}
+.fold[open] > summary{border-bottom:1px solid var(--line)}
+.fold[open] > summary .fold-sub{-webkit-line-clamp:unset;display:block}
+.fold > .tw{border:0;border-radius:0}
+.fold-body{padding:16px 18px 18px}
+.fold-body h3{font-size:15px;margin:14px 0 0}
+.fold-body h3:first-child{margin-top:0}
+.fold-body ul{margin:8px 0 0}
 
 /* ── Отзывы и советы ── */
 .stars{display:flex;gap:4px}
@@ -280,8 +297,10 @@ footer > p{margin:0}
   /* калькулятор: слева выбор маршрута, справа табло и кнопки — всё на первом экране */
   .photo:not(.hero) img{max-height:380px}
   .calc{display:grid;grid-template-columns:1fr 1fr;gap:16px 28px;align-items:start}
-  .calc > .stack{grid-row:1/3}
-  .calc > .meter{grid-column:2}
-  .calc > .actions{grid-column:2}
+  /* слева: маршруты и «Вам назвали цену?», справа: табло и кнопки */
+  .calc > .stack{grid-column:1;grid-row:1}
+  .calc > .check{grid-column:1;grid-row:2/4}
+  .calc > .meter{grid-column:2;grid-row:1/3}
+  .calc > .actions{grid-column:2;grid-row:3}
 }
 @media (prefers-reduced-motion:reduce){.ccard img,.rt,.btn{transition:none}.ccard:hover img{transform:none}}
