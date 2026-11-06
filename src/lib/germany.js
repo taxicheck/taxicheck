@@ -1,9 +1,9 @@
-// Города Германии: что в них работает. Источники: Bolt (список городов, 11.2026),
+// Города Германии: что в них работает. Источники: Bolt (список городов, 11.2026; München — подтверждено владельцем 06.11.2026),
 // Uber (Uber Reserve 04.2023 + Hamburg), Nomada (FREE NOW, 10.2026),
 // фиксированная цена такси при заказе: München (IsarFunk/taxi.eu), Frankfurt (IHK), Berlin (Taxi Berlin), Hamburg (Uber).
 // true = подтверждено, null = не проверено (смотрите в приложении). Проверять перед публикацией.
 
-const BOLT = ["Aachen","Augsburg","Bayreuth","Berlin","Bernburg","Bielefeld","Bochum","Bonn","Bottrop","Braunschweig","Bremen","Brühl","Celle","Köln","Darmstadt","Dortmund","Duisburg","Düsseldorf","Erfurt","Erlangen","Essen","Frankfurt am Main","Fürth","Gelsenkirchen","Gifhorn","Göttingen","Halle","Hamburg","Hannover","Heidelberg","Herford","Hilden","Hildesheim","Karlsruhe","Kassel","Kiel","Laatzen","Leipzig","Lübeck","Ludwigshafen","Mainz","Mannheim","Merseburg","Mönchengladbach","Mühlheim am Main","München","Münster","Neuss","Nürnberg","Oldenburg","Paderborn","Peine","Potsdam","Reutlingen","Salzgitter","Schwabach","Solingen","Staßfurt","Stein","Stuttgart","Tübingen","Wiesbaden","Wolfsburg","Wuppertal"];
+const BOLT = ["Aachen","München","Augsburg","Bayreuth","Berlin","Bernburg","Bielefeld","Bochum","Bonn","Bottrop","Braunschweig","Bremen","Brühl","Celle","Köln","Darmstadt","Dortmund","Duisburg","Düsseldorf","Erfurt","Erlangen","Essen","Frankfurt am Main","Fürth","Gelsenkirchen","Gifhorn","Göttingen","Halle","Hamburg","Hannover","Heidelberg","Herford","Hilden","Hildesheim","Karlsruhe","Kassel","Kiel","Laatzen","Leipzig","Lübeck","Ludwigshafen","Mainz","Mannheim","Merseburg","Mönchengladbach","Mühlheim am Main","München","Münster","Neuss","Nürnberg","Oldenburg","Paderborn","Peine","Potsdam","Reutlingen","Salzgitter","Schwabach","Solingen","Staßfurt","Stein","Stuttgart","Tübingen","Wiesbaden","Wolfsburg","Wuppertal"];
 const UBER = ["Berlin","Düsseldorf","Frankfurt am Main","Hamburg","Hannover","Köln","Leverkusen","München","Neuss","Stuttgart"];
 const FREENOW = ["Berlin","Düsseldorf","Frankfurt am Main","Hamburg","Köln","München"];
 const TAXIFIX = ["Berlin","Frankfurt am Main","Hamburg","München"];
