@@ -32,6 +32,7 @@ const NOTE = { ru: "Такси: аэропорт → Hauptbahnhof 96 € (фик
       <div><h1>{s.printTitle}</h1><p>{SLOGAN[lang]} · {s.mapSub}</p></div>
     </header>
     <div class="sheet-map"><CityMap lang={lang} id="pmap" /></div>
+    <div class="sheet-under"><span class="sheet-scale"><i></i>500 m</span><span class="sheet-swipe">{({ ru: "← Листайте схему пальцем →", de: "← Skizze mit dem Finger verschieben →", en: "← Swipe to move the sketch →" })[lang]}</span></div>
     <div class="sheet-cols">
       <section><h2>{s.legendRoute}</h2>
         <ol class="sheet-list">{[...M.route, ...M.extra].map((p) => <li><span class={p.p === 11 ? "num num-x" : "num"}>{p.p}</span>{p.name}</li>)}</ol>

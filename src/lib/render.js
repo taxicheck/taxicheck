@@ -8,7 +8,7 @@ const loc = (lang) => (lang === "ru" ? "ru-RU" : lang === "de" ? "de-DE" : "en-G
 export const eur = (lang, n, d = 0) => n.toLocaleString(loc(lang), { minimumFractionDigits: d, maximumFractionDigits: d }) + "\u00a0€";
 // HTML-цена: «€» мельче и вплотную; неразрывные пробелы у единиц и разделителей
 export const curH = (s) => String(s).replace(/[\s\u00a0]?€/g, '<span class="cur">€</span>');
-export const nb = (s) => String(s).replace(/(\d) (km|км|€|Min\.|мин)/g, "$1\u00a0$2").replace(/(фикс|fix|Festpreis|fixed) (\d)/gi, "$1\u00a0$2").replace(/ · /g, "\u00a0· ");
+export const nb = (s) => String(s).replace(/(\d) (km|км|€|Min\.|мин)/g, "$1\u00a0$2").replace(/(фикс|fix|Festpreis|fixed) (\d)/gi, "$1\u00a0$2").replace(/ · /g, "\u00a0·\u00a0");
 
 // Заголовок обложки главной — по выбранному маршруту (обновляется вместе с табло)
 const HT = { ru: ["фиксировано", "по счётчику"], de: ["Festpreis", "Taxameter"], en: ["fixed", "metered"] };
@@ -98,7 +98,7 @@ const CALL = { ru: "Позвонить", de: "Anrufen", en: "Call" };
 export function tiersHTML(st) {
   const t = L[st.lang], lang = st.lang, l = appLinks(st), c = current(st), route = c.route, air = route.from === "air";
   const MORE = { ru: "Подробнее", de: "Details", en: "Details" }[lang];
-  const prov = (name, meta, price, link, label, ad, ghost, line) => `<div class="prov"><div class="prov-main"><div class="prov-name">${esc(name)}${ad ? `<span class="tag ad">${t.ad}</span>` : ""}</div><div class="prov-line">${line || meta}</div><details class="pd"><summary>${MORE}</summary><div class="prov-meta">${meta}</div>${whenLine(st, name)}${scoreLine(st, name) ? `<div class="prov-meta">${esc(scoreLine(st, name))}</div>` : ""}</details></div><div class="prov-side"><span class="price">${curH(nb(price))}</span>${link ? `<a class="go${ghost ? " ghost" : ""}" href="${esc(link)}" rel="noopener${ad ? " sponsored" : ""}">${label}</a>` : ""}</div></div>`;
+  const prov = (name, meta, price, link, label, ad, ghost, line) => `<div class="prov"><details class="prov-main pd"><summary aria-label="${esc(name)}: ${MORE}"><span class="pd-t"><span class="prov-name">${esc(name)}${ad ? `<span class="tag ad">${t.ad}</span>` : ""}</span><span class="prov-line">${line || meta}</span></span></summary><div class="pd-b"><div class="prov-meta">${meta}</div>${whenLine(st, name)}${scoreLine(st, name) ? `<div class="prov-meta">${esc(scoreLine(st, name))}</div>` : ""}</div></details><div class="prov-side"><span class="price">${curH(nb(price))}</span>${link ? `<a class="go${ghost ? " ghost" : ""}" href="${esc(link)}" rel="noopener${ad ? " sponsored" : ""}">${label}</a>` : ""}</div></div>`;
   const taxiPrice = route.fix ? `${eur(lang, route.fix)} <span class="tag src">${t.fixTag}</span>` : `${eur(lang, c.m.lo)}–${eur(lang, c.m.hi)}`;
   const uberPrice = route.uber ? `${route.uber.x} / ${route.uber.comfort} €` : t.inApp;
   const tier = (title, sub, body) => `<div class="tier"><div class="tier-head"><h3>${title}</h3><span>${sub}</span></div>${body}</div>`;
