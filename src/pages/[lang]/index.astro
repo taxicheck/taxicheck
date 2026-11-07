@@ -20,6 +20,11 @@ const META = {
   de: ["Taxi Flughafen München: Preis, Uber, Bolt, Transfer im Vergleich | TaxiCheck", "Was kostet das Taxi vom Flughafen München ins Zentrum: Festpreis 96 €, Uber, Bolt, Transfers und Premium. Preis-Check und Tipps vom Taxifahrer."],
   en: ["Munich Airport taxi price vs Uber, Bolt & transfers | TaxiCheck", "What a taxi from Munich Airport to the centre costs: fixed 96 €, Uber, Bolt, transfers and premium. Check a quoted fare and get tips from a cab driver."],
 };
+const QUICK = {
+  ru: { sights: ["Что посмотреть", "11 мест и как доехать"], food: ["Где поесть", "пивные сады и рынки"], map: ["Карта центра", "пеший маршрут · PDF"], events: ["Когда дороже", "Октоберфест, выставки"] },
+  de: { sights: ["Sehenswert", "11 Orte und Anfahrt"], food: ["Essen", "Biergärten und Märkte"], map: ["Stadtplan", "Rundgang · PDF"], events: ["Wann teurer", "Wiesn, Messen"] },
+  en: { sights: ["Sights", "11 places and how to get there"], food: ["Food", "beer gardens and markets"], map: ["Centre map", "walking route · PDF"], events: ["When it costs more", "Oktoberfest, trade fairs"] },
+};
 ---
 <Base lang={lang} title={META[lang][0]} description={META[lang][1]} credits={[PHOTOS.hero, PHOTOS.marienplatz]}>
   <Fragment slot="header">
@@ -53,6 +58,13 @@ const META = {
     </div>
   </section>
   </div>
+
+  <section aria-labelledby="h-cityquick">
+    <h2 id="h-cityquick">{SEC[lang].cityTeaser}</h2>
+    <div class="cityquick">
+      {["sights", "food", "map", "events"].filter((k) => readySections("munich").includes(k)).map((k) => <a href={`${base}/${lang}/munich/#${k}`}><strong>{QUICK[lang][k][0]}</strong><span>{QUICK[lang][k][1]}</span></a>)}
+    </div>
+  </section>
 
 
 

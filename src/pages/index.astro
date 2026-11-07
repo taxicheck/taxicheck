@@ -1,5 +1,5 @@
 ---
-// Корень сайта: отправляет на язык телефона (ru/de/en), по умолчанию немецкий.
+// Корень сайта: основной язык — немецкий, всегда /de/.
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 <!doctype html>
@@ -9,10 +9,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TaxiCheck</title>
   <meta name="robots" content="noindex">
-  <meta http-equiv="refresh" content={`2;url=${base}/de/`}>
+  <meta http-equiv="refresh" content={`0;url=${base}/de/`}>
   <script is:inline define:vars={{ base }}>
-    var l = (navigator.language || "de").slice(0, 2);
-    location.replace(base + "/" + (["ru", "de", "en"].indexOf(l) >= 0 ? l : "de") + "/");
+    location.replace(base + "/de/");
   </script>
 </head>
 <body style="font-family:system-ui,sans-serif;padding:24px">
