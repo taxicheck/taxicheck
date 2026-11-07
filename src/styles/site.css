@@ -776,3 +776,39 @@ header{gap:8px;padding-top:2px}
 .row-d > summary::after{flex:none;order:1}
 .row-d > summary .row-m{flex-basis:100%;order:2}
 .row-d > summary strong{max-width:calc(100% - 28px)}
+
+/* ═══════════ v5 ═══════════ */
+/* Места и еда: вся строка — кнопка раскрытия; стрелка 44×44 */
+.row-d > summary{display:flex!important;flex-wrap:nowrap!important;align-items:flex-start;gap:6px;min-height:44px}
+.row-t{flex:1;min-width:0;display:flex;flex-direction:column}
+.row-t strong{max-width:none!important}
+.row-d > summary .row-m{flex-basis:auto}
+.row-d > summary::after{flex:none!important;order:0!important;width:44px!important;height:44px!important;margin:-10px -6px -10px 0!important;border-radius:0!important;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Ccircle cx='22' cy='22' r='11' fill='%23eeece5'/%3E%3Cpath d='M17 20l5 5 5-5' fill='none' stroke='%2316181b' stroke-width='2'/%3E%3C/svg%3E") center/44px no-repeat!important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .row-d > summary::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Ccircle cx='22' cy='22' r='11' fill='%2315171a'/%3E%3Cpath d='M17 20l5 5 5-5' fill='none' stroke='%23ecebe6' stroke-width='2'/%3E%3C/svg%3E")!important}}
+:root[data-theme="dark"] .row-d > summary::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Ccircle cx='22' cy='22' r='11' fill='%2315171a'/%3E%3Cpath d='M17 20l5 5 5-5' fill='none' stroke='%23ecebe6' stroke-width='2'/%3E%3C/svg%3E")!important}
+
+/* Варианты: раскрытие по карточке, стрелка справа вверху; кнопки одного контурного стиля */
+.pd{margin:0}
+.pd > summary{display:flex!important;align-items:flex-start;gap:6px;min-height:44px;font:inherit;color:inherit;cursor:pointer}
+.pd > summary::after{content:""!important;flex:none;width:44px;height:44px;margin:-10px -8px -10px 0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cpath d='M16 19l6 6 6-6' fill='none' stroke='%23565a61' stroke-width='2'/%3E%3C/svg%3E") center/44px no-repeat}
+.pd[open] > summary::after{transform:rotate(180deg)}
+.pd-t{flex:1;min-width:0;display:flex;flex-direction:column}
+.pd-b{padding-top:2px}
+.prov-name{display:block}
+.go,.go.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-strong);min-height:44px}
+.go:hover{border-color:var(--fg)}
+
+/* Фото внутри страниц на компьютере — не выше 220 px */
+@media (min-width:700px){.photo:not(.hero) img{max-height:220px!important}}
+
+/* Печатная карта: шкала и подсказка под схемой */
+.sheet-under{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:-8px;font-size:12px;color:#565a61}
+.sheet-scale{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:#16181b}
+.sheet-scale i{display:inline-block;height:5px;background:#16181b;width:14.03%;min-width:0}
+.sheet-swipe{display:none}
+.sheet-map .m-scale{display:none}
+.sheet-scale{flex:1}
+.sheet-scale i{width:calc(14.03% * 1.0)}
+@media screen and (max-width:760px){.sheet-swipe{display:inline}.sheet-scale{flex:none}.sheet-scale i{width:101px;max-width:none}}
+.sheet-swipe{white-space:nowrap;font-size:11px}.sheet-scale i{max-width:90px}
