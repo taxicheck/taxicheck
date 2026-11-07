@@ -4,7 +4,7 @@ import { SECTIONS, SEC } from "../lib/city.js";
 const { lang, only } = Astro.props;
 const list = only || SECTIONS;
 ---
-<nav class="secnav" aria-label="Sections"><div class="secnav-in">{list.map((k) => <a href={`#${k}`}>{SEC[lang].nav[k]}</a>)}</div></nav>
+<nav class="secnav" aria-label="Sections"><div class="secnav-in">{list.map((k, i) => <a href={`#${k}`} class={i === 0 ? "on" : undefined}>{SEC[lang].nav[k]}</a>)}</div></nav>
 <script>
   // Подсветка текущего раздела в полосе
   const links = [...document.querySelectorAll(".secnav a")];

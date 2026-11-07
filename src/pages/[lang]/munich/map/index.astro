@@ -47,6 +47,8 @@ const NOTE = { ru: "Такси: аэропорт → Hauptbahnhof 96 € (фик
     const b = document.getElementById("b-print");
     b && b.addEventListener("click", () => window.print());
     if (location.hash === "#print") setTimeout(() => window.print(), 300);
+    const pm = document.querySelector(".sheet-map");
+    if (pm && pm.scrollWidth > pm.clientWidth) pm.scrollLeft = pm.scrollWidth * 0.2;
   </script>
 </body>
 </html>

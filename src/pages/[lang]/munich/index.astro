@@ -3,128 +3,118 @@ import Base from "../../../layouts/Base.astro";
 import CityMap from "../../../components/CityMap.astro";
 import SectionNav from "../../../components/SectionNav.astro";
 import { LANGS, ROUTES, PHOTOS, TARIFF } from "../../../lib/data.js";
-import { PHOTO } from "../../../lib/texts.js";
-import { meter, eur } from "../../../lib/render.js";
-import { SLOGAN, SEC, MUNICH as M, gmaps, osm, tr } from "../../../lib/city.js";
+import { meter, curH, nb } from "../../../lib/render.js";
+import { SLOGAN, SEC, MUNICH as M, gmaps, gdir, osm, tr, readySections, blockOn } from "../../../lib/city.js";
 export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
 const { lang } = Astro.params;
 const s = SEC[lang];
+const on = Object.fromEntries(readySections("munich").map((k) => [k, true]));
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const ph = PHOTOS.marienplatz;
-const num = (n) => Math.round(n).toLocaleString(lang === "en" ? "en-GB" : lang === "de" ? "de-DE" : "ru-RU");
-const est = (km) => `${num(meter(km, 0).lo)}–${num(meter(km, 8).hi)} €`;
-const kmf = (km) => `${km.toLocaleString(lang === "en" ? "en-GB" : lang === "de" ? "de-DE" : "ru-RU")} ${lang === "ru" ? "км" : "km"}`;
-const sights = [...M.sights].sort((a, b) => (a.p || 99) - (b.p || 99));
+const LOC = lang === "en" ? "en-GB" : lang === "de" ? "de-DE" : "ru-RU";
+const num = (n) => Math.round(n).toLocaleString(LOC);
+const est = (km) => `${num(meter(km, 0).lo)}–${num(meter(km, 8).hi)} €`;
+const kmf = (km) => `${km.toLocaleString(LOC)} ${lang === "ru" ? "км" : "km"}`;
 const fixed = ROUTES.filter((r) => r.fix);
-const AIR = { ru: "Аэропорт → центр", de: "Flughafen → Zentrum", en: "Airport → centre" };
-const city5 = est(5);
+const sights = [...M.sights].sort((a, b) => (a.p || 99) - (b.p || 99));
+const food = Object.entries(M.food).flatMap(([cat, list]) => list.map((f) => ({ ...f, cat })));
+const SHOW = 6;
 const TITLE = { ru: "Мюнхен для туриста: такси, цены, события, что посмотреть, карта", de: "München für Reisende: Taxi, Preise, Termine, Sehenswertes, Karte", en: "Munich for visitors: taxis, fares, events, sights, map" };
 const pdf = `${base}/pdf/taxicheck-munich-map-${lang}.pdf`;
+const band = M.band;
+const ICON = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 2 4 20l8-4 8 4z" fill="currentColor"/></svg>`;
+const sightRow = (x) => `<li class="lrow"><span class="${x.p ? "pin" : "pin pin-off"}" title="${x.p ? s.onMap + " " + x.p : s.offMap}">${x.p ? x.p : s.offMap}</span><details class="row-d"><summary><strong>${x.name[lang]}</strong><span class="row-m">≈ ${kmf(x.km)} · ${est(x.km)} · ${x.tr[lang]}</span></summary><div class="row-b"><p>${x.line[lang]}</p><p class="links">${x.url ? `<a href="${x.url}" rel="noopener">${s.site} ↗</a>` : ""}<a href="${gmaps(x.ll)}" rel="noopener">Google Maps ↗</a><a href="${osm(x.ll)}" rel="noopener">OpenStreetMap ↗</a></p></div></details><a class="go-route" href="${gdir(x.ll)}" rel="noopener" aria-label="${s.route}: ${x.name[lang]}">${ICON}<span>${s.route}</span></a></li>`;
+const foodRow = (f) => `<li class="lrow"><span class="${f.k ? "pin pin-food" : f.p ? "pin" : "pin pin-off"}" title="${f.k || f.p ? s.onMap : s.offMap}">${f.k || f.p || s.offMap}</span><details class="row-d"><summary><strong>${tr(f.name, lang)}</strong><span class="row-m"><b class="lvl">${f.lvl}</b> · ${s.foodCats[f.cat]}</span></summary><div class="row-b"><p>${f.line[lang]}</p><p class="links"><a href="${gmaps(f.ll)}" rel="noopener">Google Maps ↗</a><a href="${osm(f.ll)}" rel="noopener">OpenStreetMap ↗</a></p></div></details><a class="go-route" href="${gdir(f.ll)}" rel="noopener" aria-label="${s.route}: ${tr(f.name, lang)}">${ICON}<span>${s.route}</span></a></li>`;
+const list = (items, row) => `<ul class="rows-list card">${items.slice(0, SHOW).map(row).join("")}</ul>` + (items.length > SHOW ? `<details class="more"><summary>${s.more} ${items.length - SHOW}</summary><ul class="rows-list card">${items.slice(SHOW).map(row).join("")}</ul></details>` : "");
 ---
-<Base lang={lang} title={`${TITLE[lang]} | TaxiCheck`} description={`${SLOGAN[lang]}. ${s.lead}`} path="munich/">
+<Base lang={lang} title={`${TITLE[lang]} | TaxiCheck`} description={`${SLOGAN[lang]}. ${s.lead}`} path="munich/" credits={[ph]}>
   <Fragment slot="header">
-    <figure class="photo hero"><img src={`${base}/${ph.src}`} alt={ph.alt[lang]} width="1280" height="853" fetchpriority="high" decoding="async"><div class="hero-text"><p class="kicker">{SLOGAN[lang]}</p><h1>{M.name[lang]}</h1><p class="hero-lead">{s.lead}</p></div><figcaption>{PHOTO[lang].credit}: <a href={ph.url} rel="noopener">{ph.by}</a>, {ph.lic}</figcaption></figure>
+    <figure class="photo hero hero-compact"><img src={`${base}/${ph.src}`} alt={ph.alt[lang]} width="1280" height="853" fetchpriority="high" decoding="async"><div class="hero-text"><p class="kicker">{SLOGAN[lang]}</p><h1>{M.name[lang]}</h1><p class="hero-lead">{s.lead}</p></div></figure>
   </Fragment>
 
-  <SectionNav lang={lang} />
+  <SectionNav lang={lang} only={readySections("munich")} />
 
-  <section id="prices" class="anchor">
+  {on.prices && <section id="prices" class="anchor">
     <h2>{s.pricesH}</h2>
-    <p class="sub">{s.pricesSub}</p>
     <div class="fixgrid">
-      {fixed.map((r) => <a class="fix" href={`${base}/${lang}/`}><span class="fix-r">{r.id === "air-hbf" ? AIR[lang] : r.name[lang]}</span><b>{r.fix} €</b><small>{r.sub[lang]}</small></a>)}
+      {fixed.map((r) => <a class="fix card--meter" href={`${base}/${lang}/`}><span class="fix-r">{r.short[lang]}</span><b set:html={curH(`${r.fix} €`)} /><small>{nb(r.sub[lang])}</small></a>)}
     </div>
-    <div class="actions" style="margin-top:12px">
+    <p class="note">{nb(s.fixRule)} <span class="src-line">{s.src}: {({ ru: "тариф такси Мюнхена", de: "Taxitarif München", en: "Munich taxi tariff" })[lang]}, {TARIFF.date}</span></p>
+    <div class="actions">
       <a class="btn taxi" href={`${base}/${lang}/`}>{s.openCalc}</a>
       <a class="btn ghost" href={`${base}/${lang}/#h-check`}>{s.checkPrice}</a>
     </div>
-    <p class="hint">{s.src}: {({ ru: "тариф такси Мюнхена", de: "Taxitarif München", en: "Munich taxi tariff" })[lang]}, {TARIFF.date} · {s.check}</p>
-  </section>
+  </section>}
 
-  <section id="band" class="anchor">
+  {on.band && <section id="band" class="anchor">
     <h2>{s.bandH}</h2>
     <p class="sub">{s.bandSub}</p>
-    <div class="band">
-      {["eco", "mid", "prem"].map((k) => <div class={`band-col band-${k}`}>
-        <h3>{s[k]}</h3>
-        {M.band[k].map(([n, price, srcN, url, date]) => <div class="band-row"><div class="band-main"><span>{tr(n, lang)}</span><small>{s.src}: {url ? <a href={url} rel="noopener">{tr(srcN, lang)}</a> : tr(srcN, lang)} · {date === "check" ? s.check : date}</small></div><b>{tr(price, lang)}</b></div>)}
-      </div>)}
-    </div>
-    <p class="band-city"><span>{s.cityRide}</span><b>{city5}</b><small>{s.byMeter} {TARIFF.date}</small></p>
-  </section>
+    <ol class="plist card">
+      {band.map(([type, n, _v, price, srcN, url, date], i) => <li class="prow">
+        <span class={`ptype ptype-${type}`}>{s.types[type]}</span>
+        <div class="prow-m"><span>{tr(n, lang)}{i === 0 && <em class="cheap">{s.cheapest}</em>}</span><small>{s.src}: {url ? <a href={url} rel="noopener">{tr(srcN, lang)}</a> : tr(srcN, lang)} · {date === "check" ? s.check : date}</small></div>
+        <b class="pv" set:html={curH(nb(tr(price, lang)))} />
+      </li>)}
+    </ol>
+    <p class="prow-city"><span>{s.cityRide}</span><b class="pv" set:html={curH(est(5))} /><small>{s.byMeter} {TARIFF.date}</small></p>
+  </section>}
 
-  <section id="events" class="anchor">
+  {on.events && <section id="events" class="anchor">
     <h2>{s.eventsH}</h2>
     <p class="sub">{s.eventsSub}</p>
-    <ol class="events">
-      {M.events.map((e) => <li class="ev"><span class="ev-m">{e.m[lang]}</span><div class="ev-main"><h3>{e.name[lang]}</h3><p class="ev-d">{e.dates[lang]}{e.tbc && <span class="chip pre">{s.tbc}</span>}</p><p class="ev-n">{e.note[lang]}</p>{e.src && <small>{s.src}: <a href={e.src} rel="noopener">{e.srcN}</a></small>}</div></li>)}
+    <ol class="events card">
+      {M.events.map((e) => <li class="ev"><span class="ev-m">{e.m[lang]}</span><div class="ev-main"><h3>{e.name[lang]}</h3><p class="ev-d">{e.dates[lang]}{e.tbc && <span class="chip pre">{s.tbc}</span>}</p><p class="ev-n">{e.note[lang]}{e.src && <> · <a href={e.src} rel="noopener">{e.srcN}</a></>}</p></div></li>)}
     </ol>
-    <p class="callout">{s.advice}</p>
-  </section>
+    <p class="note">{nb(s.advice)}</p>
+  </section>}
 
-  <section id="sights" class="anchor">
+  {on.sights && <section id="sights" class="anchor">
     <h2>{s.sightsH}</h2>
     <p class="sub">{s.sightsSub}</p>
-    <div class="sights">
-      {sights.map((x) => <article class="sight">
-        <div class="sight-h">{x.p ? <span class="num">{x.p}</span> : <span class="num num-o" aria-hidden="true">•</span>}<h3>{x.name[lang]}</h3></div>
-        <p>{x.line[lang]}</p>
-        <dl>
-          <div><dt>{s.taxiFrom}</dt><dd>≈ {kmf(x.km)} · {est(x.km)}</dd></div>
-          <div><dt>{s.transit}</dt><dd>{x.tr[lang]}</dd></div>
-        </dl>
-        <p class="links">{x.url && <a href={x.url} rel="noopener">{s.site} ↗</a>}<a href={gmaps(x.ll)} rel="noopener">Google Maps ↗</a><a href={osm(x.ll)} rel="noopener">OSM ↗</a></p>
-      </article>)}
-    </div>
-  </section>
+    <Fragment set:html={list(sights, sightRow)} />
+  </section>}
 
-  <section id="food" class="anchor">
+  {on.food && <section id="food" class="anchor">
     <h2>{s.foodH}</h2>
     <p class="sub">{s.foodSub}</p>
-    <div class="food">
-      {Object.entries(M.food).map(([cat, list]) => <div class="food-cat"><h3>{s.foodCats[cat]}</h3>
-        {list.map((f) => <div class="food-row"><span class={f.k ? "mk mk-food" : f.p ? "mk" : "mk mk-o"}>{f.k || f.p || "•"}</span><div class="food-main"><strong>{tr(f.name, lang)}</strong><span>{f.line[lang]}</span><a href={gmaps(f.ll)} rel="noopener">{s.maps} ↗</a></div><b class="lvl">{f.lvl}</b></div>)}
-      </div>)}
-    </div>
-    <div class="soonbox"><span class="soon-tag">{s.soon}</span><div><strong>{s.videosH}</strong><p>{s.videosTxt}</p></div></div>
-  </section>
+    <Fragment set:html={list(food, foodRow)} />
+    {blockOn("munich", "videos") && <p class="note"><strong>{s.videosH}</strong> {s.videosTxt}</p>}
+  </section>}
 
-  <section id="map" class="anchor">
+  {on.map && <section id="map" class="anchor">
     <h2>{s.mapH}</h2>
     <p class="sub">{s.mapSub}</p>
-    <div class="mapcard" id="mapscroll"><CityMap lang={lang} /></div>
+    <div class="mapcard card" id="mapscroll"><CityMap lang={lang} /></div>
     <p class="hint map-swipe">{({ ru: "← Листайте схему пальцем →", de: "← Skizze mit dem Finger verschieben →", en: "← Swipe to move the sketch →" })[lang]}</p>
-    <div class="maplegend"><span><i class="lg-route"></i>{s.legendRoute}</span><span><i class="lg-pt">1</i>{M.route.length} · {s.onRoute}</span><span><i class="lg-food">A</i>{s.legendFood}</span><span><i class="lg-extra">11</i>{s.legendSight}</span></div>
-    <div class="actions" style="margin-top:12px">
+    <div class="maplegend"><span><i class="lg-route"></i>{s.legendRoute}</span><span><i class="lg-pt">1</i>{s.onRoute}</span><span><i class="lg-food">A</i>{s.legendFood}</span><span><i class="lg-extra">11</i>{s.legendSight}</span></div>
+    <div class="actions">
       <a class="btn" href={pdf} download>{s.pdf}<small>A4 · PDF</small></a>
       <a class="btn ghost" href={`${base}/${lang}/munich/map/#print`}>{s.print}<small>A4</small></a>
     </div>
-    <ol class="stops">
-      {[...M.route, ...M.extra].map((p) => <li><span class={p.p === 11 ? "num num-x" : "num"}>{p.p}</span><span class="stop-n">{p.name}</span><span class="stop-l"><a href={gmaps(p.ll)} rel="noopener">Google</a> · <a href={osm(p.ll)} rel="noopener">OSM</a></span></li>)}
+    <ol class="stops card">
+      {[...M.route, ...M.extra].map((p) => <li><span class={p.p === 11 ? "pin pin-x" : "pin"}>{p.p}</span><span class="stop-n">{p.name}</span><a class="go-route" href={gdir(p.ll)} rel="noopener" aria-label={`${s.route}: ${p.name}`}><Fragment set:html={ICON} /><span>{s.route}</span></a></li>)}
     </ol>
     <p class="hint">{s.mapNote}</p>
-  </section>
+  </section>}
 
-  <section id="stay" class="anchor">
+  {on.stay && <section id="stay" class="anchor">
     <h2>{s.stayH}</h2>
-    <p>{s.stayTxt}</p>
-    <div class="soonbox"><span class="tag ad">{s.ad}</span><div><strong>{s.staySoon}</strong></div></div>
-  </section>
+    <p class="lead-p">{nb(s.stayTxt)}</p>
+    {blockOn("munich", "stayPartner") && <p class="note"><span class="tag ad">{s.ad}</span> {s.staySoon}</p>}
+  </section>}
 
-  <section id="transfer" class="anchor">
-    <div class="transfer">
-      <span class="soon-tag soon-dark">{s.soon}</span>
+  {on.transfer && <section id="transfer" class="anchor">
+    <div class="card transfer">
       <h2>{s.transferH}</h2>
       <p>{s.transferTxt}</p>
       <ul>{s.guarantees.map((g) => <li>{g}</li>)}</ul>
       <p class="planned">{s.planned}</p>
     </div>
-  </section>
-
+  </section>}
 </Base>
 
 <script>
-  // На телефоне схема шире экрана: показываем старый город по центру
+  // На телефоне схема шире экрана: начинаем с точки 1 (Hauptbahnhof)
   const m = document.getElementById("mapscroll");
-  if (m && m.scrollWidth > m.clientWidth) m.scrollLeft = Math.max(0, m.scrollWidth * 0.183);
+  if (m && m.scrollWidth > m.clientWidth) m.scrollLeft = Math.max(0, m.scrollWidth * 0.1);
 </script>
