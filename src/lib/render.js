@@ -8,7 +8,16 @@ const loc = (lang) => (lang === "ru" ? "ru-RU" : lang === "de" ? "de-DE" : "en-G
 export const eur = (lang, n, d = 0) => n.toLocaleString(loc(lang), { minimumFractionDigits: d, maximumFractionDigits: d }) + "\u00a0€";
 // HTML-цена: «€» мельче и вплотную; неразрывные пробелы у единиц и разделителей
 export const curH = (s) => String(s).replace(/[\s\u00a0]?€/g, '<span class="cur">€</span>');
-export const nb = (s) => String(s).replace(/(\d) (km|км|€|Min\.|мин)/g, "$1\u00a0$2").replace(/ · /g, "\u00a0· ");
+export const nb = (s) => String(s).replace(/(\d) (km|км|€|Min\.|мин)/g, "$1\u00a0$2").replace(/(фикс|fix|Festpreis|fixed) (\d)/gi, "$1\u00a0$2").replace(/ · /g, "\u00a0· ");
+
+// Заголовок обложки главной — по выбранному маршруту (обновляется вместе с табло)
+const HT = { ru: ["фиксировано", "по счётчику"], de: ["Festpreis", "Taxameter"], en: ["fixed", "metered"] };
+export function heroTitle(st) {
+  const c = current(st), r = c.route, h = HT[st.lang], name = (r.short || r.name)[st.lang];
+  if (r.fix) return st.lang === "ru" ? `${name}: ${r.fix}\u00a0€, ${h[0]}` : `${name}: ${r.fix}\u00a0€ ${h[0]}`;
+  const lo = Math.round(c.m.lo), hi = Math.round(c.m.hi);
+  return `${name}: ${lo}–${hi}\u00a0€, ${h[1]}`;
+}
 
 export function meter(km, min) {
   let left = km, prev = 0; const parts = [];
@@ -72,7 +81,7 @@ export function actionsHTML(st) {
   const t = L[st.lang], l = appLinks(st);
   return `<a class="btn" href="${esc(l.uber)}" rel="noopener sponsored">${t.openUber}<small>${t.withRoute}</small></a>
 <a class="btn" href="${esc(l.bolt)}" rel="noopener">${t.openBolt}<small>${t.withRoute}</small></a>
-<div class="phones"><strong class="phones-h">${t.callTaxi}</strong>${PHONES.map(([n, p], i) => `<div class="phone"><div class="phone-t"><b>${p.replace(" ", "\u00a0")}</b><span>${n}</span></div><button type="button" class="copy" data-copy="${i}" aria-label="${t.copy}: ${p}" title="${t.copy}"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="2"/></svg></button><a class="btn taxi call" href="tel:${p.replace(/\s/g, "")}">${CALL[st.lang]}</a></div>`).join("")}</div>
+<div class="phones"><strong class="phones-h">${t.callTaxi}</strong>${PHONES.map(([n, p], i) => `<div class="phone"><div class="phone-t"><b>${p.replace(" ", "\u00a0")}</b><span>${n}</span></div><button type="button" class="copy" data-copy="${i}" aria-label="${t.copy}: ${p}" title="${t.copy}"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="2"/></svg></button><a class="btn call" href="tel:${p.replace(/\s/g, "")}"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg>${CALL[st.lang]}</a></div>`).join("")}</div>
 <p class="hint" style="grid-column:1/-1;margin:0">${t.appsHint}</p>`;
 }
 
@@ -88,17 +97,21 @@ const CALL = { ru: "Позвонить", de: "Anrufen", en: "Call" };
 
 export function tiersHTML(st) {
   const t = L[st.lang], lang = st.lang, l = appLinks(st), c = current(st), route = c.route, air = route.from === "air";
-  const prov = (name, meta, price, link, label, ad, ghost) => `<div class="prov"><div class="prov-main"><div class="prov-name">${esc(name)}${ad ? `<span class="tag ad">${t.ad}</span>` : ""}</div><div class="prov-meta">${meta}</div>${whenLine(st, name)}${scoreLine(st, name) ? `<div class="prov-meta">${esc(scoreLine(st, name))}</div>` : ""}</div><div class="prov-side"><span class="price">${curH(nb(price))}</span>${link ? `<a class="go${ghost ? " ghost" : ""}" href="${esc(link)}" rel="noopener${ad ? " sponsored" : ""}">${label}</a>` : ""}</div></div>`;
+  const MORE = { ru: "Подробнее", de: "Details", en: "Details" }[lang];
+  const prov = (name, meta, price, link, label, ad, ghost, line) => `<div class="prov"><div class="prov-main"><div class="prov-name">${esc(name)}${ad ? `<span class="tag ad">${t.ad}</span>` : ""}</div><div class="prov-line">${line || meta}</div><details class="pd"><summary>${MORE}</summary><div class="prov-meta">${meta}</div>${whenLine(st, name)}${scoreLine(st, name) ? `<div class="prov-meta">${esc(scoreLine(st, name))}</div>` : ""}</details></div><div class="prov-side"><span class="price">${curH(nb(price))}</span>${link ? `<a class="go${ghost ? " ghost" : ""}" href="${esc(link)}" rel="noopener${ad ? " sponsored" : ""}">${label}</a>` : ""}</div></div>`;
   const taxiPrice = route.fix ? `${eur(lang, route.fix)} <span class="tag src">${t.fixTag}</span>` : `${eur(lang, c.m.lo)}–${eur(lang, c.m.hi)}`;
   const uberPrice = route.uber ? `${route.uber.x} / ${route.uber.comfort} €` : t.inApp;
   const tier = (title, sub, body) => `<div class="tier"><div class="tier-head"><h3>${title}</h3><span>${sub}</span></div>${body}</div>`;
   const x = EX[lang];
   const appPrice = route.fix ? `${eur(lang, route.fix)}` : `${eur(lang, c.m.lo * 0.95)}–${eur(lang, c.m.lo * 1.2)}`;
   const appMeta = esc(x.taxiAppMeta) + (route.fix ? ` <strong>${esc(x.taxiAppZone)}</strong>` : "");
-  return tier(t.t1, t.t1s, prov("Taxi München", esc(t.taxiMeta), taxiPrice, "", "", false) + prov(x.taxiApp, appMeta, appPrice, "https://isarfunk.de/isarfunk-festpreis/", t.open, false, true)) +
+  const FIXLINE = { ru: (p) => `Фиксированно ${p}\u00a0€ через taxi.eu / IsarFunk`, de: (p) => `Festpreis ${p}\u00a0€ über taxi.eu / IsarFunk`, en: (p) => `Fixed ${p}\u00a0€ via taxi.eu / IsarFunk` }[lang];
+  const appLine = route.fix ? FIXLINE(route.fix) : "";
+  const BOLTP = `—<small class="ph-hint">${esc(t.inApp)}</small>`;
+  return tier(t.t1, t.t1s, prov("Taxi München", esc(t.taxiMeta), taxiPrice, "", "", false) + prov(x.taxiApp, appMeta, appPrice, "https://isarfunk.de/isarfunk-festpreis/", t.open, false, true, appLine)) +
     tier(t.t2, t.t2s,
       prov("Uber", `${esc(t.uberRow)}${route.uber ? " · " + esc(t.uberHint) : ""}`, uberPrice, l.uber, t.open, true) +
-      prov("Bolt", esc(t.boltMeta), t.inApp, l.bolt, t.open, false) +
+      prov("Bolt", esc(t.boltMeta), BOLTP, l.bolt, t.open, false) +
       prov("FREE NOW", esc(t.freeMeta), route.fix ? eur(lang, route.fix) : t.inApp, LINKS.freenow, t.open, false, true)) +
     tier(t.t3, t.t3s,
       (air ? prov("Welcome Pickups", esc(t.welcomeMeta), route.welcome ? `${route.welcome.day} € ${t.day} · ${route.welcome.night} € ${t.night}` : t.onReq, LINKS.welcome, t.book, true) : "") +

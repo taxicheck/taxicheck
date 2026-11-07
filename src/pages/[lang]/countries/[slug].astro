@@ -25,17 +25,17 @@ const TITLE = { ru: `Такси и Bolt/Uber: ${x.name.ru} — советы ту
   </Fragment>
   {readySections(x.slug).length > 1 && <SectionNav lang={lang} only={readySections(x.slug)} />}
   <p class="draft">{c.note}</p>
-  <section class="box">
+  <section>
     <h2>{c.apps}</h2>
-    <p style="margin:0">{tr(x.apps)}</p>
+    <div class="card card-pad"><p style="margin:0">{tr(x.apps)}</p></div>
   </section>
   <figure class="photo"><img src={`${base}/${ph.taxi.src}`} alt={ph.taxi.alt[lang]} width="1400" height="933" loading="lazy"><figcaption>{ph.taxi.alt[lang]}</figcaption></figure>
-  <section class="box anchor" id="prices">
+  <section class="anchor" id="prices">
     <h2>{c.options}</h2>
     <p class="sub">{tr(x.route)}</p>
-    <div class="opts">
+    <div class="card card-pad"><div class="opts">
       {x.options.map(([k, name, price]) => <div class="opt"><div><span class="k">{c.kinds[k]}</span>{tr(name)}</div><b>{tr(price)}</b></div>)}
-    </div>
+    </div></div>
   </section>
   <section>
     <h2>{c.tips}</h2>
