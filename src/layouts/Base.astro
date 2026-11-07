@@ -58,9 +58,12 @@ const FOOT = {
     <header>
       <div class="top">
         <a href={href(lang).replace(path, "")} class="logo" aria-label="TaxiCheck"><span class="sign">TAXI</span>Check</a>
-        <nav class="flags" aria-label="Sprache · Language · Язык">
-          {["de", "en", "ru"].map((l) => <a href={href(l)} hreflang={l} lang={l} title={NAMES[l]} aria-label={NAMES[l]} aria-current={l === lang ? "page" : undefined}><Fragment set:html={FLAG[l]} /><span>{l.toUpperCase()}</span></a>)}
-        </nav>
+        <details class="flagsel">
+          <summary title={NAMES[lang]} aria-label={NAMES[lang]}><Fragment set:html={FLAG[lang]} /></summary>
+          <nav class="flagsel-m" aria-label="Sprache · Language · Язык">
+            {["de", "en", "ru"].filter((l) => l !== lang).map((l) => <a href={href(l)} hreflang={l} lang={l} title={NAMES[l]} aria-label={NAMES[l]}><Fragment set:html={FLAG[l]} /></a>)}
+          </nav>
+        </details>
       </div>
       <nav class="main-nav" aria-label="Menu"><a href={`${base}/${lang}/`} aria-current={path === "" ? "page" : undefined}>{EX[lang].navDe}</a><a href={`${base}/${lang}/munich/`} aria-current={path.startsWith("munich") ? "page" : undefined}>{EX[lang].navCity}</a><a href={`${base}/${lang}/countries/`} aria-current={path.startsWith("countries") ? "page" : undefined}>{EX[lang].navCountries}</a></nav>
       <slot name="header" />
