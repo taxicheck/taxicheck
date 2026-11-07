@@ -51,12 +51,11 @@ const list = (items, row) => `<ul class="rows-list card">${items.slice(0, SHOW).
     <p class="sub">{s.bandSub}</p>
     <ol class="plist card">
       {band.map(([type, n, _v, price, srcN, url, date], i) => <li class="prow">
-        <span class={`ptype ptype-${type}`}>{s.types[type]}</span>
-        <div class="prow-m"><span>{tr(n, lang)}{i === 0 && <em class="cheap">{s.cheapest}</em>}</span><small>{s.src}: {url ? <a href={url} rel="noopener">{tr(srcN, lang)}</a> : tr(srcN, lang)} · {date === "check" ? s.check : date}</small></div>
+        <div class="prow-m"><span class="ptype">{s.types[type]}{i === 0 && <em class="cheap">{s.cheapest}</em>}</span><span class="prow-n">{tr(n, lang)}</span><small>{s.src}: {url ? <a href={url} rel="noopener">{tr(srcN, lang)}</a> : tr(srcN, lang)} · {date === "check" ? s.check : date}</small></div>
         <b class="pv" set:html={curH(nb(tr(price, lang)))} />
       </li>)}
+      <li class="prow prow-city"><div class="prow-m"><span class="ptype">{s.types.taxi}</span><span class="prow-n">{s.cityRide}</span><small>{s.byMeter} {TARIFF.date}</small></div><b class="pv" set:html={curH(est(5))} /></li>
     </ol>
-    <p class="prow-city"><span>{s.cityRide}</span><b class="pv" set:html={curH(est(5))} /><small>{s.byMeter} {TARIFF.date}</small></p>
   </section>}
 
   {on.events && <section id="events" class="anchor">
@@ -71,12 +70,14 @@ const list = (items, row) => `<ul class="rows-list card">${items.slice(0, SHOW).
   {on.sights && <section id="sights" class="anchor">
     <h2>{s.sightsH}</h2>
     <p class="sub">{s.sightsSub}</p>
+    <p class="pinkey"><span class="pin">4</span>{s.pinKey}</p>
     <Fragment set:html={list(sights, sightRow)} />
   </section>}
 
   {on.food && <section id="food" class="anchor">
     <h2>{s.foodH}</h2>
     <p class="sub">{s.foodSub}</p>
+    <p class="pinkey"><span class="pin pin-food">A</span>{s.pinKeyFood}</p>
     <Fragment set:html={list(food, foodRow)} />
     {blockOn("munich", "videos") && <p class="note"><strong>{s.videosH}</strong> {s.videosTxt}</p>}
   </section>}
@@ -100,6 +101,8 @@ const list = (items, row) => `<ul class="rows-list card">${items.slice(0, SHOW).
   {on.stay && <section id="stay" class="anchor">
     <h2>{s.stayH}</h2>
     <p class="lead-p">{nb(s.stayTxt)}</p>
+    <ul class="rows-list card districts">{s.districts.map(([n, d]) => <li class="drow"><strong>{n}</strong><span>{nb(d.replace("{fix}", String(ROUTES[0].fix)).replace("{mp}", est(1.6)))}</span></li>)}</ul>
+    <p class="more-link"><a href="#map">{s.toMap} →</a></p>
     {blockOn("munich", "stayPartner") && <p class="note"><span class="tag ad">{s.ad}</span> {s.staySoon}</p>}
   </section>}
 
