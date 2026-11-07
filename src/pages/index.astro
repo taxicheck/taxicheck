@@ -1,5 +1,5 @@
 ---
-// Корень сайта: основной язык — немецкий, всегда /de/.
+// Корень сайта: язык телефона/компьютера (ru, en), иначе немецкий. Выбранный флажком язык запоминается.
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 <!doctype html>
@@ -11,7 +11,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <meta name="robots" content="noindex">
   <meta http-equiv="refresh" content={`0;url=${base}/de/`}>
   <script is:inline define:vars={{ base }}>
-    location.replace(base + "/de/");
+    var L = ["de", "en", "ru"], pick = null;
+    try { pick = localStorage.getItem("tc-lang"); } catch (e) {}
+    if (L.indexOf(pick) < 0) {
+      pick = "de";
+      var list = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "de"];
+      for (var i = 0; i < list.length; i++) { var c = String(list[i]).slice(0, 2).toLowerCase(); if (L.indexOf(c) >= 0) { pick = c; break; } }
+    }
+    location.replace(base + "/" + pick + "/");
   </script>
 </head>
 <body style="font-family:system-ui,sans-serif;padding:24px">

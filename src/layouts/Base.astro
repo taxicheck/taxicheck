@@ -61,7 +61,7 @@ const FOOT = {
         <details class="flagsel">
           <summary title={NAMES[lang]} aria-label={NAMES[lang]}><Fragment set:html={FLAG[lang]} /></summary>
           <nav class="flagsel-m" aria-label="Sprache · Language · Язык">
-            {["de", "en", "ru"].filter((l) => l !== lang).map((l) => <a href={href(l)} hreflang={l} lang={l} title={NAMES[l]} aria-label={NAMES[l]}><Fragment set:html={FLAG[l]} /></a>)}
+            {["de", "en", "ru"].filter((l) => l !== lang).map((l) => <a href={href(l)} hreflang={l} lang={l} title={NAMES[l]} aria-label={NAMES[l]} onclick={`try{localStorage.setItem("tc-lang","${l}")}catch(e){}`}><Fragment set:html={FLAG[l]} /></a>)}
           </nav>
         </details>
       </div>
