@@ -2,8 +2,8 @@
 import Base from "../../../layouts/Base.astro";
 import Tips from "../../../components/Tips.astro";
 import SectionNav from "../../../components/SectionNav.astro";
-import { SECTIONS, SEC, SLOGAN } from "../../../lib/city.js";
-import { LANGS } from "../../../lib/data.js";
+import { readySections } from "../../../lib/city.js";
+import { LANGS, FEATURES } from "../../../lib/data.js";
 import { COUNTRIES, CL } from "../../../lib/countries.js";
 import { CPHOTOS } from "../../../lib/photos.js";
 export function getStaticPaths() {
@@ -18,12 +18,12 @@ const ph = CPHOTOS[x.slug];
 const CR = { ru: "Фото", de: "Foto", en: "Photo" };
 const TITLE = { ru: `Такси и Bolt/Uber: ${x.name.ru} — советы туристам`, de: `Taxi, Uber & Bolt: ${x.name.de} — Tipps für Reisende`, en: `Taxi, Uber & Bolt in ${x.name.en} — travel tips` };
 ---
-<Base lang={lang} title={`${TITLE[lang]} | TaxiCheck`} description={tr(x.apps)} path={`countries/${x.slug}/`} bg={ph.hero}>
+<Base lang={lang} title={`${TITLE[lang]} | TaxiCheck`} description={tr(x.apps)} path={`countries/${x.slug}/`} bg={ph.hero} credits={[ph.hero, ph.taxi]}>
   <Fragment slot="header">
     <a class="back" href={`${base}/${lang}/countries/`}>{c.back}</a>
-    <figure class="photo hero"><img src={`${base}/${ph.hero.src}`} alt={ph.hero.alt[lang]} width="1400" height="933" fetchpriority="high"><div class="hero-text"><p class="city">{x.hub}</p><h1>{x.flag} {x.name[lang]}</h1></div><figcaption>{ph.hero.alt[lang]}</figcaption></figure>
+    <figure class="photo hero hero-compact"><img src={`${base}/${ph.hero.src}`} alt={ph.hero.alt[lang]} width="1400" height="933" fetchpriority="high"><div class="hero-text"><p class="city">{x.hub}</p><h1>{x.flag} {x.name[lang]}</h1></div></figure>
   </Fragment>
-  <SectionNav lang={lang} />
+  {readySections(x.slug).length > 1 && <SectionNav lang={lang} only={readySections(x.slug)} />}
   <p class="draft">{c.note}</p>
   <section class="box">
     <h2>{c.apps}</h2>
@@ -41,12 +41,7 @@ const TITLE = { ru: `Такси и Bolt/Uber: ${x.name.ru} — советы ту
     <h2>{c.tips}</h2>
     <ol class="tipslist">{x.tips[lang].map((t) => <li>{t}</li>)}</ol>
   </section>
-  <section class="anchor" id="band">
-    <h2>{SEC[lang].stubH}</h2>
-    <p class="sub">{SEC[lang].stub}</p>
-    <div class="stubs">{SECTIONS.slice(1).map((k) => <div class="stub anchor" id={k === "band" ? undefined : k}><strong>{SEC[lang].nav[k]}</strong><span class="soon-tag">{SEC[lang].soon}</span></div>)}</div>
-  </section>
-  <Tips lang={lang} scope={`c-${x.slug}`} where={x.name[lang]} />
+  {FEATURES.tips && <Tips lang={lang} scope={`c-${x.slug}`} where={x.name[lang]} />}
   <section>
     <details><summary>{c.src}</summary><ul>{x.src.map(([n, u, d]) => <li><a href={u} rel="noopener">{n}</a> · {d}</li>)}{[ph.hero, ph.taxi].map((p) => <li>{CR[lang]}: <a href={p.url} rel="noopener">{p.by}</a>, {p.lic} · Wikimedia Commons</li>)}</ul></details>
   </section>

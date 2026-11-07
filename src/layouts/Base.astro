@@ -4,7 +4,9 @@ import { LANGS } from "../lib/data.js";
 import { EX } from "../lib/texts.js";
 import { BG_MAIN } from "../lib/photos.js";
 import { SLOGAN } from "../lib/city.js";
-const { lang, title, description, path = "", bg = BG_MAIN } = Astro.props;
+const { lang, title, description, path = "", bg = BG_MAIN, credits = [] } = Astro.props;
+const PH = { ru: "Фото", de: "Fotos", en: "Photos" };
+const alt = (p) => (p.alt ? (typeof p.alt === "string" ? p.alt : p.alt[lang]) : "");
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const site = (Astro.site?.toString() || "").replace(/\/$/, "");
 const href = (l) => `${base}/${l}/${path}`;
@@ -45,7 +47,7 @@ const FOOT = {
   {import.meta.env.PUBLIC_NOINDEX === "1" && <meta name="robots" content="noindex">}
 </head>
 <body>
-  <div class="backdrop" aria-hidden="true" style={`background-image:url(${base}/${bg.src})`}></div>
+  <div class="backdrop" aria-hidden="true"></div>
   <div class="wrap">
     <header>
       <div class="top">
@@ -53,6 +55,10 @@ const FOOT = {
         <nav class="langs" aria-label="Language">
           {LANGS.map((l) => <a href={href(l)} hreflang={l} aria-current={l === lang ? "page" : undefined}>{l.toUpperCase()}</a>)}
         </nav>
+        <details class="langsel">
+          <summary aria-label="Language">{lang.toUpperCase()}<svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg></summary>
+          <div class="langsel-m">{LANGS.map((l) => <a href={href(l)} hreflang={l} aria-current={l === lang ? "page" : undefined}>{({ ru: "Русский", de: "Deutsch", en: "English" })[l]}</a>)}</div>
+        </details>
       </div>
       <nav class="main-nav" aria-label="Menu"><a href={`${base}/${lang}/`} aria-current={path === "" ? "page" : undefined}>{EX[lang].navDe}</a><a href={`${base}/${lang}/munich/`} aria-current={path.startsWith("munich") ? "page" : undefined}>{EX[lang].navCity}</a><a href={`${base}/${lang}/countries/`} aria-current={path.startsWith("countries") ? "page" : undefined}>{EX[lang].navCountries}</a></nav>
       <slot name="header" />
@@ -66,7 +72,7 @@ const FOOT = {
         <a href={`${base}/${lang}/datenschutz/`}>{FOOT[lang].dat}</a>
       </nav>
       <p class="foot-slogan"><span class="sign">TAXI</span> {SLOGAN[lang]}</p>
-      <p class="bg-credit">{FOOT[lang].bg}: <a href={bg.url} rel="noopener">{bg.by}</a>, {bg.lic} · Wikimedia Commons</p>
+      {credits.length > 0 && <p class="bg-credit">{PH[lang]}: {credits.map((p, i) => <>{i ? " · " : ""}{alt(p)} — <a href={p.url} rel="noopener">{p.by}</a>, {p.lic}</>)} · Wikimedia Commons</p>}
     </footer>
   </div>
 </body>

@@ -1,12 +1,12 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { LANGS, SOURCES, COMPANIES, PHOTOS, REVIEW_COUNTRIES } from "../../lib/data.js";
+import { LANGS, SOURCES, COMPANIES, PHOTOS, REVIEW_COUNTRIES, FEATURES, ROUTES } from "../../lib/data.js";
 import { L } from "../../lib/texts.js";
-import { routesHTML, meterHTML, actionsHTML, tiersHTML, opsHTML, reviewsHTML, whenHTML, esc } from "../../lib/render.js";
+import { routesHTML, meterHTML, actionsHTML, tiersHTML, opsHTML, reviewsHTML, whenHTML, esc, nb } from "../../lib/render.js";
 import { W, RV, PHOTO } from "../../lib/texts.js";
 import { CITIES, GL } from "../../lib/germany.js";
 import Tips from "../../components/Tips.astro";
-import { SLOGAN, SEC, SECTIONS } from "../../lib/city.js";
+import { SLOGAN, SEC, readySections } from "../../lib/city.js";
 
 export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
 const { lang } = Astro.params;
@@ -14,6 +14,8 @@ const t = L[lang];
 const r = RV[lang];
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const img = (k, cls = "photo", eager = false) => { const p = PHOTOS[k]; return `<figure class="${cls}"><img src="${base}/${p.src}" alt="${p.alt[lang]}" width="1280" height="853" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"><figcaption>${PHOTO[lang].credit}: <a href="${p.url}" rel="noopener">${p.by}</a>, ${p.lic}</figcaption></figure>`; };
+const fixAir = ROUTES[0].fix;
+const H1 = { ru: `Аэропорт → центр: ${fixAir}\u00a0€, фиксировано`, de: `Flughafen → City: ${fixAir}\u00a0€ Festpreis`, en: `Airport → centre: ${fixAir}\u00a0€ fixed` };
 const st = { lang, routeId: "air-hbf", km: 8, min: 10, to: "Marienplatz", reviews: [] };
 const META = {
   ru: ["Такси из аэропорта Мюнхена: цена, Uber, Bolt, трансфер | TaxiCheck", "Сколько стоит такси из аэропорта Мюнхена в центр: фиксированная цена 96 €, Uber, Bolt, трансферы и премиум. Проверка цены водителя и советы таксиста."],
@@ -21,9 +23,9 @@ const META = {
   en: ["Munich Airport taxi price vs Uber, Bolt & transfers | TaxiCheck", "What a taxi from Munich Airport to the centre costs: fixed 96 €, Uber, Bolt, transfers and premium. Check a quoted fare and get tips from a cab driver."],
 };
 ---
-<Base lang={lang} title={META[lang][0]} description={META[lang][1]}>
+<Base lang={lang} title={META[lang][0]} description={META[lang][1]} credits={[PHOTOS.hero, PHOTOS.marienplatz]}>
   <Fragment slot="header">
-    <figure class="photo hero"><img src={`${base}/${PHOTOS.hero.src}`} alt={PHOTOS.hero.alt[lang]} width="1600" height="1200" style="object-position:50% 4%" fetchpriority="high" decoding="async"><div class="hero-text"><p class="kicker">{SLOGAN[lang]}</p><p class="city" set:html={t.city} /><h1>{t.h1}</h1></div><figcaption>{PHOTO[lang].credit}: <a href={PHOTOS.hero.url} rel="noopener">{PHOTOS.hero.by}</a>, {PHOTOS.hero.lic}</figcaption></figure>
+    <figure class="photo hero hero-compact"><img src={`${base}/${PHOTOS.hero.src}`} alt={PHOTOS.hero.alt[lang]} width="1600" height="1200" style="object-position:50% 12%" fetchpriority="high" decoding="async"><div class="hero-text"><p class="kicker">{SLOGAN[lang]}</p><h1>{H1[lang]}</h1></div></figure>
   </Fragment>
 
   <div class="calc">
@@ -63,7 +65,7 @@ const META = {
 
   <a class="teaser" href={`${base}/${lang}/munich/`}>
     <img src={`${base}/${PHOTOS.marienplatz.src}`} alt={PHOTOS.marienplatz.alt[lang]} width="1280" height="853" loading="lazy" decoding="async">
-    <span class="teaser-b"><strong>{SEC[lang].cityTeaser}</strong><span>{SEC[lang].cityTeaserTxt}</span><span class="teaser-chips">{SECTIONS.slice(1).map((k) => <em>{SEC[lang].nav[k]}</em>)}</span><span class="teaser-go">{SEC[lang].open} →</span></span>
+    <span class="teaser-b"><strong>{SEC[lang].cityTeaser}</strong><span>{SEC[lang].cityTeaserTxt}</span><span class="teaser-chips">{readySections("munich").slice(1).map((k) => <em>{SEC[lang].nav[k]}</em>)}</span><span class="teaser-go">{SEC[lang].open} →</span></span>
   </a>
 
   <section id="when">
@@ -76,7 +78,7 @@ const META = {
   <section class="cheat" id="cheat-sheet">
     <h2>{t.hCheat}</h2>
     <p class="sub" style="margin:0">{t.sCheat}</p>
-    <ol>{t.cheat.map((x) => <li>{x}</li>)}</ol>
+    <ol>{t.cheat.map((x) => <li>{nb(x)}</li>)}</ol>
     <button class="btn" type="button" id="b-share">{t.bShare}</button>
     <p class="toast" id="share-toast" style="color:var(--meter-fg)"></p>
   </section>
@@ -89,7 +91,7 @@ const META = {
     <p class="disclaim">{t.disclaim}</p>
   </section>
 
-  <section id="journal">
+  <section id="journal" hidden={!FEATURES.journal}>
     <details class="fold">
     <summary><h2>{t.hJr}</h2><span class="fold-sub">{t.sJr}</span></summary>
     <div class="tw"><table class="journal">
@@ -129,9 +131,9 @@ const META = {
     </details>
   </section>
 
-  <Tips lang={lang} scope="de-muenchen" where="München" />
+  {FEATURES.tips && <Tips lang={lang} scope="de-muenchen" where="München" />}
 
-  <section id="reviews-sec">
+  <section id="reviews-sec" hidden={!FEATURES.reviews}>
     <h2>{r.head}</h2>
     <p class="sub">{r.sub}</p>
     <p class="hint">{r.note}</p>
@@ -166,7 +168,9 @@ const META = {
   const t = L[lang];
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   let reviews = []; try { reviews = JSON.parse(store.get("taxicheck-reviews") || "[]"); } catch (e) {}
-  const st = { lang, routeId: "air-hbf", km: 8, min: 10, to: "Marienplatz", reviews };
+  const fixAir = ROUTES[0].fix;
+const H1 = { ru: `Аэропорт → центр: ${fixAir}\u00a0€, фиксировано`, de: `Flughafen → City: ${fixAir}\u00a0€ Festpreis`, en: `Airport → centre: ${fixAir}\u00a0€ fixed` };
+const st = { lang, routeId: "air-hbf", km: 8, min: 10, to: "Marienplatz", reviews };
 
   function readInputs() { st.km = parseFloat($("km").value) || 0; st.min = parseFloat($("wait").value) || 0; st.to = $("to").value; }
   function render() {
@@ -188,7 +192,7 @@ const META = {
   function copyText(text, ok, fail) { try { navigator.clipboard.writeText(text).then(ok, fail); } catch (e) { fail(); } }
   $("actions").addEventListener("click", (e) => {
     const b = e.target.closest("[data-copy]"); if (!b) return;
-    copyText(PHONES[+b.dataset.copy][1], () => { b.textContent = t.copied; setTimeout(() => (b.textContent = t.copy), 1500); }, () => {});
+    copyText(PHONES[+b.dataset.copy][1], () => { b.classList.add("ok"); b.title = t.copied; setTimeout(() => { b.classList.remove("ok"); b.title = t.copy; }, 1500); }, () => {});
   });
   $("b-share").addEventListener("click", async () => {
     const txt = `TaxiCheck · ${t.hCheat}\n` + t.cheat.map((x, i) => `${i + 1}. ${x}`).join("\n") + `\n${location.href}`;

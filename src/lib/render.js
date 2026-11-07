@@ -5,7 +5,10 @@ import { L, OP, W, NOW, EX, RV } from "./texts.js";
 
 export const esc = (s) => String(s).replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
 const loc = (lang) => (lang === "ru" ? "ru-RU" : lang === "de" ? "de-DE" : "en-GB");
-export const eur = (lang, n, d = 0) => n.toLocaleString(loc(lang), { minimumFractionDigits: d, maximumFractionDigits: d }) + " €";
+export const eur = (lang, n, d = 0) => n.toLocaleString(loc(lang), { minimumFractionDigits: d, maximumFractionDigits: d }) + "\u00a0€";
+// HTML-цена: «€» мельче и вплотную; неразрывные пробелы у единиц и разделителей
+export const curH = (s) => String(s).replace(/[\s\u00a0]?€/g, '<span class="cur">€</span>');
+export const nb = (s) => String(s).replace(/(\d) (km|км|€|Min\.|мин)/g, "$1\u00a0$2").replace(/ · /g, "\u00a0· ");
 
 export function meter(km, min) {
   let left = km, prev = 0; const parts = [];
@@ -29,7 +32,7 @@ export function current(st) {
 
 export function routesHTML(st) {
   const t = L[st.lang]; const { route } = current(st);
-  return ROUTES.map((r) => `<button type="button" class="rt${r.big ? " big" : ""}" data-r="${r.id}" aria-pressed="${r === route}">${esc(r.name[st.lang])}<small>${esc(r.sub[st.lang])}${r.fix ? ` · ${t.fixTag} ${r.fix} €` : ""}</small></button>`).join("");
+  return ROUTES.map((r) => `<button type="button" class="rt${r.big ? " big" : ""}" data-r="${r.id}" aria-pressed="${r === route}"><span class="rt-l">${esc(r.name[st.lang])}</span><span class="rt-s">${esc((r.short || r.name)[st.lang])}</span><small>${nb(esc(r.sub[st.lang]) + (r.fix ? ` · ${t.fixTag} ${r.fix} €` : ""))}</small></button>`).join("");
 }
 
 export function meterHTML(st) {
@@ -47,7 +50,7 @@ export function meterHTML(st) {
   }
   rows.push([t.tipRow, ""]);
   return `<div class="meter-top"><span>${esc(t.taxi)}<span class="mt-tariff"> · ${esc(t.tariffFrom)} ${TARIFF.date}</span></span><span>${esc(mode)}</span></div>
-<div class="meter-total">${total}</div><div class="meter-note">${esc(note)}</div>
+<div class="meter-total">${curH(total)}</div><div class="meter-note">${esc(note)}</div>
 <div class="rows">${rows.map((r) => `<div class="row"><span>${esc(r[0])}</span><span class="${r[2] || ""}">${r[1]}</span></div>`).join("")}</div>
 <div class="meter-foot">${esc(t.tariffFrom)} ${TARIFF.date}</div>`;
 }
@@ -69,7 +72,7 @@ export function actionsHTML(st) {
   const t = L[st.lang], l = appLinks(st);
   return `<a class="btn" href="${esc(l.uber)}" rel="noopener sponsored">${t.openUber}<small>${t.withRoute}</small></a>
 <a class="btn" href="${esc(l.bolt)}" rel="noopener">${t.openBolt}<small>${t.withRoute}</small></a>
-<div class="phones"><strong style="font-size:14px">${t.callTaxi}</strong>${PHONES.map(([n, p], i) => `<div class="phone"><div><a class="tel" href="tel:${p.replace(/\s/g, "")}"><b>${p}</b></a><br><span>${n}</span></div><button type="button" class="copy" data-copy="${i}">${t.copy}</button></div>`).join("")}</div>
+<div class="phones"><strong class="phones-h">${t.callTaxi}</strong>${PHONES.map(([n, p], i) => `<div class="phone"><div class="phone-t"><b>${p.replace(" ", "\u00a0")}</b><span>${n}</span></div><button type="button" class="copy" data-copy="${i}" aria-label="${t.copy}: ${p}" title="${t.copy}"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="2"/></svg></button><a class="btn taxi call" href="tel:${p.replace(/\s/g, "")}">${CALL[st.lang]}</a></div>`).join("")}</div>
 <p class="hint" style="grid-column:1/-1;margin:0">${t.appsHint}</p>`;
 }
 
@@ -79,13 +82,15 @@ export function ratings(reviews) {
   Object.values(o).forEach((x) => { if (x.n) { x.s /= x.n; x.v /= x.n; } });
   return o;
 }
-const scoreLine = (st, c) => { const t = L[st.lang], x = ratings(st.reviews)[c]; if (!x) return t.opNo; return x.n ? t.opScore(x.s.toFixed(1), x.v.toFixed(1), x.n) : t.opNo; };
+// Пока отзывов нет — строку не показываем (без «оценок пока нет»)
+const scoreLine = (st, c) => { const t = L[st.lang], x = ratings(st.reviews)[c]; if (!x || !x.n) return ""; return t.opScore(x.s.toFixed(1), x.v.toFixed(1), x.n); };
+const CALL = { ru: "Позвонить", de: "Anrufen", en: "Call" };
 
 export function tiersHTML(st) {
   const t = L[st.lang], lang = st.lang, l = appLinks(st), c = current(st), route = c.route, air = route.from === "air";
-  const prov = (name, meta, price, link, label, ad, ghost) => `<div class="prov"><div class="prov-main"><div class="prov-name">${esc(name)}${ad ? `<span class="tag ad">${t.ad}</span>` : ""}</div><div class="prov-meta">${meta}</div>${whenLine(st, name)}<div class="prov-meta">${esc(scoreLine(st, name))}</div></div><div class="prov-side"><span class="price">${price}</span>${link ? `<a class="go${ghost ? " ghost" : ""}" href="${esc(link)}" rel="noopener${ad ? " sponsored" : ""}">${label}</a>` : ""}</div></div>`;
+  const prov = (name, meta, price, link, label, ad, ghost) => `<div class="prov"><div class="prov-main"><div class="prov-name">${esc(name)}${ad ? `<span class="tag ad">${t.ad}</span>` : ""}</div><div class="prov-meta">${meta}</div>${whenLine(st, name)}${scoreLine(st, name) ? `<div class="prov-meta">${esc(scoreLine(st, name))}</div>` : ""}</div><div class="prov-side"><span class="price">${curH(nb(price))}</span>${link ? `<a class="go${ghost ? " ghost" : ""}" href="${esc(link)}" rel="noopener${ad ? " sponsored" : ""}">${label}</a>` : ""}</div></div>`;
   const taxiPrice = route.fix ? `${eur(lang, route.fix)} <span class="tag src">${t.fixTag}</span>` : `${eur(lang, c.m.lo)}–${eur(lang, c.m.hi)}`;
-  const uberPrice = route.uber ? `${route.uber.x} / ${route.uber.comfort} / ${route.uber.taxi} €` : t.inApp;
+  const uberPrice = route.uber ? `${route.uber.x} / ${route.uber.comfort} €` : t.inApp;
   const tier = (title, sub, body) => `<div class="tier"><div class="tier-head"><h3>${title}</h3><span>${sub}</span></div>${body}</div>`;
   const x = EX[lang];
   const appPrice = route.fix ? `${eur(lang, route.fix)}` : `${eur(lang, c.m.lo * 0.95)}–${eur(lang, c.m.lo * 1.2)}`;

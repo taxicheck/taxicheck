@@ -9,11 +9,12 @@ export const SECTIONS = ["prices", "band", "events", "sights", "food", "map", "s
 
 export const SEC = {
   ru: {
+    types: { transit: "Транспорт", app: "Приложение", transfer: "Трансфер", taxi: "Такси", prem: "Премиум" }, cheapest: "дешевле всего", fixRule: "Фиксированная цена такси из аэропорта: 96 € до Hauptbahnhof, 90 € до Messe — и со стоянки, и при заказе такси через приложение. Счётчик на этих маршрутах не нужен.", onMap: "на карте", offMap: "вне карты", route: "Маршрут", more: "Ещё", details: "Подробнее", photos: "Фото",
     nav: { prices: "Цены", band: "Вилка цен", events: "События", sights: "Что посмотреть", food: "Где поесть", map: "Карта", stay: "Жильё", transfer: "Трансфер" },
     lead: "Такси, события, что посмотреть, где поесть и пешая карта центра — на одной странице.",
     pricesH: "Цены и как доехать", pricesSub: "Фиксированные цены такси по городскому тарифу. Полный расчёт и сравнение Uber, Bolt и трансферов — в калькуляторе.",
     openCalc: "Открыть калькулятор", checkPrice: "Вам назвали цену? Проверить",
-    bandH: "Вилка цен: эконом, средне, премиум", bandSub: "Аэропорт → центр (Hauptbahnhof), 40 км. У каждой цифры источник и дата.",
+    bandH: "Вилка цен: от S‑Bahn до премиума", bandSub: "Аэропорт → центр (Hauptbahnhof), 40 км, по цене. У каждой цифры источник и дата.",
     eco: "Эконом", mid: "Средне", prem: "Премиум", cityRide: "Такси по городу, 5 км", byMeter: "по счётчику, оценка по тарифу",
     src: "Источник", check: "проверить",
     eventsH: "Когда всё дороже", eventsSub: "В эти даты машин не хватает, цены в Uber и Bolt растут, трансферы и жильё раскупают. Бронируйте заранее.",
@@ -37,11 +38,12 @@ export const SEC = {
     cityTeaser: "Мюнхен для туриста", cityTeaserTxt: "Вилка цен, события, когда всё дороже, что посмотреть, где поесть и пешая карта для печати.", open: "Открыть",
   },
   de: {
+    types: { transit: "ÖPNV", app: "App", transfer: "Transfer", taxi: "Taxi", prem: "Premium" }, cheapest: "am günstigsten", fixRule: "Festpreis im Taxi ab Flughafen: 96 € zum Hauptbahnhof, 90 € zur Messe — am Taxistand und bei Taxi-Bestellung per App. Ein Taxameter ist auf diesen Strecken nicht nötig.", onMap: "auf der Karte", offMap: "außerhalb", route: "Route", more: "Noch", details: "Details", photos: "Fotos",
     nav: { prices: "Preise", band: "Preisspanne", events: "Termine", sights: "Sehenswert", food: "Essen", map: "Karte", stay: "Unterkunft", transfer: "Transfer" },
     lead: "Taxi, Termine, Sehenswertes, Essen und ein Stadtplan zu Fuß — auf einer Seite.",
     pricesH: "Preise und Anfahrt", pricesSub: "Festpreise im Taxi nach städtischem Tarif. Vollständige Rechnung und Vergleich mit Uber, Bolt und Transfers im Rechner.",
     openCalc: "Rechner öffnen", checkPrice: "Preis genannt? Prüfen",
-    bandH: "Preisspanne: günstig, mittel, premium", bandSub: "Flughafen → Zentrum (Hauptbahnhof), 40 km. Jede Zahl mit Quelle und Datum.",
+    bandH: "Preisspanne: von S‑Bahn bis Premium", bandSub: "Flughafen → Zentrum (Hauptbahnhof), 40 km, nach Preis. Jede Zahl mit Quelle und Datum.",
     eco: "Günstig", mid: "Mittel", prem: "Premium", cityRide: "Taxi in der Stadt, 5 km", byMeter: "Taxameter, Schätzung nach Tarif",
     src: "Quelle", check: "prüfen",
     eventsH: "Wann alles teurer ist", eventsSub: "An diesen Tagen fehlen Autos, Uber und Bolt werden teurer, Transfers und Hotels sind schnell weg. Früh buchen.",
@@ -65,11 +67,12 @@ export const SEC = {
     cityTeaser: "München für Reisende", cityTeaserTxt: "Preisspanne, Termine, an denen alles teurer ist, Sehenswertes, Essen und ein Stadtplan zum Ausdrucken.", open: "Öffnen",
   },
   en: {
+    types: { transit: "Transit", app: "App", transfer: "Transfer", taxi: "Taxi", prem: "Premium" }, cheapest: "cheapest", fixRule: "Fixed taxi fare from the airport: 96 € to Hauptbahnhof, 90 € to Messe — at the rank and when booking a taxi in an app. No meter needed on these routes.", onMap: "on map", offMap: "off map", route: "Route", more: "More", details: "Details", photos: "Photos",
     nav: { prices: "Fares", band: "Price range", events: "Events", sights: "Sights", food: "Food", map: "Map", stay: "Stay", transfer: "Transfer" },
     lead: "Taxis, events, sights, food and a walking map of the centre — on one page.",
     pricesH: "Fares and getting there", pricesSub: "Fixed taxi prices under the city tariff. Full breakdown and comparison with Uber, Bolt and transfers in the calculator.",
     openCalc: "Open the calculator", checkPrice: "Quoted a price? Check it",
-    bandH: "Price range: budget, mid, premium", bandSub: "Airport → centre (Hauptbahnhof), 40 km. Every figure has a source and date.",
+    bandH: "Price range: from S‑Bahn to premium", bandSub: "Airport → centre (Hauptbahnhof), 40 km, by price. Every figure has a source and date.",
     eco: "Budget", mid: "Mid", prem: "Premium", cityRide: "Taxi in town, 5 km", byMeter: "metered, estimate from the tariff",
     src: "Source", check: "to verify",
     eventsH: "When everything costs more", eventsSub: "On these dates cars run short, Uber and Bolt prices rise, transfers and hotels sell out. Book ahead.",
@@ -101,22 +104,17 @@ export const MUNICH = {
   slug: "munich",
   name: T("Мюнхен", "München", "Munich"),
   // Вилка цен: аэропорт → Hbf. Только данные, которые уже есть на сайте (data.js / SOURCES), с датой.
-  band: {
-    eco: [
-      [T("S-Bahn S1 / S8", "S-Bahn S1 / S8", "S-Bahn S1 / S8"), "≈ 11,60 €", "MVV", "https://www.mvv-muenchen.de/", "check"],
-      [T("World Transfer", "World Transfer", "World Transfer"), "66–72 €", "World Transfer", "https://world-transfer.com/en/airporttransfer-munich.html", "11.2026"],
-      [T("Uber X, в среднем", "Uber X, im Schnitt", "Uber X, average"), "≈ 70 €", "Uber", "https://www.uber.com/global/en/r/airports/muc/pickup/", "11.2026"],
-    ],
-    mid: [
-      [T("Welcome Pickups, день / ночь", "Welcome Pickups, Tag / Nacht", "Welcome Pickups, day / night"), "72 / 79 €", "Welcome Pickups", "https://www.welcomepickups.com/munich/airport-taxi/", "11.2026"],
-      [T("Uber Comfort, в среднем", "Uber Comfort, im Schnitt", "Uber Comfort, average"), "≈ 73 €", "Uber", "https://www.uber.com/global/en/r/airports/muc/pickup/", "11.2026"],
-      [T("Такси, фиксированная цена", "Taxi, Festpreis", "Taxi, fixed price"), "96 €", T("Тариф такси Мюнхена", "Taxitarif München", "Munich taxi tariff"), "", "01.07.2026"],
-    ],
-    prem: [
-      [T("Uber Taxi, в среднем", "Uber Taxi, im Schnitt", "Uber Taxi, average"), "≈ 107 €", "Uber", "https://www.uber.com/global/en/r/airports/muc/pickup/", "11.2026"],
-      [T("Blacklane, бизнес-класс", "Blacklane, Business Class", "Blacklane, business class"), T("по запросу", "auf Anfrage", "on request"), "Blacklane", "https://www.blacklane.com/en/airport-transfer-munich", "11.2026"],
-    ],
-  },
+  // Вилка цен: аэропорт → Hbf, одним списком по цене. Только данные, которые уже есть на сайте (data.js / SOURCES).
+  // [тип, название, цена (число для сортировки или null), цена-строка, источник, ссылка, дата]
+  band: [
+    ["transit", T("S-Bahn S1 / S8", "S-Bahn S1 / S8", "S-Bahn S1 / S8"), 11.6, "≈ 11,60 €", "MVV", "https://www.mvv-muenchen.de/", "check"],
+    ["transfer", T("World Transfer", "World Transfer", "World Transfer"), 66, "66–72 €", "World Transfer", "https://world-transfer.com/en/airporttransfer-munich.html", "11.2026"],
+    ["app", T("Uber X, в среднем", "Uber X, im Schnitt", "Uber X, average"), 70, "≈ 70 €", "Uber", "https://www.uber.com/global/en/r/airports/muc/pickup/", "11.2026"],
+    ["transfer", T("Welcome Pickups, день / ночь", "Welcome Pickups, Tag / Nacht", "Welcome Pickups, day / night"), 72, "72 / 79 €", "Welcome Pickups", "https://www.welcomepickups.com/munich/airport-taxi/", "11.2026"],
+    ["app", T("Uber Comfort, в среднем", "Uber Comfort, im Schnitt", "Uber Comfort, average"), 73, "≈ 73 €", "Uber", "https://www.uber.com/global/en/r/airports/muc/pickup/", "11.2026"],
+    ["taxi", T("Такси: стоянка или приложение такси", "Taxi: Taxistand oder Taxi-App", "Taxi: rank or taxi app"), 96, "96 €", T("Тариф такси Мюнхена", "Taxitarif München", "Munich taxi tariff"), "", "01.07.2026"],
+    ["prem", T("Blacklane, бизнес-класс", "Blacklane, Business Class", "Blacklane, business class"), null, T("по запросу", "auf Anfrage", "on request"), "Blacklane", "https://www.blacklane.com/en/airport-transfer-munich", "11.2026"],
+  ],
   events: [
     { m: T("ноя–дек", "Nov–Dez", "Nov–Dec"), name: T("Рождественский рынок на Мариенплац", "Christkindlmarkt am Marienplatz", "Christmas market at Marienplatz"), dates: T("20.11 – 24.12.2026", "20.11. – 24.12.2026", "20 Nov – 24 Dec 2026"), note: T("Центр переполнен по вечерам и в выходные. 22.11 закрыт.", "Abends und am Wochenende ist die Altstadt voll. Am 22.11. geschlossen.", "The centre is packed in the evenings and at weekends. Closed on 22 Nov."), src: "https://www.muenchen.de/int/en/events/christmas-market.html", srcN: "muenchen.de" },
     { m: T("янв", "Jan", "Jan"), name: T("BAU — выставка строительства", "BAU — Weltleitmesse für Bauen", "BAU — construction trade fair"), dates: T("11–15.01.2027", "11.–15.01.2027", "11–15 Jan 2027"), note: T("Messe Riem: утром очереди к выставке, гостиницы дорогие.", "Messe Riem: morgens Andrang, Hotels teuer.", "Messe Riem: morning rush, hotels expensive."), src: "https://bau-muenchen.com/en/trade-fair/plan-your-visit/opening-hours", srcN: "bau-muenchen.com" },
@@ -173,6 +171,21 @@ export const MUNICH = {
   extra: [{ p: 11, name: "Pinakotheken", ll: [48.1482, 11.5700] }],
 };
 
+// ── Включатели разделов страницы города ──
+// Раздел показывается, только если здесь стоит 1 и в нём есть данные. Включить: поставить 1 (одна строка).
+// Ключ — slug: "munich" для Мюнхена, slug страны из countries.js для стран.
+export const READY = {
+  munich: { prices: 1, band: 1, events: 1, sights: 1, food: 1, map: 1, stay: 1, transfer: 0 },
+  // Страны: пока готов только раздел «Цены» (из аэропорта). Пример включения: latvia: { prices: 1, sights: 1 },
+};
+// Отдельные блоки внутри разделов
+export const BLOCKS = {
+  munich: { videos: 0, stayPartner: 0 }, // ролики TaxiCheck; партнёрская ссылка на жильё (Werbung)
+};
+export const readySections = (slug) => SECTIONS.filter((k) => (READY[slug] || { prices: 1 })[k]);
+export const blockOn = (slug, k) => !!(BLOCKS[slug] || {})[k];
+
 export const gmaps = (ll) => `https://www.google.com/maps/search/?api=1&query=${ll[0]},${ll[1]}`;
+export const gdir = (ll) => `https://www.google.com/maps/dir/?api=1&destination=${ll[0]},${ll[1]}`;
 export const osm = (ll) => `https://www.openstreetmap.org/?mlat=${ll[0]}&mlon=${ll[1]}#map=17/${ll[0]}/${ll[1]}`;
 export const tr = (v, lang) => (typeof v === "string" ? v : v[lang]);

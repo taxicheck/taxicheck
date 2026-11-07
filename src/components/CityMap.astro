@@ -23,10 +23,10 @@ const STREETS = [
 const RAIL = [[48.1407,11.5590],[48.1418,11.5545],[48.1428,11.5500]];
 const WAY = [[48.1402,11.5600],[48.1393,11.5652],[48.1388,11.5700],[48.1386,11.5736],[48.1374,11.5755],[48.1351,11.5763],[48.1360,11.5786],[48.1376,11.5799],[48.1396,11.5792],[48.1410,11.5788],[48.1423,11.5774],[48.1428,11.5803],[48.1430,11.5842],[48.1435,11.5877]];
 const LBL = { ru: { isar: "Изар", eg: "Английский сад", hofg: "Хофгартен", alt: "Старый город", rail: "ж/д", north: "С" }, de: { isar: "Isar", eg: "Englischer Garten", hofg: "Hofgarten", alt: "Altstadt", rail: "Gleise", north: "N" }, en: { isar: "Isar", eg: "English Garden", hofg: "Hofgarten", alt: "Old town", rail: "rail", north: "N" } }[lang];
-const SN = [["Neuhauser Str.", 48.1392, 11.5688, -8], ["Ludwigstr.", 48.1470, 11.5781, -73], ["Maximilianstr.", 48.1384, 11.5866, 13], ["Sonnenstr.", 48.1338, 11.5648, -86], ["Bayerstr.", 48.1405, 11.5622, -10]];
+const SN = [["Ludwigstr.", 48.1470, 11.5781, -73], ["Maximilianstr.", 48.1384, 11.5866, 13], ["Sonnenstr.", 48.1338, 11.5648, -86], ["Bayerstr.", 48.1405, 11.5622, -10]];
 const food = Object.values(MUNICH.food).flat().filter((f) => f.k);
 const pts = [...MUNICH.route, ...MUNICH.extra];
-const lab = { 1: [-4, 32], 2: [6, 32], 3: [-14, -20], 4: [-18, 26], 5: [-6, 30], 6: [22, 6], 7: [22, 6], 8: [-26, -14], 9: [6, -20], 10: [0, -22], 11: [0, -20] };
+const lab = { 1: [10, 32], 2: [6, 32], 3: [-14, -20], 4: [-18, 26], 5: [-6, 30], 6: [22, 6], 7: [22, 6], 8: [-26, -14], 9: [6, -20], 10: [0, -22], 11: [0, -20] };
 ---
 <svg class="citymap" id={id} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${MUNICH.name[lang]}: ${LBL.alt}`} xmlns="http://www.w3.org/2000/svg">
   <rect class="m-bg" width={W} height={H} />
@@ -40,7 +40,7 @@ const lab = { 1: [-4, 32], 2: [6, 32], 3: [-14, -20], 4: [-18, 26], 5: [-6, 30],
   <polyline class="m-brook" points={line(EIS)} />
   <text class="m-lbl m-lbl-water" x={X(11.5905)} y={Y(48.1330)} transform={`rotate(52 ${X(11.5905)} ${Y(48.1330)})`}>{LBL.isar}</text>
   <text class="m-lbl m-lbl-park" x={X(11.5893)} y={Y(48.1482)} text-anchor="middle">{LBL.eg}</text>
-  <text class="m-lbl m-lbl-old" x={X(11.5700)} y={Y(48.1350)} text-anchor="middle">{LBL.alt}</text>
+  <text class="m-lbl m-lbl-old" x={X(11.5700)} y={Y(48.1411)} text-anchor="middle">{LBL.alt}</text>
   <text class="m-lbl m-sm" x={X(11.5535)} y={Y(48.1398)}>{LBL.rail}</text>
   {SN.map(([n, la, lo, r]) => <text class="m-street" x={X(lo)} y={Y(la)} text-anchor="middle" transform={`rotate(${r} ${X(lo)} ${Y(la)})`}>{n}</text>)}
   <polyline class="m-route-case" points={line(WAY)} />
