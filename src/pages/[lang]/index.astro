@@ -1,219 +1,144 @@
 ---
-// Главная: одна задача — сравнить цену поездки по Мюнхену и открыть нужное приложение.
-// Всё остальное (город, страны) — по ссылкам внизу. Цены — ориентиры, требуют проверки.
+// Главная: как в Google Maps. Маршрут на карте → строка фирм → классы машин с ценой, от дешёвого к дорогому.
+// Такси — точная цена (фикс или тариф). Приложения — только оценка-диапазон: их цены динамические.
+// Оценка = доля от тарифа такси на те же км; доли взяты из средних цен Uber аэропорт → центр (11.2026).
+// Всё требует проверки. Живые цены — только в приложении (кнопка «Открыть»).
 import Base from "../../layouts/Base.astro";
 import { LANGS, ROUTES, PLACES, LINKS, TARIFF } from "../../lib/data.js";
-import { meter } from "../../lib/render.js";
 
 export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
 const { lang } = Astro.params;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const loc = lang === "ru" ? "ru-RU" : lang === "de" ? "de-DE" : "en-GB";
-const eur = (n) => n.toLocaleString(loc, { maximumFractionDigits: 0 }) + " €";
 
 const T = {
   de: {
     title: "Taxi, Uber, Bolt oder FREE NOW – was ist in München günstiger? | TaxiCheck",
-    desc: "Strecke wählen, Preise vergleichen, App öffnen: Taxi-Festpreis, Uber, Bolt und FREE NOW in München. Alle Preise unverbindlich.",
-    h1: "Was ist günstiger: Taxi, Uber, Bolt oder FREE NOW?",
-    lead: "München · Strecke wählen – Preise sehen – App öffnen.",
-    where: "Wohin fahren Sie?", gps: "Meinen Standort nutzen", gpsNo: "Standort nicht verfügbar – bitte Strecke wählen.", gpsFar: "Sie sind nicht direkt an Flughafen, Hbf oder Messe – wählen Sie „Andere Strecke“.",
-    now: "Jetzt sofort", pre: "Vorab buchen",
-    fixH: "Taxi-Festpreis", fixNote: "Preis ändert sich nicht – am Taxistand und bei Bestellung per Taxi-App. Kein Taxameter.",
-    appsH: "Apps – Preis schwankt mit Nachfrage und Verkehr",
-    best: "Günstigste Option", inApp: "Preis in der App", avg: "Ø laut Uber, 1 Monat",
-    open: "App öffnen", openWeb: "Öffnen", book: "Ansehen",
-    preNote: "Mit Vorlauf buchen – der Fahrer wartet mit Namensschild.",
-    preEmpty: "Für diese Strecke haben wir noch keine geprüften Transferpreise.",
+    desc: "Strecke wählen und alle Anbieter und Fahrzeugklassen sehen: Taxi-Festpreis, Uber, Bolt, FREE NOW, Transfer – vom günstigsten zum teuersten.",
+    h1: "Taxi, Uber, Bolt oder FREE NOW – was ist günstiger?",
+    lead: "München · Strecke wählen – alle Anbieter und Klassen sehen – App öffnen.",
+    from: "Von", to: "Nach", gps: "Mein Standort", gpsNo: "Standort nicht verfügbar – bitte Strecke wählen.", gpsFar: "Sie sind nicht direkt an Flughafen, Hbf oder Messe – geben Sie unten die Entfernung ein.",
+    own: "Andere Strecke", km: "Entfernung", gmaps: "Route in Google Maps",
+    all: "Alle", transfer: "Transfer",
+    cheapest: "Günstigste", priciest: "Teuerste", likely: "Wahrscheinlich günstigste",
+    seats: (n) => `${n} Pers.`, fix: "Festpreis", meterT: "Taxameter", est: "Schätzung", avg: "Ø laut Uber", pre: "nur vorab",
+    open: "Öffnen", taxiGo: "Am Taxistand",
+    fixNote: "Festpreis – am Taxistand und per Taxi-App, ohne Taxameter.",
+    meterNote: "nach Taxameter, ohne und mit Stau",
+    estNote: "Apps haben keine festen Preise: sie ändern sich mehrmals am Tag. Angezeigt ist eine Schätzung – den echten Preis zeigt die App.",
+    appTaxi: "Taxi-Tarif, App kann Gebühr aufschlagen",
+    count: (n) => `${n} Optionen · günstig → teuer`,
     sbahn: "Ohne Taxi: S-Bahn ins Zentrum 11,60 € (ca. 40 Min.).",
-    ownH: "Andere Strecke", km: "Entfernung in km", meterH: "Taxi nach Taxameter", meterNote: (lo, hi) => `ca. ${lo}–${hi}, ohne und mit Stau. Tarif München, Stand ${TARIFF.date}.`,
-    uberNote: "Uber öffnet sich mit Ihrem Standort – Ziel in der App eingeben.",
     tipsH: "Tipps aus der Praxis", author: "Von einem Vielreisenden, der das Geschäft von beiden Seiten kennt – vom Fahrersitz und von der Rückbank.",
-    tips: ["Vor dem Einsteigen nach dem Preis fragen. Auf Festpreis-Strecken gilt der Festpreis – nicht mehr.", "Uber, Bolt und FREE NOW zur selben Minute vergleichen: der Preis springt bei Regen, Messe und Wiesn.", "Schon gelandet und nichts gebucht? Taxi am Ausgang oder eine App. Transfers bucht man vorab."],
-    stand: "Alle Preise sind unverbindliche Richtwerte ohne Gewähr, Stand 11/2026. Maßgeblich ist der Preis in der App bzw. das Taxameter. Links öffnen die Seiten und Apps der Anbieter; TaxiCheck ist mit ihnen nicht verbunden.",
-    more: "Mehr", moreCity: ["München-Guide", "Sehenswertes, Essen, Events"], moreCountries: ["Taxi-Tipps nach Ländern", "9 Länder, vom Flughafen ins Zentrum"],
-    vs: (d) => `${d} günstiger als das Taxi`, ad: "",
+    tips: ["Vor dem Einsteigen nach dem Preis fragen. Auf Festpreis-Strecken gilt der Festpreis – nicht mehr.", "Apps zur selben Minute vergleichen: bei Regen, Messe und Wiesn springen die Preise.", "Zeigt Uber oder Bolt mehr als den Taxi-Festpreis, nehmen Sie das Taxi."],
+    stand: "Taxi: Tarif und Festpreise der Stadt München, Stand " + TARIFF.date + ". Apps: Schätzung aus Uber-Durchschnittspreisen Flughafen → City (11/2026), für Bolt und FREE NOW ohne eigene Daten. Alles unverbindlich, ohne Gewähr. TaxiCheck ist mit den Anbietern nicht verbunden.",
+    more: "Mehr", moreCity: ["München-Guide", "Sehenswertes, Essen, Events"], moreCountries: ["Taxi-Tipps nach Ländern", "9 Länder"],
   },
   ru: {
     title: "Такси, Uber, Bolt или FREE NOW — что дешевле в Мюнхене? | TaxiCheck",
-    desc: "Выберите маршрут, сравните цены, откройте приложение: фиксированная цена такси, Uber, Bolt и FREE NOW в Мюнхене. Цены ориентировочные.",
-    h1: "Что дешевле: такси, Uber, Bolt или FREE NOW?",
-    lead: "Мюнхен · выберите маршрут — увидите цены — откройте приложение.",
-    where: "Куда едете?", gps: "Определить, где я", gpsNo: "Местоположение недоступно — выберите маршрут.", gpsFar: "Вы не у аэропорта, вокзала или Messe — выберите «Другой маршрут».",
-    now: "Прямо сейчас", pre: "Заранее",
-    fixH: "Такси: фиксированная цена", fixNote: "Цена не меняется — на стоянке такси и при заказе через приложение такси. Без счётчика.",
-    appsH: "Приложения — цена зависит от спроса и пробок",
-    best: "Самый дешёвый вариант", inApp: "Цена в приложении", avg: "в среднем по данным Uber за месяц",
-    open: "Открыть приложение", openWeb: "Открыть", book: "Смотреть",
-    preNote: "Бронь заранее — водитель встречает с табличкой.",
-    preEmpty: "Для этого маршрута проверенных цен трансфера пока нет.",
+    desc: "Выберите маршрут и увидите все сервисы и классы машин: фикс-цена такси, Uber, Bolt, FREE NOW, трансфер — от дешёвого к дорогому.",
+    h1: "Такси, Uber, Bolt или FREE NOW — что дешевле?",
+    lead: "Мюнхен · выберите маршрут — увидите все сервисы и классы — откройте приложение.",
+    from: "Откуда", to: "Куда", gps: "Где я", gpsNo: "Местоположение недоступно — выберите маршрут.", gpsFar: "Вы не у аэропорта, вокзала или Messe — введите расстояние ниже.",
+    own: "Другой маршрут", km: "Расстояние", gmaps: "Маршрут в Google Maps",
+    all: "Все", transfer: "Трансфер",
+    cheapest: "Самый дешёвый", priciest: "Самый дорогой", likely: "Скорее всего дешевле всех",
+    seats: (n) => `до ${n} чел.`, fix: "фикс-цена", meterT: "по счётчику", est: "оценка", avg: "в среднем по Uber", pre: "только заранее",
+    open: "Открыть", taxiGo: "На стоянке",
+    fixNote: "Фиксированная цена — на стоянке и через приложение такси, без счётчика.",
+    meterNote: "по счётчику, без пробок и с пробками",
+    estNote: "У приложений нет фиксированных цен: они меняются несколько раз в день. Здесь оценка — точную цену покажет приложение.",
+    appTaxi: "тариф такси, приложение может добавить сбор",
+    count: (n) => `${n} вариантов · от дешёвого к дорогому`,
     sbahn: "Без такси: S-Bahn в центр 11,60 € (около 40 мин).",
-    ownH: "Другой маршрут", km: "Расстояние, км", meterH: "Такси по счётчику", meterNote: (lo, hi) => `около ${lo}–${hi}, без пробок и с пробками. Тариф Мюнхена от ${TARIFF.date}.`,
-    uberNote: "Uber откроется с вашим местоположением — цель введите в приложении.",
     tipsH: "Советы из практики", author: "От человека, который много ездил по миру и знает такси с обеих сторон — за рулём и на заднем сиденье.",
-    tips: ["Спросите цену до посадки. Где действует фиксированная цена — платите её, не больше.", "Сравните Uber, Bolt и FREE NOW в одну и ту же минуту: цена прыгает в дождь, во время выставок и Октоберфеста.", "Уже прилетели и ничего не заказали? Такси у выхода или приложение. Трансфер бронируют заранее."],
-    stand: "Все цены — ориентировочные, без гарантии, на 11.2026. Окончательная цена — в приложении или по счётчику. Ссылки ведут на сайты и приложения сервисов; TaxiCheck с ними не связан.",
-    more: "Ещё", moreCity: ["Мюнхен: гид", "что посмотреть, где поесть, события"], moreCountries: ["Такси в других странах", "9 стран: из аэропорта в центр"],
-    vs: (d) => `на ${d} дешевле такси`, ad: "",
+    tips: ["Спросите цену до посадки. Где действует фиксированная цена — платите её, не больше.", "Сравнивайте приложения в одну и ту же минуту: в дождь, на выставках и в Октоберфест цены прыгают.", "Если Uber или Bolt показывают больше фикс-цены такси — берите такси."],
+    stand: "Такси: тариф и фикс-цены города Мюнхена от " + TARIFF.date + ". Приложения: оценка по средним ценам Uber аэропорт → центр (11.2026), для Bolt и FREE NOW своих данных нет. Всё ориентировочно, без гарантии. TaxiCheck не связан с этими сервисами.",
+    more: "Ещё", moreCity: ["Мюнхен: гид", "что посмотреть, еда, события"], moreCountries: ["Такси в других странах", "9 стран"],
   },
   en: {
     title: "Taxi, Uber, Bolt or FREE NOW – what's cheaper in Munich? | TaxiCheck",
-    desc: "Pick a route, compare prices, open the app: Munich taxi fixed fare, Uber, Bolt and FREE NOW. All prices are estimates.",
-    h1: "What's cheaper: taxi, Uber, Bolt or FREE NOW?",
-    lead: "Munich · pick a route – see prices – open the app.",
-    where: "Where are you going?", gps: "Use my location", gpsNo: "Location unavailable – please pick a route.", gpsFar: "You're not right at the airport, Hbf or Messe – choose “Other route”.",
-    now: "Right now", pre: "Book ahead",
-    fixH: "Taxi fixed fare", fixNote: "Price doesn't change – at the taxi rank and when booking via a taxi app. No meter.",
-    appsH: "Apps – price changes with demand and traffic",
-    best: "Cheapest option", inApp: "Price in the app", avg: "avg. per Uber, 1 month",
-    open: "Open app", openWeb: "Open", book: "View",
-    preNote: "Book in advance – the driver waits with a name sign.",
-    preEmpty: "No checked transfer prices for this route yet.",
+    desc: "Pick a route and see every provider and car class: taxi fixed fare, Uber, Bolt, FREE NOW, transfer – cheapest to most expensive.",
+    h1: "Taxi, Uber, Bolt or FREE NOW – what's cheaper?",
+    lead: "Munich · pick a route – see all providers and classes – open the app.",
+    from: "From", to: "To", gps: "My location", gpsNo: "Location unavailable – please pick a route.", gpsFar: "You're not right at the airport, Hbf or Messe – enter the distance below.",
+    own: "Other route", km: "Distance", gmaps: "Route in Google Maps",
+    all: "All", transfer: "Transfer",
+    cheapest: "Cheapest", priciest: "Most expensive", likely: "Likely cheapest",
+    seats: (n) => `${n} seats`, fix: "fixed fare", meterT: "meter", est: "estimate", avg: "avg. per Uber", pre: "book ahead",
+    open: "Open", taxiGo: "At the rank",
+    fixNote: "Fixed fare – at the taxi rank and via taxi apps, no meter.",
+    meterNote: "by meter, without and with traffic",
+    estNote: "Apps have no fixed prices: they change several times a day. Shown is an estimate – the app shows the real price.",
+    appTaxi: "taxi tariff, the app may add a fee",
+    count: (n) => `${n} options · cheapest → priciest`,
     sbahn: "Without a taxi: S-Bahn to the centre 11.60 € (about 40 min).",
-    ownH: "Other route", km: "Distance in km", meterH: "Taxi by meter", meterNote: (lo, hi) => `about ${lo}–${hi}, without and with traffic. Munich tariff as of ${TARIFF.date}.`,
-    uberNote: "Uber opens at your location – enter the destination in the app.",
     tipsH: "Tips from practice", author: "From a seasoned traveller who knows the trade from both sides – behind the wheel and in the back seat.",
-    tips: ["Ask the price before you get in. On fixed-fare routes the fixed fare applies – no more.", "Compare Uber, Bolt and FREE NOW at the same minute: prices jump in rain, trade fairs and Oktoberfest.", "Landed with nothing booked? Taxi at the exit or an app. Transfers are booked in advance."],
-    stand: "All prices are non-binding estimates without guarantee, as of 11/2026. The app price or the meter is what counts. Links open the providers' sites and apps; TaxiCheck is not affiliated with them.",
-    more: "More", moreCity: ["Munich guide", "sights, food, events"], moreCountries: ["Taxi tips by country", "9 countries, airport to centre"],
-    vs: (d) => `${d} cheaper than the taxi`, ad: "",
+    tips: ["Ask the price before you get in. On fixed-fare routes the fixed fare applies – no more.", "Compare apps at the same minute: prices jump in rain, trade fairs and Oktoberfest.", "If Uber or Bolt shows more than the taxi fixed fare, take the taxi."],
+    stand: "Taxi: City of Munich tariff and fixed fares as of " + TARIFF.date + ". Apps: estimate from Uber average prices airport → city (11/2026); no own data for Bolt and FREE NOW. All non-binding, no guarantee. TaxiCheck is not affiliated with the providers.",
+    more: "More", moreCity: ["Munich guide", "sights, food, events"], moreCountries: ["Taxi tips by country", "9 countries"],
   },
 }[lang];
 
 const PNAME = {
   air: { de: "Flughafen", ru: "Аэропорт", en: "Airport" },
   hbf: { de: "Hauptbahnhof", ru: "Главный вокзал", en: "Central Station" },
-  messe: { de: "Messe", ru: "Messe (выставка)", en: "Messe (trade fair)" },
+  messe: { de: "Messe", ru: "Messe", en: "Messe" },
 };
+const routes = ROUTES.filter((r) => r.id !== "own").map((r) => ({ id: r.id, from: r.from, to: r.to, km: r.km, fix: r.fix, uber: r.uber || null, wt: r.wt ? [66, 72] : null, welcome: r.welcome ? [60, 79] : null, fromN: PNAME[r.from][lang], toN: PNAME[r.to][lang] }));
 
-// Ссылки «открыть»: Uber понимает маршрут в ссылке (откроет приложение, если оно есть, иначе сайт).
-// Bolt и FREE NOW публичной ссылки с маршрутом не дают — открываем их страницу.
-const uberLink = (from, to) => {
-  const q = new URLSearchParams({ action: "setPickup" });
-  if (from) { q.set("pickup[latitude]", from.lat); q.set("pickup[longitude]", from.lng); q.set("pickup[nickname]", from.n); } else q.set("pickup", "my_location");
-  if (to) { q.set("dropoff[latitude]", to.lat); q.set("dropoff[longitude]", to.lng); q.set("dropoff[nickname]", to.n); }
-  return "https://m.uber.com/ul/?" + q.toString();
-};
-const BOLT = lang === "de" ? "https://bolt.eu/de-de/rides/" : "https://bolt.eu/en-de/rides/";
-const FREENOW = LINKS.freenow;
-
-const routes = ROUTES.filter((r) => r.id !== "own").map((r) => {
-  const from = PLACES[r.from], to = PLACES[r.to];
-  const apps = [
-    { k: "uber", n: "Uber X", c: "#111", price: r.uber?.x, note: r.uber ? T.avg : "", href: uberLink(from, to), app: true },
-    ...(r.uber?.comfort ? [{ k: "uber", n: "Uber Comfort", c: "#111", price: r.uber.comfort, note: T.avg, href: uberLink(from, to), app: true }] : []),
-    { k: "bolt", n: "Bolt", c: "#2a9d5c", href: BOLT, app: true },
-    { k: "freenow", n: "FREE NOW", c: "#c8102e", href: FREENOW, app: true },
-  ];
-  const pre = [];
-  if (r.wt) pre.push({ n: "World Transfer", lo: 66, hi: 72, txt: r.wt, note: { de: "laut Anbieter", ru: "по данным компании", en: "per provider" }[lang], href: LINKS.wt });
-  if (r.welcome) pre.push({ n: "Welcome Pickups", lo: r.welcome.day, hi: r.welcome.night, txt: `${eur(r.welcome.day)} / ${eur(r.welcome.night)}`, note: { de: "tagsüber / nachts, laut Anbieter", ru: "днём / ночью, по данным компании", en: "day / night, per provider" }[lang], href: LINKS.welcome });
-  pre.sort((a, b) => a.lo - b.lo);
-  const known = apps.filter((a) => a.price).sort((a, b) => a.price - b.price);
-  const cheapApp = known[0];
-  const bestIsApp = cheapApp && cheapApp.price < r.fix;
-  // Порядок: сначала самый дешёвый, потом остальные с ценой, потом «цена в приложении»
-  const sortedApps = [...known, ...apps.filter((a) => !a.price)];
-  return { ...r, fromN: PNAME[r.from][lang], toN: PNAME[r.to][lang], apps: sortedApps, pre, bestIsApp, cheapApp, airport: r.from === "air" || r.to === "air" };
-});
-const ownMeter = meter(8, 10);
-const P = Object.fromEntries(Object.entries(PLACES).map(([k, v]) => [k, [v.lat, v.lng]]));
-const R1 = routes[0];
+// Карта: простая схема Мюнхена без чужих серверов (никаких cookies и трекинга)
+const proj = (p) => [Math.round(((p.lng - 11.5) / 0.32) * 340 + 10), Math.round(((48.38 - p.lat) / 0.28) * 200 + 10)];
+const XY = Object.fromEntries(Object.entries(PLACES).map(([k, v]) => [k, proj(v)]));
+const PL = Object.fromEntries(Object.entries(PLACES).map(([k, v]) => [k, { lat: v.lat, lng: v.lng, n: v.n }]));
+const LINK = { bolt: lang === "de" ? "https://bolt.eu/de-de/rides/" : "https://bolt.eu/en-de/rides/", freenow: LINKS.freenow, wt: LINKS.wt, welcome: LINKS.welcome };
+const TARIF = { base: TARIFF.base, tiers: TARIFF.tiers.map(([u, r]) => [u === Infinity ? 1e9 : u, r]), perMin: TARIFF.perMin };
+const TXT = { ...T, seats: [T.seats(4), T.seats(6), T.seats(8)], count: T.count("{n}") };
+delete TXT.tips; delete TXT.title; delete TXT.desc;
 ---
 <Base lang={lang} title={T.title} description={T.desc}>
   <Fragment slot="header">
-    <div class="cmp-hero">
-      <h1>{T.h1}</h1>
-      <p>{T.lead}</p>
-    </div>
+    <div class="cmp-hero"><h1>{T.h1}</h1><p>{T.lead}</p></div>
   </Fragment>
 
-  <div class="cmp">
-    <section class="cmp-step" aria-labelledby="cmp-where">
-      <div class="cmp-head">
-        <h2 id="cmp-where">{T.where}</h2>
-        <button type="button" class="cmp-gps" id="cmp-gps"><span aria-hidden="true">◎</span> {T.gps}</button>
+  <div class="cmp" id="cmp">
+    <section class="cmp-card cmp-mapcard" aria-label={T.gmaps}>
+      <svg class="cmp-map" viewBox="0 0 360 220" role="img" aria-label="München">
+        <rect width="360" height="220" class="m-bg" />
+        <path class="m-water" d="M150 0 C 140 50, 175 90, 150 130 S 120 190, 135 220" />
+        <path class="m-road" d="M70 190 C 120 150, 200 120, 300 40" />
+        <path class="m-road" d="M20 120 C 120 125, 220 140, 350 150" />
+        <ellipse class="m-city" cx="95" cy="178" rx="70" ry="34" />
+        <text class="m-label" x="40" y="214">München</text>
+        <path id="m-route" class="m-route" d="" />
+        {Object.entries(XY).map(([k, [x, y]]) => (
+          <g class="m-pt" data-pt={k}><circle cx={x} cy={y} r="6" /><text x={k === "air" ? x - 11 : x + 9} y={k === "air" ? y + 4 : y - 9} text-anchor={k === "air" ? "end" : "start"}>{PNAME[k][lang]}</text></g>
+        ))}
+      </svg>
+      <div class="cmp-ft">
+        <div class="cmp-ft-row"><span class="dot dot-a"></span><span class="cmp-ft-l">{T.from}</span><strong id="cmp-from">{routes[0].fromN}</strong></div>
+        <div class="cmp-ft-row"><span class="dot dot-b"></span><span class="cmp-ft-l">{T.to}</span><strong id="cmp-to">{routes[0].toN}</strong></div>
+        <button type="button" class="cmp-gps" id="cmp-gps">◎ {T.gps}</button>
       </div>
       <p class="cmp-msg" id="cmp-msg" hidden></p>
-      <div class="cmp-routes" role="radiogroup" aria-labelledby="cmp-where">
-        {routes.map((r, i) => (
-          <button type="button" role="radio" class="cmp-route" data-route={r.id} data-from={r.from} aria-checked={i === 0 ? "true" : "false"}>
-            <span class="cmp-route-a">{r.fromN}</span>
-            <span class="cmp-route-b">→ {r.toN}</span>
-            <span class="cmp-route-p">{lang === "ru" ? "Такси" : "Taxi"}: {eur(r.fix)}</span>
-          </button>
-        ))}
-        <button type="button" role="radio" class="cmp-route cmp-route-own" data-route="own" aria-checked="false">
-          <span class="cmp-route-a">{T.ownH}</span>
-          <span class="cmp-route-b">{T.km}</span>
-        </button>
+      <div class="cmp-routes" role="radiogroup" aria-label={T.to}>
+        {routes.map((r, i) => <button type="button" role="radio" class="cmp-route" data-route={r.id} aria-checked={i === 0 ? "true" : "false"}>{r.fromN} → {r.toN}</button>)}
+        <button type="button" role="radio" class="cmp-route" data-route="own" aria-checked="false">{T.own}</button>
       </div>
+      <label class="cmp-km" id="cmp-kmbox" hidden><span>{T.km}</span><span class="cmp-km-in"><input id="cmp-km" type="number" inputmode="decimal" min="1" max="150" step="1" value="8"> km</span></label>
+      <a class="cmp-gmaps" id="cmp-gmaps" href="#" rel="noopener">↗ {T.gmaps}</a>
     </section>
 
-    {routes.map((r, i) => (
-      <section class="cmp-res" data-panel={r.id} hidden={i !== 0} aria-live="polite">
-        <div class="cmp-tabs" role="tablist">
-          <button type="button" role="tab" class="cmp-tab" data-tab="now" aria-selected="true">{T.now}</button>
-          <button type="button" role="tab" class="cmp-tab" data-tab="pre" aria-selected="false">{T.pre}{r.pre.length > 0 && <span class="cmp-tab-from"> · {lang === "en" ? "from" : lang === "de" ? "ab" : "от"} {eur(r.pre[0].lo)}</span>}</button>
-        </div>
-
-        <div class="cmp-list" data-list="now">
-          {r.bestIsApp && (
-            <a class="cmp-row cmp-best" href={r.cheapApp.href} rel="noopener">
-              <span class="cmp-best-tag">★ {T.best}</span>
-              <span class="cmp-logo" style={`background:${r.cheapApp.c}`}>{r.cheapApp.n[0]}</span>
-              <span class="cmp-name"><strong>{r.cheapApp.n}</strong><small>{r.cheapApp.note} · {T.vs(eur(r.fix - r.cheapApp.price))}</small></span>
-              <span class="cmp-price">≈ {eur(r.cheapApp.price)}</span>
-              <span class="cmp-go">{T.open} ›</span>
-            </a>
-          )}
-          <div class={`cmp-fix${r.bestIsApp ? "" : " cmp-best"}`}>
-            {!r.bestIsApp && <span class="cmp-best-tag">★ {T.best}</span>}
-            <span class="cmp-logo cmp-logo-taxi">TAXI</span>
-            <span class="cmp-name"><strong>{T.fixH}</strong><small>{T.fixNote}</small></span>
-            <span class="cmp-price">{eur(r.fix)}</span>
-          </div>
-          <h3 class="cmp-sub">{T.appsH}</h3>
-          {r.apps.filter((a) => !(r.bestIsApp && a === r.cheapApp)).map((a) => (
-            <a class="cmp-row" href={a.href} rel="noopener">
-              <span class="cmp-logo" style={`background:${a.c}`}>{a.n[0]}</span>
-              <span class="cmp-name"><strong>{a.n}</strong>{a.note && <small>{a.note}</small>}</span>
-              <span class={`cmp-price${a.price ? "" : " cmp-price-app"}`}>{a.price ? `≈ ${eur(a.price)}` : T.inApp}</span>
-              <span class="cmp-go">{T.open} ›</span>
-            </a>
-          ))}
-          {r.airport && <p class="cmp-hint">{T.sbahn}</p>}
-        </div>
-
-        <div class="cmp-list" data-list="pre" hidden>
-          <p class="cmp-hint">{T.preNote}</p>
-          {r.pre.length === 0 && <p class="cmp-hint">{T.preEmpty}</p>}
-          {r.pre.map((p, j) => (
-            <a class={`cmp-row${j === 0 ? " cmp-best" : ""}`} href={p.href} rel="noopener">
-              {j === 0 && <span class="cmp-best-tag">★ {T.best}</span>}
-              <span class="cmp-logo" style="background:#3b4a63">{p.n[0]}</span>
-              <span class="cmp-name"><strong>{p.n}</strong>{p.note && <small>{p.note}</small>}</span>
-              <span class="cmp-price">{p.txt.replace(/ €/g, " €")}</span>
-              <span class="cmp-go">{T.book} ›</span>
-            </a>
-          ))}
-        </div>
-      </section>
-    ))}
-
-    <section class="cmp-res" data-panel="own" hidden>
-      <label class="cmp-km"><span>{T.km}</span><input id="cmp-km" type="number" inputmode="decimal" min="1" max="150" step="1" value="8"></label>
-      <div class="cmp-list">
-        <div class="cmp-fix">
-          <span class="cmp-logo cmp-logo-taxi">TAXI</span>
-          <span class="cmp-name"><strong>{T.meterH}</strong><small id="cmp-meter-note">{T.meterNote(eur(ownMeter.lo), eur(ownMeter.hi))}</small></span>
-          <span class="cmp-price" id="cmp-meter">{eur(ownMeter.lo)}–{eur(ownMeter.hi)}</span>
-        </div>
-        <h3 class="cmp-sub">{T.appsH}</h3>
-        <a class="cmp-row" href={uberLink(null, null)} rel="noopener"><span class="cmp-logo" style="background:#111">U</span><span class="cmp-name"><strong>Uber</strong><small>{T.uberNote}</small></span><span class="cmp-price cmp-price-app">{T.inApp}</span><span class="cmp-go">{T.open} ›</span></a>
-        <a class="cmp-row" href={BOLT} rel="noopener"><span class="cmp-logo" style="background:#2a9d5c">B</span><span class="cmp-name"><strong>Bolt</strong></span><span class="cmp-price cmp-price-app">{T.inApp}</span><span class="cmp-go">{T.open} ›</span></a>
-        <a class="cmp-row" href={FREENOW} rel="noopener"><span class="cmp-logo" style="background:#c8102e">F</span><span class="cmp-name"><strong>FREE NOW</strong></span><span class="cmp-price cmp-price-app">{T.inApp}</span><span class="cmp-go">{T.open} ›</span></a>
+    <section class="cmp-card cmp-res" aria-live="polite">
+      <div class="cmp-prov" role="tablist" id="cmp-prov">
+        {[["all", T.all], ["taxi", "Taxi"], ["uber", "Uber"], ["bolt", "Bolt"], ["freenow", "FREE NOW"], ["transfer", T.transfer]].map(([k, n], i) => (
+          <button type="button" role="tab" class="cmp-pv" data-prov={k} aria-selected={i === 0 ? "true" : "false"}>{k !== "all" && <span class={`pv-dot pv-${k}`}></span>}{n}</button>
+        ))}
       </div>
+      <p class="cmp-count" id="cmp-count"></p>
+      <div class="cmp-list" id="cmp-list"><noscript><p class="cmp-hint">{T.fixNote}</p></noscript></div>
+      <p class="cmp-hint" id="cmp-est">{T.estNote}</p>
+      <p class="cmp-hint" id="cmp-sbahn">{T.sbahn}</p>
     </section>
 
     <p class="cmp-stand">{T.stand}</p>
@@ -230,101 +155,188 @@ const R1 = routes[0];
     </nav>
   </div>
 
-  <script is:inline define:vars={{ P, TARIFF: { base: TARIFF.base, tiers: TARIFF.tiers.map(([u, r]) => [u === Infinity ? 1e9 : u, r]), perMin: TARIFF.perMin }, loc, MSG: { no: T.gpsNo, far: T.gpsFar }, NOTE: T.meterNote("{lo}", "{hi}") }}>
-    (function () {
-      var q = function (s, el) { return (el || document).querySelector(s); }, qa = function (s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); };
-      var eur = function (n) { return Math.round(n).toLocaleString(loc) + " €"; };
-      function pick(id) {
-        qa(".cmp-route").forEach(function (b) { b.setAttribute("aria-checked", b.dataset.route === id ? "true" : "false"); });
-        qa(".cmp-res").forEach(function (s) { s.hidden = s.dataset.panel !== id; });
-        var p = q('.cmp-res[data-panel="' + id + '"]'); if (p && window.innerWidth < 700) p.scrollIntoView({ behavior: "smooth", block: "start" });
+  <script is:inline define:vars={{ ROUTES: routes, XY, PL, LINK, TARIF, TXT, loc }}>
+  (function () {
+    var $ = function (s) { return document.querySelector(s); }, $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+    var r5 = function (n) { return Math.max(5, Math.round(n / 5) * 5); };
+    var eur = function (n) { return Math.round(n).toLocaleString(loc) + " €"; };
+    var esc = function (s) { return String(s).replace(/[&<>"]/g, function (m) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]; }); };
+    var st = { route: ROUTES[0].id, km: 8, prov: "all" };
+
+    function meter(km) {
+      var left = km, prev = 0, d = TARIF.base;
+      for (var i = 0; i < TARIF.tiers.length && left > 0; i++) { var seg = Math.min(left, TARIF.tiers[i][0] - prev); d += seg * TARIF.tiers[i][1]; left -= seg; prev = TARIF.tiers[i][0]; }
+      var min = Math.max(5, km * 1.25); return [d, d + min * TARIF.perMin];
+    }
+    function uberLink(f, t) {
+      var q = "action=setPickup";
+      q += f ? "&pickup[latitude]=" + f.lat + "&pickup[longitude]=" + f.lng + "&pickup[nickname]=" + encodeURIComponent(f.n) : "&pickup=my_location";
+      if (t) q += "&dropoff[latitude]=" + t.lat + "&dropoff[longitude]=" + t.lng + "&dropoff[nickname]=" + encodeURIComponent(t.n);
+      return "https://m.uber.com/ul/?" + q;
+    }
+    // Доли от тарифа такси (из средних Uber аэропорт → центр: X 70, Comfort 73, XL 104, Premium 127 при тарифе ~107 €)
+    var K = { std: 0.65, comfort: 0.68, xl: 0.97, premium: 1.18 };
+
+    function options() {
+      var rt = ROUTES.filter(function (x) { return x.id === st.route; })[0];
+      var own = !rt, km = own ? st.km : rt.km, m = meter(km), mid = (m[0] + m[1]) / 2;
+      var f = own ? null : PL[rt.from], t = own ? null : PL[rt.to];
+      var U = uberLink(f, t), list = [];
+      var taxi = rt ? { lo: rt.fix, hi: rt.fix, kind: "fix" } : { lo: m[0], hi: m[1], kind: "meter" };
+      function est(k, ub) { // оценка-диапазон: у Uber на маршруте аэропорта — их среднее
+        var c = ub || m[0] * K[k]; return { lo: r5(c * 0.85), hi: r5(c * 1.25), c: c, kind: ub ? "avg" : "est" };
       }
-      qa(".cmp-route").forEach(function (b) { b.addEventListener("click", function () { pick(b.dataset.route); }); });
-      qa(".cmp-res").forEach(function (s) {
-        qa(".cmp-tab", s).forEach(function (t) {
-          t.addEventListener("click", function () {
-            qa(".cmp-tab", s).forEach(function (x) { x.setAttribute("aria-selected", x === t ? "true" : "false"); });
-            qa("[data-list]", s).forEach(function (l) { l.hidden = l.dataset.list !== t.dataset.tab; });
-          });
-        });
-      });
-      // Счётчик для своего маршрута
-      var note = function (lo, hi) { return NOTE.replace("{lo}", lo).replace("{hi}", hi); };
-      function meter(km) {
-        var left = km, prev = 0, d = TARIFF.base;
-        for (var i = 0; i < TARIFF.tiers.length && left > 0; i++) { var seg = Math.min(left, TARIFF.tiers[i][0] - prev); d += seg * TARIFF.tiers[i][1]; left -= seg; prev = TARIFF.tiers[i][0]; }
-        var min = Math.max(5, km * 1.25); return [d, d + min * TARIFF.perMin];
-      }
-      var km = q("#cmp-km");
-      if (km) km.addEventListener("input", function () {
-        var v = Math.min(Math.max(parseFloat(km.value) || 0, 0), 150); if (!v) return;
-        var m = meter(v); q("#cmp-meter").textContent = eur(m[0]) + "–" + eur(m[1]);
-        q("#cmp-meter-note").textContent = note(eur(m[0]), eur(m[1]));
-      });
-      // Где я: если рядом с аэропортом, вокзалом или Messe — выбираем маршрут оттуда
-      var gps = q("#cmp-gps"), msg = q("#cmp-msg");
-      function say(t) { msg.textContent = t; msg.hidden = false; }
-      if (!navigator.geolocation) gps.hidden = true;
-      gps.addEventListener("click", function () {
-        navigator.geolocation.getCurrentPosition(function (pos) {
-          var c = pos.coords, best = null, bd = 1e9;
-          Object.keys(P).forEach(function (k) {
-            var dLat = (P[k][0] - c.latitude) * 111, dLng = (P[k][1] - c.longitude) * 111 * Math.cos(c.latitude * Math.PI / 180), d = Math.sqrt(dLat * dLat + dLng * dLng);
-            if (d < bd) { bd = d; best = k; }
-          });
-          if (bd > 2.5) { say(MSG.far); pick("own"); return; }
-          msg.hidden = true;
-          var b = q('.cmp-route[data-from="' + best + '"]'); if (b) pick(b.dataset.route);
-        }, function () { say(MSG.no); }, { timeout: 8000, maximumAge: 60000 });
-      });
-    })();
+      function mark(p) { p.kind = "est"; return p; }
+      function add(prov, name, seats, p, href, note) { list.push({ prov: prov, name: name, seats: seats, lo: p.lo, hi: p.hi, c: p.c || (p.lo + p.hi) / 2, kind: p.kind, href: href, note: note || "" }); }
+      var ub = rt && rt.uber;
+      add("taxi", "Taxi", 0, taxi, null, taxi.kind === "fix" ? TXT.fixNote : TXT.meterNote);
+      add("uber", "UberX", 0, est("std", ub && ub.x), U);
+      add("uber", "Uber Comfort", 0, est("comfort", ub && ub.comfort), U);
+      add("uber", "UberXL", 1, est("xl", ub && ub.x ? 104 : null), U);
+      add("uber", "Uber Premium", 0, est("premium", ub && ub.x ? 127 : null), U);
+      add("uber", "Uber Taxi", 0, taxi, U, TXT.appTaxi);
+      var ux = ub && ub.x, uc = ub && ub.comfort; // нет своих данных Bolt/FREE NOW → та же оценка, что у Uber того же класса
+      add("bolt", "Bolt", 0, mark(est("std", ux)), LINK.bolt);
+      add("bolt", "Bolt Comfort", 0, mark(est("comfort", uc)), LINK.bolt);
+      add("bolt", "Bolt XL", 1, mark(est("xl", ux ? 104 : null)), LINK.bolt);
+      add("bolt", "Bolt Premium", 0, mark(est("premium", ux ? 127 : null)), LINK.bolt);
+      add("bolt", "Bolt Taxi", 0, taxi, LINK.bolt, TXT.appTaxi);
+      add("freenow", "FREE NOW Taxi", 0, taxi, LINK.freenow, TXT.appTaxi);
+      add("freenow", "FREE NOW Ride", 0, mark(est("std", ux)), LINK.freenow);
+      if (rt && rt.wt) add("transfer", "World Transfer", 0, { lo: rt.wt[0], hi: rt.wt[1], kind: "pre" }, LINK.wt);
+      if (rt && rt.welcome) add("transfer", "Welcome Pickups", 0, { lo: rt.welcome[0], hi: rt.welcome[1], kind: "pre" }, LINK.welcome);
+      // Bolt и FREE NOW без своих данных: при равенстве ставим ниже Uber, у которого данные есть
+      list.forEach(function (o, i) { o.i = i; });
+      list.sort(function (a, b) { return a.c - b.c || a.i - b.i; });
+      return { list: list, rt: rt };
+    }
+
+    function price(o) {
+      if (o.kind === "fix") return eur(o.lo);
+      return Math.round(o.lo).toLocaleString(loc) + "–" + eur(o.hi);
+    }
+    function tag(o) {
+      return { fix: TXT.fix, meter: TXT.meterT, est: TXT.est, avg: TXT.avg, pre: TXT.pre }[o.kind];
+    }
+    function render() {
+      var r = options(), all = r.list, show = st.prov === "all" ? all : all.filter(function (o) { return o.prov === st.prov; });
+      if (st.prov === "all") show = show.filter(function (o) { return !(o.prov !== "taxi" && /Taxi$/.test(o.name)); }); // в «Все» такси один раз
+      var cheap = show.filter(function (o) { return o.kind !== "pre"; })[0] || show[0], dear = show[show.length - 1], firm = cheap && (cheap.kind === "fix" || cheap.kind === "meter");
+      $("#cmp-count").textContent = TXT.count.replace("{n}", show.length);
+      $("#cmp-list").innerHTML = show.map(function (o) {
+        var best = o === cheap && show.length > 1, worst = o === dear && show.length > 2;
+        var badge = best ? '<span class="row-tag row-best">★ ' + esc(firm ? TXT.cheapest : TXT.likely) + "</span>" : worst ? '<span class="row-tag row-worst">' + esc(TXT.priciest) + "</span>" : "";
+        var inner = badge + '<span class="pv-logo pv-' + o.prov + '">' + esc(o.prov === "taxi" ? "TAXI" : o.name[0]) + "</span>" +
+          '<span class="row-n"><strong>' + esc(o.name) + "</strong><small>" + esc(TXT.seats[o.seats]) + " · " + esc(tag(o)) + (o.note ? " · " + esc(o.note) : "") + "</small></span>" +
+          '<span class="row-p' + (o.kind === "est" || o.kind === "avg" ? " row-p-est" : "") + '">' + (o.kind === "est" || o.kind === "avg" ? "≈ " : "") + price(o) + "</span>" +
+          '<span class="row-go">' + esc(o.href ? TXT.open + " ›" : TXT.taxiGo) + "</span>";
+        var cls = "row" + (best ? " is-best" : "") + (worst ? " is-worst" : "");
+        return o.href ? '<a class="' + cls + '" href="' + esc(o.href) + '" rel="noopener">' + inner + "</a>" : '<div class="' + cls + '">' + inner + "</div>";
+      }).join("");
+      $("#cmp-est").hidden = st.prov === "taxi" || st.prov === "transfer";
+      $("#cmp-sbahn").hidden = !(r.rt && (r.rt.from === "air" || r.rt.to === "air"));
+    }
+
+    function drawMap() {
+      var rt = ROUTES.filter(function (x) { return x.id === st.route; })[0], path = $("#m-route");
+      $$(".m-pt").forEach(function (g) { g.classList.remove("is-a", "is-b"); });
+      if (!rt) { path.setAttribute("d", ""); $("#cmp-from").textContent = TXT.gps; $("#cmp-to").textContent = st.km + " km"; $("#cmp-gmaps").href = "https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=M%C3%BCnchen"; return; }
+      var a = XY[rt.from], b = XY[rt.to], cx = (a[0] + b[0]) / 2 + (b[1] - a[1]) * 0.2, cy = (a[1] + b[1]) / 2 - (b[0] - a[0]) * 0.2;
+      path.setAttribute("d", "M" + a[0] + " " + a[1] + " Q " + cx + " " + cy + " " + b[0] + " " + b[1]);
+      document.querySelector('.m-pt[data-pt="' + rt.from + '"]').classList.add("is-a");
+      document.querySelector('.m-pt[data-pt="' + rt.to + '"]').classList.add("is-b");
+      $("#cmp-from").textContent = rt.fromN; $("#cmp-to").textContent = rt.toN;
+      var f = PL[rt.from], t = PL[rt.to];
+      $("#cmp-gmaps").href = "https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=" + f.lat + "," + f.lng + "&destination=" + t.lat + "," + t.lng;
+    }
+
+    function pick(id) {
+      st.route = id;
+      $$(".cmp-route").forEach(function (b) { b.setAttribute("aria-checked", b.dataset.route === id ? "true" : "false"); });
+      $("#cmp-kmbox").hidden = id !== "own";
+      drawMap(); render();
+    }
+    $$(".cmp-route").forEach(function (b) { b.addEventListener("click", function () { pick(b.dataset.route); }); });
+    $$(".cmp-pv").forEach(function (b) { b.addEventListener("click", function () {
+      st.prov = b.dataset.prov; $$(".cmp-pv").forEach(function (x) { x.setAttribute("aria-selected", x === b ? "true" : "false"); }); render();
+    }); });
+    $("#cmp-km").addEventListener("input", function (e) { var v = Math.min(Math.max(parseFloat(e.target.value) || 0, 0), 150); if (v) { st.km = v; drawMap(); render(); } });
+
+    var msg = $("#cmp-msg");
+    function say(t) { msg.textContent = t; msg.hidden = false; }
+    if (!navigator.geolocation) $("#cmp-gps").hidden = true;
+    $("#cmp-gps").addEventListener("click", function () {
+      navigator.geolocation.getCurrentPosition(function (p) {
+        var c = p.coords, best = null, bd = 1e9;
+        Object.keys(PL).forEach(function (k) { var dy = (PL[k].lat - c.latitude) * 111, dx = (PL[k].lng - c.longitude) * 111 * Math.cos(c.latitude * Math.PI / 180), d = Math.sqrt(dx * dx + dy * dy); if (d < bd) { bd = d; best = k; } });
+        if (bd > 2.5) { say(TXT.gpsFar); pick("own"); return; }
+        msg.hidden = true; var r = ROUTES.filter(function (x) { return x.from === best; })[0]; if (r) pick(r.id);
+      }, function () { say(TXT.gpsNo); }, { timeout: 8000, maximumAge: 60000 });
+    });
+    pick(st.route);
+  })();
   </script>
 </Base>
 
 <style is:global>
-  .cmp-hero h1{font:800 clamp(26px,7vw,34px)/1.12 var(--f-display);letter-spacing:-.02em;margin:6px 0 6px}
+  .cmp-hero h1{font:800 clamp(25px,6.6vw,34px)/1.12 var(--f-display);letter-spacing:-.02em;margin:6px 0}
   .cmp-hero p{margin:0;color:var(--muted);font-size:15px}
-  .cmp{display:flex;flex-direction:column;gap:18px}
+  .cmp{display:flex;flex-direction:column;gap:16px}
   .cmp h2{font:800 19px/1.2 var(--f-display);margin:0}
-  .cmp-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-  .cmp-gps{border:1px solid var(--line-strong);background:var(--surface);color:var(--fg);border-radius:999px;padding:8px 12px;font:600 13px var(--f-body);cursor:pointer;min-height:38px;white-space:nowrap}
+  .cmp-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+  .cmp-map{display:block;width:100%;height:auto;background:var(--sunk)}
+  .m-bg{fill:var(--sunk)} .m-water{fill:none;stroke:#8fb8d8;stroke-width:5;opacity:.6}
+  .m-road{fill:none;stroke:var(--line-strong);stroke-width:3}
+  .m-city{fill:var(--line);opacity:.7} .m-label{font:700 11px var(--f-body);fill:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  .m-route{fill:none;stroke:#1a73e8;stroke-width:4.5;stroke-linecap:round}
+  .m-pt circle{fill:var(--surface);stroke:var(--muted);stroke-width:2}
+  .m-pt text{font:600 11px var(--f-body);fill:var(--muted)}
+  .m-pt.is-a circle{fill:#1a73e8;stroke:#fff;r:7} .m-pt.is-b circle{fill:var(--bad);stroke:#fff;r:7}
+  .m-pt.is-a text,.m-pt.is-b text{fill:var(--fg);font-weight:800}
+  .cmp-ft{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:12px 14px 4px;align-items:center}
+  .cmp-ft-row{display:flex;align-items:center;gap:8px;grid-column:1;min-width:0}
+  .cmp-ft-row strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cmp-ft-l{font-size:12px;color:var(--muted);width:44px}
+  .dot{width:10px;height:10px;border-radius:50%;flex:none} .dot-a{background:#1a73e8} .dot-b{background:var(--bad)}
+  .cmp-gps{grid-column:2;grid-row:1/3;border:1px solid var(--line-strong);background:var(--surface);color:var(--fg);border-radius:999px;padding:8px 12px;font:600 13px var(--f-body);cursor:pointer;min-height:40px;white-space:nowrap}
   .cmp-gps:hover{border-color:var(--fg)}
-  .cmp-msg{margin:0 0 10px;font-size:14px;color:var(--warn)}
-  .cmp-routes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .cmp-route{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:12px;border-radius:var(--r-sm);border:1.5px solid var(--line-strong);background:var(--surface);color:var(--fg);cursor:pointer;font:inherit;min-height:86px;transition:border-color .15s,box-shadow .15s,opacity .15s}
-  .cmp-route:hover{border-color:var(--fg);box-shadow:var(--shadow)}
-  .cmp-route-a{font:700 15px/1.2 var(--f-display)}
-  .cmp-route-b{font-size:14px;color:var(--muted);line-height:1.25}
-  .cmp-route-p{margin-top:auto;font:700 13px var(--f-body);color:var(--good)}
-  .cmp-route[aria-checked="true"]{border-color:var(--taxi);background:var(--taxi-soft);box-shadow:0 0 0 2px var(--taxi) inset}
-  .cmp-routes:has([aria-checked="true"]) .cmp-route[aria-checked="false"]{opacity:.72}
-  .cmp-route-own{grid-column:1/-1;min-height:0;flex-direction:row;align-items:baseline;gap:8px}
-  .cmp-res{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;box-shadow:var(--shadow);scroll-margin-top:12px}
-  .cmp-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:3px;background:var(--sunk);border-radius:12px;margin-bottom:12px}
-  .cmp-tab{border:0;background:transparent;border-radius:9px;min-height:42px;font:700 14px var(--f-body);color:var(--muted);cursor:pointer}
-  .cmp-tab[aria-selected="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.14)}
-  .cmp-tab-from{font-weight:600}
-  .cmp-list{display:flex;flex-direction:column;gap:8px}
-  .cmp-row,.cmp-fix{position:relative;display:grid;grid-template-columns:44px 1fr auto;grid-template-areas:"logo name price" "logo name go";align-items:center;column-gap:12px;row-gap:2px;padding:12px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surface);color:inherit;text-decoration:none}
-  a.cmp-row{cursor:pointer;transition:border-color .15s,background .15s}
-  a.cmp-row:hover{border-color:var(--fg);background:var(--sunk)}
-  .cmp-fix{grid-template-areas:"logo name price" "logo name price";background:var(--sunk)}
-  .cmp-best{border:2px solid var(--good);padding-top:22px;background:var(--surface)}
-  .cmp-best-tag{position:absolute;top:-1px;left:12px;transform:translateY(-50%);background:var(--good);color:#fff;font:700 12px var(--f-body);padding:3px 9px;border-radius:999px}
-  .cmp-logo{grid-area:logo;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#fff;font:800 20px var(--f-display)}
-  .cmp-logo-taxi{background:var(--taxi);color:var(--taxi-ink);font-size:11px;letter-spacing:.08em}
-  .cmp-name{grid-area:name;display:flex;flex-direction:column;min-width:0}
-  .cmp-name strong{font-size:16px}
-  .cmp-name small{font-size:12.5px;color:var(--muted);line-height:1.35}
-  .cmp-price{grid-area:price;font:800 19px var(--f-display);text-align:right;white-space:nowrap}
-  .cmp-best .cmp-price{color:var(--good);font-size:22px}
-  .cmp-price-app{font:600 13px var(--f-body);color:var(--muted)}
-  .cmp-go{grid-area:go;justify-self:end;font:700 13px var(--f-body);color:var(--fg);background:var(--taxi);padding:5px 10px;border-radius:999px;white-space:nowrap}
-  .cmp-sub{font:700 13px var(--f-body);color:var(--muted);margin:8px 2px 0;text-transform:none}
-  .cmp-hint{margin:4px 2px 0;font-size:13.5px;color:var(--muted)}
-  .cmp-km{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;font-weight:600}
-  .cmp-km input{width:110px;font:700 18px var(--f-display);padding:10px 12px;border-radius:10px;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--fg)}
-  .cmp-stand{font-size:12.5px;color:var(--muted);margin:0 2px;line-height:1.45}
+  .cmp-msg{margin:6px 14px 0;font-size:13.5px;color:var(--warn)}
+  .cmp-routes{display:flex;gap:6px;overflow-x:auto;padding:10px 14px 12px;scrollbar-width:none}
+  .cmp-routes::-webkit-scrollbar{display:none}
+  .cmp-route{flex:none;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--fg);border-radius:999px;padding:8px 13px;font:600 14px var(--f-body);cursor:pointer;min-height:40px;white-space:nowrap}
+  .cmp-route:hover{border-color:var(--fg)}
+  .cmp-route[aria-checked="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+  .cmp-km{display:flex;align-items:center;justify-content:space-between;padding:0 14px 12px;font-weight:600}
+  .cmp-km-in{display:flex;align-items:center;gap:6px}
+  .cmp-km input{width:90px;font:700 18px var(--f-display);padding:8px 10px;border-radius:10px;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--fg)}
+  .cmp-gmaps{display:block;padding:10px 14px;border-top:1px solid var(--line);font:600 14px var(--f-body);color:#1a73e8;text-decoration:none}
+  .cmp-res{padding:0 0 12px}
+  .cmp-prov{display:flex;gap:6px;overflow-x:auto;padding:12px 12px 8px;border-bottom:1px solid var(--line);scrollbar-width:none}
+  .cmp-prov::-webkit-scrollbar{display:none}
+  .cmp-pv{flex:none;display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--fg);border-radius:999px;padding:7px 13px;font:700 14px var(--f-body);cursor:pointer;min-height:40px}
+  .cmp-pv[aria-selected="true"]{background:var(--taxi-soft);border-color:var(--taxi);box-shadow:0 0 0 1px var(--taxi) inset}
+  .pv-dot{width:10px;height:10px;border-radius:3px}
+  .pv-taxi{background:var(--taxi)} .pv-uber{background:#111} .pv-bolt{background:#2a9d5c} .pv-freenow{background:#c8102e} .pv-transfer{background:#3b4a63}
+  .cmp-count{margin:10px 14px 4px;font-size:13px;color:var(--muted)}
+  .cmp-list{display:flex;flex-direction:column;gap:8px;padding:6px 12px 0}
+  .row{position:relative;display:grid;grid-template-columns:42px 1fr auto;grid-template-areas:"logo name price" "logo name go";align-items:center;column-gap:11px;row-gap:3px;padding:11px 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:inherit;text-decoration:none}
+  a.row:hover{border-color:var(--fg);background:var(--sunk)}
+  .row.is-best{border:2px solid var(--good);padding-top:20px;margin-top:6px}
+  .row.is-worst{margin-top:6px;padding-top:18px}
+  .row-tag{position:absolute;top:0;left:12px;transform:translateY(-50%);font:700 12px var(--f-body);padding:3px 9px;border-radius:999px}
+  .row-best{background:var(--good);color:#fff} .row-worst{background:var(--sunk);color:var(--muted);border:1px solid var(--line-strong)}
+  .pv-logo{grid-area:logo;width:42px;height:42px;border-radius:11px;display:grid;place-items:center;color:#fff;font:800 19px var(--f-display)}
+  .pv-logo.pv-taxi{color:var(--taxi-ink);font-size:10.5px;letter-spacing:.08em}
+  .row-n{grid-area:name;display:flex;flex-direction:column;min-width:0}
+  .row-n strong{font-size:15.5px}
+  .row-n small{font-size:12.5px;color:var(--muted);line-height:1.35}
+  .row-p{grid-area:price;font:800 18px var(--f-display);text-align:right;white-space:nowrap}
+  .row-p-est{font-size:16px}
+  .is-best .row-p{color:var(--good);font-size:20px}
+  .row-go{grid-area:go;justify-self:end;font:700 12.5px var(--f-body);background:var(--taxi);color:var(--taxi-ink);padding:5px 10px;border-radius:999px;white-space:nowrap}
+  div.row .row-go{background:var(--sunk);color:var(--muted)}
+  .cmp-hint{margin:10px 14px 0;font-size:13px;color:var(--muted);line-height:1.45}
+  .cmp-stand{font-size:12px;color:var(--muted);margin:0 2px;line-height:1.45}
   .cmp-tips{background:var(--taxi-soft);border:1px solid var(--taxi-edge);border-radius:var(--r);padding:14px 16px}
   .cmp-author{margin:6px 0 8px;font-size:14px;color:var(--muted)}
   .cmp-tips ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px}
@@ -332,5 +344,4 @@ const R1 = routes[0];
   .cmp-more a{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surface);text-decoration:none}
   .cmp-more a:hover{border-color:var(--fg)}
   .cmp-more span{font-size:13px;color:var(--muted)}
-  @media (max-width:360px){.cmp-routes,.cmp-more{grid-template-columns:1fr}}
 </style>
