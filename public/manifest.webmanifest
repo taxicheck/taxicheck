@@ -1,0 +1,13 @@
+{
+  "name": "TaxiCheck",
+  "short_name": "TaxiCheck",
+  "description": "Taxi, Uber, Bolt, FREE NOW – Preise vergleichen",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f4ef",
+  "theme_color": "#f2b705",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
