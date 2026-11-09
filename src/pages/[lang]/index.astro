@@ -19,8 +19,8 @@ const T = {
     desc: "Start und Ziel eingeben und alle Anbieter und Fahrzeugklassen sehen: Taxi-Festpreis, Uber, Bolt, FREE NOW, Transfer – vom günstigsten zum teuersten.",
     h1: "Taxi, Uber, Bolt oder FREE NOW – was ist günstiger?",
     lead: "München · Start und Ziel eingeben – alle Anbieter und Klassen sehen – App öffnen.",
-    from: "Von", to: "Nach", ph: "Adresse, Hotel oder Ort", gps: "Mein Standort", gpsWait: "Standort wird gesucht …", gpsNo: "Standort nicht verfügbar – bitte Adresse eingeben.",
-    swap: "Start und Ziel tauschen", popular: "Beliebte Ziele", gmaps: "Route in Google Maps",
+    from: "Von", to: "Nach", ph: "Adresse, Hotel oder Ort", gps: "Mein Standort", gpsBtn: "Wo bin ich? Standort als Start nehmen", gpsWait: "Standort wird gesucht …", gpsNo: "Standort nicht verfügbar – bitte Adresse eingeben.",
+    swap: "Start und Ziel tauschen", popular: "Wohin? Ziel antippen oder oben Adresse eingeben:", gmaps: "Route in Google Maps",
     calc: "Route wird berechnet …", approx: "Route nicht erreichbar – Entfernung geschätzt.", same: "Start und Ziel sind gleich – bitte ein anderes Ziel wählen.",
     none: "Nichts gefunden – bitte anders schreiben.", sFail: "Adresssuche gerade nicht erreichbar – bitte ein Ziel aus der Liste wählen.",
     two: "Karte mit zwei Fingern bewegen", min: "Min.", h: "Std.",
@@ -32,13 +32,13 @@ const T = {
     fixNote: "Festpreis – am Taxistand und per Taxi-App, ohne Taxameter.",
     meterNote: "nach Taxameter, ohne und mit Stau",
     farNote: "außerhalb des Münchner Tarifgebiets – Preis vor der Fahrt vereinbaren",
-    estNote: "Apps haben keine festen Preise: sie ändern sich mehrmals am Tag. Angezeigt ist eine Schätzung – den echten Preis zeigt die App.",
+    estNote: "Apps haben keine festen Preise: sie ändern sich mehrmals am Tag. Für Uber zeigen wir eine Schätzung aus seinen Durchschnittspreisen, keinen Live-Preis. Für Bolt und FREE NOW gibt es keine öffentlichen Preise – bitte in der App nachsehen.",
     appTaxi: "Taxi-Tarif, App kann Gebühr aufschlagen",
     count: (n) => `${n} Optionen · günstig → teuer`,
     sbahn: "Ohne Taxi: S-Bahn ins Zentrum 11,60 € (ca. 40 Min.).",
     tipsH: "Tipps aus der Praxis", author: "Von einem Vielreisenden, der das Geschäft von beiden Seiten kennt – vom Fahrersitz und von der Rückbank.",
     tips: ["Vor dem Einsteigen nach dem Preis fragen. Auf Festpreis-Strecken gilt der Festpreis – nicht mehr.", "Apps zur selben Minute vergleichen: bei Regen, Messe und Wiesn springen die Preise.", "Zeigt Uber oder Bolt mehr als den Taxi-Festpreis, nehmen Sie das Taxi."],
-    stand: "Taxi: Tarif und Festpreise der Stadt München, Stand " + TARIFF.date + ". Apps: Schätzung aus Uber-Durchschnittspreisen Flughafen → City (11/2026), für Bolt und FREE NOW ohne eigene Daten. Alles unverbindlich, ohne Gewähr. TaxiCheck ist mit den Anbietern nicht verbunden. Karte: © OpenStreetMap-Mitwirkende; Adresssuche: Photon (komoot); Route: OSRM (FOSSGIS).",
+    stand: "Taxi: Tarif und Festpreise der Stadt München, Stand " + TARIFF.date + ". Apps: Schätzung aus Uber-Durchschnittspreisen Flughafen → City (11/2026), für Bolt und FREE NOW gibt es keine Daten, daher ohne Zahl. Alles unverbindlich, ohne Gewähr. TaxiCheck ist mit den Anbietern nicht verbunden. Karte: © OpenStreetMap-Mitwirkende; Adresssuche: Photon (komoot); Route: OSRM (FOSSGIS).",
     more: "Mehr", moreCity: ["München-Guide", "Sehenswertes, Essen, Events"], moreCountries: ["Taxi-Tipps nach Ländern", "9 Länder"],
   },
   ru: {
@@ -46,8 +46,8 @@ const T = {
     desc: "Введите откуда и куда и увидите все сервисы и классы машин: фикс-цена такси, Uber, Bolt, FREE NOW, трансфер — от дешёвого к дорогому.",
     h1: "Такси, Uber, Bolt или FREE NOW — что дешевле?",
     lead: "Мюнхен · введите откуда и куда — увидите все сервисы и классы — откройте приложение.",
-    from: "Откуда", to: "Куда", ph: "Адрес, отель или место", gps: "Где я", gpsWait: "Ищу, где вы…", gpsNo: "Местоположение недоступно — введите адрес.",
-    swap: "Поменять местами", popular: "Популярные места", gmaps: "Маршрут в Google Maps",
+    from: "Откуда", to: "Куда", ph: "Адрес, отель или место", gps: "Моё местоположение", gpsBtn: "Где я? Взять моё место как «Откуда»", gpsWait: "Ищу, где вы…", gpsNo: "Местоположение недоступно — введите адрес.",
+    swap: "Поменять местами", popular: "Куда? Нажмите место или введите адрес выше:", gmaps: "Маршрут в Google Maps",
     calc: "Считаю маршрут…", approx: "Маршрут построить не удалось — расстояние примерное.", same: "Откуда и куда совпадают — выберите другое место.",
     none: "Ничего не найдено — напишите иначе.", sFail: "Поиск адресов сейчас недоступен — выберите место из списка.",
     two: "Двигайте карту двумя пальцами", min: "мин", h: "ч",
@@ -59,13 +59,13 @@ const T = {
     fixNote: "Фиксированная цена — на стоянке и через приложение такси, без счётчика.",
     meterNote: "по счётчику, без пробок и с пробками",
     farNote: "за пределами тарифной зоны Мюнхена — о цене договариваются до поездки",
-    estNote: "У приложений нет фиксированных цен: они меняются несколько раз в день. Здесь оценка — точную цену покажет приложение.",
+    estNote: "У приложений нет фиксированных цен: они меняются несколько раз в день. Для Uber показана оценка по его средним ценам, а не цена этой минуты. У Bolt и FREE NOW открытых цен нет — смотрите в приложении.",
     appTaxi: "тариф такси, приложение может добавить сбор",
     count: (n) => `${n} вариантов · от дешёвого к дорогому`,
     sbahn: "Без такси: S-Bahn в центр 11,60 € (около 40 мин).",
     tipsH: "Советы из практики", author: "От человека, который много ездил по миру и знает такси с обеих сторон — за рулём и на заднем сиденье.",
     tips: ["Спросите цену до посадки. Где действует фиксированная цена — платите её, не больше.", "Сравнивайте приложения в одну и ту же минуту: в дождь, на выставках и в Октоберфест цены прыгают.", "Если Uber или Bolt показывают больше фикс-цены такси — берите такси."],
-    stand: "Такси: тариф и фикс-цены города Мюнхена от " + TARIFF.date + ". Приложения: оценка по средним ценам Uber аэропорт → центр (11.2026), для Bolt и FREE NOW своих данных нет. Всё ориентировочно, без гарантии. TaxiCheck не связан с этими сервисами. Карта: © участники OpenStreetMap; поиск адресов: Photon (komoot); маршрут: OSRM (FOSSGIS).",
+    stand: "Такси: тариф и фикс-цены города Мюнхена от " + TARIFF.date + ". Приложения: оценка по средним ценам Uber аэропорт → центр (11.2026), для Bolt и FREE NOW данных нет, поэтому без цифры. Всё ориентировочно, без гарантии. TaxiCheck не связан с этими сервисами. Карта: © участники OpenStreetMap; поиск адресов: Photon (komoot); маршрут: OSRM (FOSSGIS).",
     more: "Ещё", moreCity: ["Мюнхен: гид", "что посмотреть, еда, события"], moreCountries: ["Такси в других странах", "9 стран"],
   },
   en: {
@@ -73,8 +73,8 @@ const T = {
     desc: "Enter start and destination and see every provider and car class: taxi fixed fare, Uber, Bolt, FREE NOW, transfer – cheapest to most expensive.",
     h1: "Taxi, Uber, Bolt or FREE NOW – what's cheaper?",
     lead: "Munich · enter start and destination – see all providers and classes – open the app.",
-    from: "From", to: "To", ph: "Address, hotel or place", gps: "My location", gpsWait: "Finding your location…", gpsNo: "Location unavailable – please type an address.",
-    swap: "Swap start and destination", popular: "Popular places", gmaps: "Route in Google Maps",
+    from: "From", to: "To", ph: "Address, hotel or place", gps: "My location", gpsBtn: "Where am I? Use my location as start", gpsWait: "Finding your location…", gpsNo: "Location unavailable – please type an address.",
+    swap: "Swap start and destination", popular: "Where to? Tap a place or type an address above:", gmaps: "Route in Google Maps",
     calc: "Calculating route…", approx: "Route service unavailable – distance is estimated.", same: "Start and destination are the same – please pick another place.",
     none: "Nothing found – try another spelling.", sFail: "Address search is unavailable right now – please pick a place from the list.",
     two: "Use two fingers to move the map", min: "min", h: "h",
@@ -86,13 +86,13 @@ const T = {
     fixNote: "Fixed fare – at the taxi rank and via taxi apps, no meter.",
     meterNote: "by meter, without and with traffic",
     farNote: "outside the Munich tariff area – agree the price before the ride",
-    estNote: "Apps have no fixed prices: they change several times a day. Shown is an estimate – the app shows the real price.",
+    estNote: "Apps have no fixed prices: they change several times a day. For Uber we show an estimate from its average prices, not a live price. Bolt and FREE NOW publish no prices – please check the app.",
     appTaxi: "taxi tariff, the app may add a fee",
     count: (n) => `${n} options · cheapest → priciest`,
     sbahn: "Without a taxi: S-Bahn to the centre 11.60 € (about 40 min).",
     tipsH: "Tips from practice", author: "From a seasoned traveller who knows the trade from both sides – behind the wheel and in the back seat.",
     tips: ["Ask the price before you get in. On fixed-fare routes the fixed fare applies – no more.", "Compare apps at the same minute: prices jump in rain, trade fairs and Oktoberfest.", "If Uber or Bolt shows more than the taxi fixed fare, take the taxi."],
-    stand: "Taxi: City of Munich tariff and fixed fares as of " + TARIFF.date + ". Apps: estimate from Uber average prices airport → city (11/2026); no own data for Bolt and FREE NOW. All non-binding, no guarantee. TaxiCheck is not affiliated with the providers. Map: © OpenStreetMap contributors; address search: Photon (komoot); route: OSRM (FOSSGIS).",
+    stand: "Taxi: City of Munich tariff and fixed fares as of " + TARIFF.date + ". Apps: estimate from Uber average prices airport → city (11/2026); no data for Bolt and FREE NOW, so no figure. All non-binding, no guarantee. TaxiCheck is not affiliated with the providers. Map: © OpenStreetMap contributors; address search: Photon (komoot); route: OSRM (FOSSGIS).",
     more: "More", moreCity: ["Munich guide", "sights, food, events"], moreCountries: ["Taxi tips by country", "9 countries"],
   },
 }[lang];
@@ -147,11 +147,12 @@ const json = JSON.stringify(DATA).replace(/</g, "\\u003c");
           <ul class="cmp-sug" id="cmp-sug-b" hidden></ul>
         </div>
         <div class="cmp-side">
-          <button type="button" class="cmp-ib" id="cmp-gps" title={T.gps} aria-label={T.gps}>◎</button>
           <button type="button" class="cmp-ib" id="cmp-swap" title={T.swap} aria-label={T.swap}>⇅</button>
         </div>
       </div>
       <p class="cmp-msg" id="cmp-msg" hidden></p>
+      <button type="button" class="cmp-gpsbtn" id="cmp-gps">◎ {T.gpsBtn}</button>
+      <p class="cmp-pop">{T.popular}</p>
       <div class="cmp-routes" role="group" aria-label={T.popular}>
         {SPOTS.map((s) => <button type="button" class="cmp-route" data-spot={s.id}>{s.chip}</button>)}
       </div>
@@ -241,14 +242,14 @@ const json = JSON.stringify(DATA).replace(/</g, "\\u003c");
       add("uber", "UberXL", 1, est("xl", ub && ub.xl, 1), U);
       add("uber", "Uber Premium", 0, est("premium", ub && ub.premium, 1), U);
       add("uber", "Uber Taxi", 0, appTaxi, U, far ? "" : TXT.appTaxi);
-      // у Bolt и FREE NOW своих данных нет → та же оценка, что у Uber того же класса
-      add("bolt", "Bolt", 0, est("std", ub && ub.x), D.LINK.bolt);
-      add("bolt", "Bolt Comfort", 0, est("comfort", ub && ub.comfort), D.LINK.bolt);
-      add("bolt", "Bolt XL", 1, est("xl", ub && ub.xl), D.LINK.bolt);
-      add("bolt", "Bolt Premium", 0, est("premium", ub && ub.premium), D.LINK.bolt);
+      // у Bolt и FREE NOW своих данных нет → цифру не показываем, только «цена в приложении»
+      add("bolt", "Bolt", 0, none, D.LINK.bolt);
+      add("bolt", "Bolt Comfort", 0, none, D.LINK.bolt);
+      add("bolt", "Bolt XL", 1, none, D.LINK.bolt);
+      add("bolt", "Bolt Premium", 0, none, D.LINK.bolt);
       add("bolt", "Bolt Taxi", 0, appTaxi, D.LINK.bolt, far ? "" : TXT.appTaxi);
       add("freenow", "FREE NOW Taxi", 0, appTaxi, D.LINK.freenow, far ? "" : TXT.appTaxi);
-      add("freenow", "FREE NOW Ride", 0, est("std", ub && ub.x), D.LINK.freenow);
+      add("freenow", "FREE NOW Ride", 0, none, D.LINK.freenow);
       // Трансферы: цена есть только для аэропорт → центр; иначе цену называет компания
       if (toCity) add("transfer", "World Transfer", 0, { lo: D.WT[0], hi: D.WT[1], kind: "pre" }, D.LINK.wt);
       else if (za === "air" || zb === "air" || far) add("transfer", "World Transfer", 0, ask, D.LINK.wt);
@@ -452,8 +453,11 @@ const json = JSON.stringify(DATA).replace(/</g, "\\u003c");
   .cmp-sug button:hover,.cmp-sug button:focus-visible{background:var(--sunk)}
   .cmp-sug strong{font-size:15px;overflow-wrap:anywhere} .cmp-sug small{font-size:12.5px;color:var(--muted)}
   .cmp-sug-note{padding:10px 12px;font-size:13.5px;color:var(--muted)}
+  .cmp-gpsbtn{display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 12px 0;width:calc(100% - 24px);min-height:46px;border-radius:12px;border:1.5px solid #1a73e8;background:var(--surface);color:#1a73e8;font:700 15px var(--f-body);cursor:pointer}
+  .cmp-gpsbtn:hover{background:var(--sunk)}
+  .cmp-pop{margin:12px 14px 0;font:700 14px var(--f-body)}
   .cmp-msg{margin:6px 14px 0;font-size:13.5px;color:var(--warn)}
-  .cmp-routes{display:flex;gap:6px;overflow-x:auto;padding:10px 12px 12px;scrollbar-width:none}
+  .cmp-routes{display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px 12px;scrollbar-width:none}
   .cmp-routes::-webkit-scrollbar{display:none}
   .cmp-route{flex:none;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--fg);border-radius:999px;padding:8px 13px;font:600 14px var(--f-body);cursor:pointer;min-height:40px;white-space:nowrap}
   .cmp-route:hover{border-color:var(--fg)}
