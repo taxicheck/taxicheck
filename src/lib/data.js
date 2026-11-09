@@ -46,6 +46,10 @@ export const ROUTES = [
 // поэтому скрыты. Включить: поставить true (одна строка).
 export const FEATURES = { reviews: false, tips: false, journal: false };
 
+// Цены, которые посетители видели в приложениях. Адрес веб-приложения Google Apps Script (таблица владельца).
+// Пусто — форма скрыта. Код скрипта: scripts/google-apps-script.js
+export const REPORTS_URL = "";
+
 export const PHONES = [["Taxi-München eG", "089 21610"], ["IsarFunk", "089 450540"]];
 
 export const COMPANIES = ["Taxi München", "IsarFunk", "Uber", "Bolt", "FREE NOW", "Smile Taxi", "Welcome Pickups", "World Transfer", "Kiwitaxi", "Daytrip", "Blacklane"];

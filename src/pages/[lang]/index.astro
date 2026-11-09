@@ -6,7 +6,7 @@
 // Всё требует проверки. Живые цены — только в приложении (кнопка «Открыть»).
 import Base from "../../layouts/Base.astro";
 import "leaflet/dist/leaflet.css";
-import { LANGS, ROUTES, PLACES, LINKS, TARIFF } from "../../lib/data.js";
+import { LANGS, ROUTES, PLACES, LINKS, TARIFF, REPORTS_URL } from "../../lib/data.js";
 
 export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
 const { lang } = Astro.params;
@@ -29,6 +29,9 @@ const T = {
     seats: (n) => `${n} Pers.`, fix: "Festpreis", meterT: "Taxameter", est: "Schätzung", avg: "Ø laut Uber", pre: "nur vorab", dyn: "dynamischer Preis",
     inApp: "Preis in der App", atProv: "Preis beim Anbieter",
     open: "Öffnen", taxiGo: "Am Taxistand",
+    uberWeb: "geht auch ohne App – im Browser, Uber-Konto nötig", needApp: "App nötig", real: "Preise von Fahrgästen", realN: "{n}× gemeldet, zuletzt {ago}", today: "heute", yday: "gestern", daysAgo: "vor {d} Tagen",
+    repH: "Preis in der App gesehen? Teilen Sie ihn", repSub: "So entstehen hier echte Preise von Uber, Bolt und FREE NOW für jede Strecke. Die Strecke kommt aus der Karte oben. Name und Telefon sind nicht nötig.",
+    repSvc: "Dienst", repCls: "Klasse", repPrice: "Preis, €", repWhen: "Wann", repRoute: "Strecke", repSend: "Preis speichern", repOk: "Danke! Der Preis ist gespeichert und erscheint im Vergleich.", repErr: "Bitte einen Preis von 3 bis 2000 € eingeben.", repFail: "Speichern hat nicht geklappt. Bitte später noch einmal versuchen.", repSame: "Bitte zuerst oben eine Strecke wählen.",
     fixNote: "Festpreis – am Taxistand und per Taxi-App, ohne Taxameter.",
     meterNote: "nach Taxameter, ohne und mit Stau",
     farNote: "außerhalb des Münchner Tarifgebiets – Preis vor der Fahrt vereinbaren",
@@ -56,6 +59,9 @@ const T = {
     seats: (n) => `до ${n} чел.`, fix: "фикс-цена", meterT: "по счётчику", est: "оценка", avg: "в среднем по Uber", pre: "только заранее", dyn: "цена меняется",
     inApp: "цена в приложении", atProv: "цена у компании",
     open: "Открыть", taxiGo: "На стоянке",
+    uberWeb: "работает и без приложения — в браузере, нужен аккаунт Uber", needApp: "нужно приложение", real: "цены пассажиров", realN: "{n} замер., последний {ago}", today: "сегодня", yday: "вчера", daysAgo: "{d} дн. назад",
+    repH: "Видели цену в приложении? Поделитесь", repSub: "Так здесь появятся настоящие цены Uber, Bolt и FREE NOW по каждому маршруту. Маршрут берётся с карты выше. Имя и телефон не нужны.",
+    repSvc: "Сервис", repCls: "Класс", repPrice: "Цена, €", repWhen: "Когда", repRoute: "Маршрут", repSend: "Сохранить цену", repOk: "Спасибо! Цена сохранена и появится в сравнении.", repErr: "Укажите цену от 3 до 2000 €.", repFail: "Не получилось сохранить. Попробуйте позже.", repSame: "Сначала выберите маршрут выше.",
     fixNote: "Фиксированная цена — на стоянке и через приложение такси, без счётчика.",
     meterNote: "по счётчику, без пробок и с пробками",
     farNote: "за пределами тарифной зоны Мюнхена — о цене договариваются до поездки",
@@ -83,6 +89,9 @@ const T = {
     seats: (n) => `${n} seats`, fix: "fixed fare", meterT: "meter", est: "estimate", avg: "avg. per Uber", pre: "book ahead", dyn: "dynamic price",
     inApp: "price in the app", atProv: "price at provider",
     open: "Open", taxiGo: "At the rank",
+    uberWeb: "works without the app too – in the browser, Uber account needed", needApp: "app needed", real: "prices from riders", realN: "reported {n}×, latest {ago}", today: "today", yday: "yesterday", daysAgo: "{d} days ago",
+    repH: "Saw a price in the app? Share it", repSub: "This is how real Uber, Bolt and FREE NOW prices appear here for every route. The route comes from the map above. No name or phone needed.",
+    repSvc: "Service", repCls: "Class", repPrice: "Price, €", repWhen: "When", repRoute: "Route", repSend: "Save price", repOk: "Thank you! The price is saved and will show in the comparison.", repErr: "Please enter a price from 3 to 2000 €.", repFail: "Saving didn't work. Please try again later.", repSame: "Please pick a route above first.",
     fixNote: "Fixed fare – at the taxi rank and via taxi apps, no meter.",
     meterNote: "by meter, without and with traffic",
     farNote: "outside the Munich tariff area – agree the price before the ride",
@@ -121,6 +130,7 @@ const DATA = {
   lang, loc, plang: lang === "en" ? "en" : "de", SPOTS, FIX, KM,
   // Зоны фикс-цен: точка считается «в зоне», если ближе radius км
   ZONES: [["air", PLACES.air.lat, PLACES.air.lng, 3], ["hbf", PLACES.hbf.lat, PLACES.hbf.lng, 0.6], ["messe", PLACES.messe.lat, PLACES.messe.lng, 1.2]],
+  REPORTS: REPORTS_URL,
   UBER: { x: UBER.x, comfort: UBER.comfort, xl: 104, premium: 127 }, WT: [66, 72], WELCOME: [60, 79],
   LINK: { bolt: lang === "de" ? "https://bolt.eu/de-de/rides/" : "https://bolt.eu/en-de/rides/", freenow: LINKS.freenow, wt: LINKS.wt, welcome: LINKS.welcome, daytrip: LINKS.daytrip },
   TARIF: { base: TARIFF.base, tiers: TARIFF.tiers.map(([u, r]) => [u === Infinity ? 1e9 : u, r]), perMin: TARIFF.perMin },
@@ -173,6 +183,22 @@ const json = JSON.stringify(DATA).replace(/</g, "\\u003c");
       <p class="cmp-hint" id="cmp-est">{T.estNote}</p>
       <p class="cmp-hint" id="cmp-sbahn">{T.sbahn}</p>
     </section>
+
+    {REPORTS_URL && (
+      <section class="cmp-card cmp-rep" aria-labelledby="cmp-rep-h">
+        <h2 id="cmp-rep-h">{T.repH}</h2>
+        <p class="cmp-rep-sub">{T.repSub}</p>
+        <p class="cmp-rep-route"><span>{T.repRoute}:</span> <strong id="rep-route"></strong></p>
+        <form id="rep-form" novalidate>
+          <label><span>{T.repSvc}</span><select id="rep-svc"><option value="uber">Uber</option><option value="bolt">Bolt</option><option value="freenow">FREE NOW</option></select></label>
+          <label><span>{T.repCls}</span><select id="rep-cls"></select></label>
+          <label><span>{T.repPrice}</span><input id="rep-price" type="number" inputmode="decimal" min="3" max="2000" step="0.5" placeholder="35"></label>
+          <label><span>{T.repWhen}</span><input id="rep-when" type="datetime-local"></label>
+          <button type="submit" class="cmp-rep-send">{T.repSend}</button>
+          <p class="cmp-rep-msg" id="rep-msg" role="status"></p>
+        </form>
+      </section>
+    )}
 
     <p class="cmp-stand">{T.stand}</p>
 
@@ -235,39 +261,59 @@ const json = JSON.stringify(DATA).replace(/</g, "\\u003c");
       const appTaxi = far ? none : taxi;
       // оценка-диапазон: у Uber на маршруте аэропорт → вокзал — их среднее; на дальних маршрутах числа нет
       const est = (k, avg, own) => { if (far) return none; const c = avg || m[0] * K[k]; return { lo: r5(c * 0.85), hi: r5(c * 1.25), c, kind: avg && own ? "avg" : "est" }; };
-      const add = (prov, name, seats, p, href, note) => list.push({ prov, name, seats, lo: p.lo, hi: p.hi, c: p.lo == null ? null : p.c || (p.lo + p.hi) / 2, kind: p.kind, href, note: note || "" });
+      const add = (prov, name, seats, p, href, note, key) => list.push({ prov, name, seats, lo: p.lo, hi: p.hi, c: p.lo == null ? null : p.c || (p.lo + p.hi) / 2, kind: p.kind, href, note: note || "", key });
       add("taxi", "Taxi", 0, taxi, null, taxiNote);
-      add("uber", "UberX", 0, est("std", ub && ub.x, 1), U);
-      add("uber", "Uber Comfort", 0, est("comfort", ub && ub.comfort, 1), U);
-      add("uber", "UberXL", 1, est("xl", ub && ub.xl, 1), U);
-      add("uber", "Uber Premium", 0, est("premium", ub && ub.premium, 1), U);
-      add("uber", "Uber Taxi", 0, appTaxi, U, far ? "" : TXT.appTaxi);
+      add("uber", "UberX", 0, est("std", ub && ub.x, 1), U, TXT.uberWeb, "uber:std");
+      add("uber", "Uber Comfort", 0, est("comfort", ub && ub.comfort, 1), U, TXT.uberWeb, "uber:comfort");
+      add("uber", "UberXL", 1, est("xl", ub && ub.xl, 1), U, TXT.uberWeb, "uber:xl");
+      add("uber", "Uber Premium", 0, est("premium", ub && ub.premium, 1), U, TXT.uberWeb, "uber:premium");
+      add("uber", "Uber Taxi", 0, appTaxi, U, far ? TXT.uberWeb : TXT.appTaxi, "uber:taxi");
       // у Bolt и FREE NOW своих данных нет → цифру не показываем, только «цена в приложении»
-      add("bolt", "Bolt", 0, none, D.LINK.bolt);
-      add("bolt", "Bolt Comfort", 0, none, D.LINK.bolt);
-      add("bolt", "Bolt XL", 1, none, D.LINK.bolt);
-      add("bolt", "Bolt Premium", 0, none, D.LINK.bolt);
-      add("bolt", "Bolt Taxi", 0, appTaxi, D.LINK.bolt, far ? "" : TXT.appTaxi);
-      add("freenow", "FREE NOW Taxi", 0, appTaxi, D.LINK.freenow, far ? "" : TXT.appTaxi);
-      add("freenow", "FREE NOW Ride", 0, none, D.LINK.freenow);
+      add("bolt", "Bolt", 0, none, D.LINK.bolt, TXT.needApp, "bolt:std");
+      add("bolt", "Bolt Comfort", 0, none, D.LINK.bolt, TXT.needApp, "bolt:comfort");
+      add("bolt", "Bolt XL", 1, none, D.LINK.bolt, TXT.needApp, "bolt:xl");
+      add("bolt", "Bolt Premium", 0, none, D.LINK.bolt, TXT.needApp, "bolt:premium");
+      add("bolt", "Bolt Taxi", 0, appTaxi, D.LINK.bolt, far ? TXT.needApp : TXT.appTaxi, "bolt:taxi");
+      add("freenow", "FREE NOW Taxi", 0, appTaxi, D.LINK.freenow, far ? TXT.needApp : TXT.appTaxi, "freenow:taxi");
+      add("freenow", "FREE NOW Ride", 0, none, D.LINK.freenow, TXT.needApp, "freenow:std");
       // Трансферы: цена есть только для аэропорт → центр; иначе цену называет компания
       if (toCity) add("transfer", "World Transfer", 0, { lo: D.WT[0], hi: D.WT[1], kind: "pre" }, D.LINK.wt);
       else if (za === "air" || zb === "air" || far) add("transfer", "World Transfer", 0, ask, D.LINK.wt);
       if (toCity) add("transfer", "Welcome Pickups", 0, { lo: D.WELCOME[0], hi: D.WELCOME[1], kind: "pre" }, D.LINK.welcome);
       else if (za === "air" && !far) add("transfer", "Welcome Pickups", 0, ask, D.LINK.welcome);
       if (far) add("transfer", "Daytrip", 0, ask, D.LINK.daytrip);
+      // цены, которые пассажиры видели в приложениях на похожем маршруте, заменяют оценку
+      const seen = reportsFor();
+      list.forEach((o) => { const r = o.key && seen[o.key]; if (r) { o.lo = r.lo; o.hi = r.hi; o.c = (r.lo + r.hi) / 2; o.kind = "real"; o.note = TXT.realN.replace("{n}", r.n).replace("{ago}", ago(r.last)); } });
       // при равенстве Uber (есть данные) выше Bolt и FREE NOW; варианты без цены — в конце
       list.forEach((o, i) => { o.i = i; });
       list.sort((a, b) => (a.c == null) - (b.c == null) || a.c - b.c || a.i - b.i);
       return { list, airCity: (za === "air" || zb === "air") && !far };
     }
 
+    // ── Цены от пассажиров (таблица владельца через Google Apps Script)
+    st.reps = [];
+    function reportsFor() {
+      const out = {}, R = Math.min(3, Math.max(0.8, st.km * 0.04)), lim = Date.now() - 45 * 864e5;
+      for (const r of st.reps) {
+        const [ts, svc, cls, pr, alat, alng, blat, blng] = r;
+        if (ts < lim || hav(st.a, { lat: alat, lng: alng }) > R || hav(st.b, { lat: blat, lng: blng }) > R) continue;
+        const k = svc + ":" + cls, o = out[k] || (out[k] = { lo: 1e9, hi: 0, n: 0, last: 0 });
+        o.lo = Math.min(o.lo, pr); o.hi = Math.max(o.hi, pr); o.n++; o.last = Math.max(o.last, ts);
+      }
+      return out;
+    }
+    function ago(ts) {
+      const d = Math.floor((new Date().setHours(0, 0, 0, 0) - new Date(ts).setHours(0, 0, 0, 0)) / 864e5);
+      return d <= 0 ? TXT.today : d === 1 ? TXT.yday : TXT.daysAgo.replace("{d}", d);
+    }
+
     function price(o) {
       if (o.lo == null) return o.kind === "ask" ? TXT.atProv : TXT.inApp;
-      if (o.kind === "fix") return eur(o.lo);
+      if (o.kind === "fix" || Math.round(o.lo) === Math.round(o.hi)) return eur(o.lo);
       return Math.round(o.lo).toLocaleString(loc) + "–" + eur(o.hi);
     }
-    const tag = (o) => ({ fix: TXT.fix, meter: TXT.meterT, est: TXT.est, avg: TXT.avg, pre: TXT.pre, app: TXT.dyn, ask: TXT.pre }[o.kind]);
+    const tag = (o) => ({ fix: TXT.fix, meter: TXT.meterT, est: TXT.est, avg: TXT.avg, pre: TXT.pre, app: TXT.dyn, ask: TXT.pre, real: TXT.real }[o.kind]);
 
     function render() {
       const r = options(), all = r.list;
@@ -276,6 +322,7 @@ const json = JSON.stringify(DATA).replace(/</g, "\\u003c");
       const priced = show.filter((o) => o.lo != null);
       const cheap = priced.filter((o) => o.kind !== "pre")[0] || priced[0], dear = priced[priced.length - 1];
       const firm = cheap && (cheap.kind === "fix" || cheap.kind === "meter");
+      const rr = $("#rep-route"); if (rr) rr.textContent = st.a.n + " → " + st.b.n;
       $("#cmp-count").textContent = TXT.count.replace("{n}", show.length);
       $("#cmp-list").innerHTML = show.map((o) => {
         const best = o === cheap && priced.length > 1, worst = o === dear && priced.length > 2 && o !== cheap;
@@ -419,6 +466,39 @@ const json = JSON.stringify(DATA).replace(/</g, "\\u003c");
       }, () => say(TXT.gpsNo), { timeout: 8000, maximumAge: 60000 });
     });
 
+    // ── Форма «какую цену показало приложение»
+    const CLS = { uber: [["std", "UberX"], ["comfort", "Comfort"], ["xl", "UberXL"], ["premium", "Premium"], ["taxi", "Uber Taxi"]],
+      bolt: [["std", "Bolt"], ["comfort", "Comfort"], ["xl", "XL"], ["premium", "Premium"], ["taxi", "Bolt Taxi"]],
+      freenow: [["taxi", "Taxi"], ["std", "Ride"]] };
+    async function loadReports() {
+      try { const j = await getJSON(D.REPORTS + "?a=list", 8000); if (j && Array.isArray(j.rows)) { st.reps = j.rows.filter((r) => Array.isArray(r) && r.length >= 8 && r[3] > 0); render(); } } catch (e) {}
+    }
+    const form = $("#rep-form");
+    if (D.REPORTS && form) {
+      const svc = $("#rep-svc"), cls = $("#rep-cls"), when = $("#rep-when"), pr = $("#rep-price"), rmsg = $("#rep-msg");
+      const fill = () => { cls.innerHTML = CLS[svc.value].map(([k, n]) => '<option value="' + k + '">' + esc(n) + "</option>").join(""); };
+      const local = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 16);
+      const now = () => { when.value = local(new Date()); when.max = local(new Date(Date.now() + 6e5)); };
+      svc.addEventListener("change", fill); fill(); now();
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault(); rmsg.className = "cmp-rep-msg";
+        const p = parseFloat(String(pr.value).replace(",", "."));
+        if (hav(st.a, st.b) < 0.15) { rmsg.textContent = TXT.repSame; return; }
+        if (!(p >= 3 && p <= 2000)) { rmsg.textContent = TXT.repErr; pr.focus(); return; }
+        const ts = when.value ? new Date(when.value).getTime() : Date.now();
+        const row = { svc: svc.value, cls: cls.value, price: Math.round(p * 100) / 100, ts, a: [st.a.lat, st.a.lng], b: [st.b.lat, st.b.lng], an: st.a.n, bn: st.b.n, km: Math.round(st.km * 10) / 10, lang: D.lang };
+        const btn = form.querySelector("button"); btn.disabled = true;
+        try {
+          const r = await fetch(D.REPORTS, { method: "POST", body: JSON.stringify(row) }), j = await r.json();
+          if (!j || !j.ok) throw new Error("no");
+          st.reps.push([ts, row.svc, row.cls, row.price, row.a[0], row.a[1], row.b[0], row.b[1]]);
+          rmsg.textContent = TXT.repOk; rmsg.className = "cmp-rep-msg ok"; pr.value = ""; now(); render();
+        } catch (err) { rmsg.textContent = TXT.repFail; rmsg.className = "cmp-rep-msg bad"; }
+        btn.disabled = false;
+      });
+      loadReports();
+    }
+
     update();
   </script>
 </Base>
@@ -491,6 +571,15 @@ const json = JSON.stringify(DATA).replace(/</g, "\\u003c");
   .row-go{grid-area:go;justify-self:end;font:700 12.5px var(--f-body);background:var(--taxi);color:var(--taxi-ink);padding:5px 10px;border-radius:999px;white-space:nowrap}
   div.row .row-go{background:var(--sunk);color:var(--muted)}
   .cmp-hint{margin:10px 14px 0;font-size:13px;color:var(--muted);line-height:1.45}
+  .cmp-rep{padding:14px 14px 16px;display:flex;flex-direction:column;gap:8px}
+  .cmp-rep-sub{margin:0;font-size:14px;color:var(--muted)}
+  .cmp-rep-route{margin:0;font-size:14px;overflow-wrap:anywhere} .cmp-rep-route span{color:var(--muted)}
+  #rep-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #rep-form label{display:flex;flex-direction:column;gap:4px;margin:0;font:600 12px var(--f-body);color:var(--muted);text-transform:none;letter-spacing:0;min-width:0}
+  #rep-form select,#rep-form input{width:100%;min-width:0;font:600 16px var(--f-body);padding:10px;border-radius:10px;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--fg)}
+  .cmp-rep-send{grid-column:1/-1;min-height:48px;border:0;border-radius:12px;background:var(--taxi);color:var(--taxi-ink);font:700 15px var(--f-body);cursor:pointer}
+  .cmp-rep-send:disabled{opacity:.6}
+  .cmp-rep-msg{grid-column:1/-1;margin:0;font-size:14px;min-height:1.3em;color:var(--warn)} .cmp-rep-msg.ok{color:var(--good)} .cmp-rep-msg.bad{color:var(--bad)}
   .cmp-stand{font-size:12px;color:var(--muted);margin:0 2px;line-height:1.45}
   .cmp-tips{background:var(--taxi-soft);border:1px solid var(--taxi-edge);border-radius:var(--r);padding:14px 16px}
   .cmp-author{margin:6px 0 8px;font-size:14px;color:var(--muted)}
